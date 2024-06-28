@@ -1,3 +1,4 @@
+// Import our custom CSS
 function showPage(pageClass) {
     const pages = document.querySelectorAll('.starting-page, .game-page, .stats-page, .tournaments-page');
     pages.forEach(page => {
