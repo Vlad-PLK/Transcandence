@@ -1,0 +1,23 @@
+version: "3.8"
+
+networks:
+  transcendance:
+    driver: bridge
+
+services:
+  frontend:
+    container_name: frontend
+    build: ./front-react
+    ports:
+      - 3000:3000
+    volumes:
+      - frontend:/app
+    
+volumes:
+  frontend:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/Users/macbook/volumes/'
+    
