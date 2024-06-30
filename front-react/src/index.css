@@ -1,4 +1,25 @@
-root {
+body {
+  background-color: #000; /* Черный фон */
+  color: #fff; /* Белый текст */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  flex-direction: column;
+}
+
+.language-menu {
+  position: absolute;
+  top: 10px;
+  right: 30px;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -11,7 +32,7 @@ root {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
+} */
 
 a {
   font-weight: 500;
@@ -66,3 +87,4 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
