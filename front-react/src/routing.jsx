@@ -7,7 +7,7 @@ import {
   Link,
   Outlet
 } from "react-router-dom";
-import Root from "./root";
+import Root from "./Root";
 
 const router = createBrowserRouter([
     {
