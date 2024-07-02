@@ -4,8 +4,8 @@ all: ${NAME}
 
 ${NAME}:
 	@printf "Creating directories for Frontend Volume ! !\n"
-	mkdir -p /Users/macbook/volumes/
-	chmod -f 777 /Users/macbook/volumes/
+	mkdir -p /home/vpolojie/volumes/
+	chmod -f 777 /home/vpolojie/volumes/
 	@printf "\n"
 	@printf "Building up containers !\n"
 	docker-compose up --build
@@ -19,7 +19,7 @@ clean:
 fclean: clean
 	docker-compose down
 	docker system prune -a -f
-	sudo rm -rf /Users/macbook/volumes/
+	sudo rm -rf /home/vpolojie/volumes/
 
 re:	fclean all
 
