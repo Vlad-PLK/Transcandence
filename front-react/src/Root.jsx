@@ -1,5 +1,6 @@
 import Menu from "./Menu";
 import HomePage from "./HomePage";
+import Settings from "./Settings";
 
 function Root({children}){
     const click=() => {
@@ -9,6 +10,8 @@ function Root({children}){
     <>
       <Menu/>
       <HomePage/>
+      <Settings/>
+      <div className="container">{children}</div>
     </>
     );
   
