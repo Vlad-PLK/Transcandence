@@ -1,4 +1,5 @@
 import Menu from "./Menu";
+import HomePage from "./HomePage";
 
 function Root({children}){
     const click=() => {
@@ -7,6 +8,7 @@ function Root({children}){
     return (
     <>
       <Menu/>
+      <HomePage/>
     </>
     );
   
