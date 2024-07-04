@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import styles from './MyComponent.module.css';
 
-const Typewriter = ({text, delay = 100}) => {
+const Typewriter = ({text, delay = 70}) => {
 	const [currentText, setCurrent] = useState('')
 	const [currentIndex, setIndex] = useState(0);
 	useEffect(() => {
@@ -15,6 +16,14 @@ const Typewriter = ({text, delay = 100}) => {
 	  
 		return () => clearInterval(typingInterval); // Cleanup function
 	  }, [text, currentIndex, delay]);
+	return (
+	<>
+		<span>
+			{currentText}
+			<span className={styles.cursor}>|</span>
+		</span>
+	</>
+	);
 };
 
 export default Typewriter;
