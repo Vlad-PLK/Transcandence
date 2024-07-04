@@ -9,8 +9,8 @@ function Root({children}){
     return (
     <>
       <Menu/>
-      <HomePage/>
-      <Settings/>
+      {/* <HomePage/> */}
+      {/* <Settings/> */}
       <div className="container">{children}</div>
     </>
     );
