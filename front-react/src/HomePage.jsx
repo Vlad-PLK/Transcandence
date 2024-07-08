@@ -2,7 +2,7 @@ import Typewriter from "./Typewriter";
 
 function HomePage(){
 	const myStyle = {
-		backgroundImage: `url('../public/yellow-bg.jpg')`,
+		backgroundImage: `url('/yellow-bg.jpg')`,
 		backgroundSize: 'cover', // Adjust background size as needed
 		backgroundPosition: 'center', // Adjust background position as needed
 	};

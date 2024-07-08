@@ -1,6 +1,7 @@
 import { useState } from "react";
 import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
+import { Modal } from "bootstrap";
 
 
 function Menu()
@@ -34,18 +35,15 @@ function Menu()
               <span className="fs-4">Transcendance</span>
             </a>
             <div className="text-end">
-              <button type="button" className="btn btn-outline-light me-2" onClick={changeModalState}>Login</button>
-              <button type="button" className="btn btn-warning" onClick={changeModalStateRegister} >Sign-up</button>
+              <button type="button" className="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+              <button type="button" className="btn btn-warning" data-bs-toggle="modal" data-bs-target="#signupModal" >Sign-up</button>
             </div>
           </div>
         </div>
       </header>
-      {openState && (
-        <LoginModal/>
-      )}
-      {openStateRegister && (
-        <RegisterModal/>
-      )}
+      {/* <!-- Modal --> */}
+      <LoginModal/>
+      <RegisterModal/>
     </>
   );
 }
