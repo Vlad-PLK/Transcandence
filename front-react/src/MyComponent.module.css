@@ -1,9 +1,0 @@
-.cursor {
-	animation: blink 0.5s infinite;
-  }
-  
-  @keyframes blink {
-	from, to { opacity: 0; }
-	50% { opacity: 1; }
-  }
-  

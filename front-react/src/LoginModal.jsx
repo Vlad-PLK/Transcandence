@@ -1,5 +1,16 @@
+import RequestAPI from "./requestAPI";
+
+function login(){
+	const email = document.getElementById(paramEmail-log);
+	const password = document.getElementById(paramPassword-log);
+	RequestAPI('auth/login', {"email":email, "password":password});
+}
+
 function LoginModal()
 {
+	const loginAttempt = () => {
+		login();
+	}
 	return (
 	<>
       	<div className="modal fade" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
@@ -12,14 +23,14 @@ function LoginModal()
         		  <div className="modal-body p-5 pt-0">
         		    <form className="">
         		      <div className="form-floating mb-2">
-        		        <input type="email" className="form-control rounded-3" id="floatingInput" placeholder="name@example.com"/>
-        		        <label htmlFor="floatingInput">Email address</label>
+        		        <input type="email" className="form-control rounded-3" id="paramEmail-log" placeholder="name@example.com"/>
+        		        <label htmlFor="paramEmail-log">Email address</label>
         		      </div>
         		      <div className="form-floating mb-2">
-        		        <input type="password" className="form-control rounded-3" id="floatingPassword" placeholder="Password"/>
-        		        <label htmlFor="floatingPassword">Password</label>
+        		        <input type="password" className="form-control rounded-3" id="paramPassword-log" placeholder="Password"/>
+        		        <label htmlFor="paramPassword-log">Password</label>
         		      </div>
-        		      <button className="w-90 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Login</button>
+        		      <button className="w-90 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" onClick={loginAttempt}>Login</button>
         		      <hr className="my-4"/>
         		      </form>
         		    </div>

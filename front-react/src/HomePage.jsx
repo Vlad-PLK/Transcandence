@@ -1,4 +1,3 @@
-import Typewriter from "./Typewriter";
 
 function HomePage(){
 	const myStyle = {

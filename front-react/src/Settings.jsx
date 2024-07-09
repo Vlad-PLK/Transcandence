@@ -5,7 +5,7 @@ function Settings()
     const {id} = useParams()
 
     return <div>
-        <h1>ID of {id}</h1>
+        <h1>User id : {id}</h1>
     </div>
 };
 
