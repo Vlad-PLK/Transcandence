@@ -20,7 +20,7 @@ volumes:
       type: 'none'
       o: 'bind'
       #device: '/home/vpolojie/volumes/'
-      device: '/Users/macbook/volumes/'
+      device: '/home/l1mpoln/app/volumes/'
       #device: '/vkuzmin/volumes/'
       #device: '/tvincile/volumes/'
       
