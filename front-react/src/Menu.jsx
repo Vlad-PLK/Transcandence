@@ -1,7 +1,7 @@
+import { useState } from "react";
 import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
 import SettingsModal from "./SettingsModal";
-
 
 function Menu()
 {
@@ -12,16 +12,13 @@ function Menu()
       <header className="p-4 text-bg-dark">
         <div className="container">
           <div className="d-flex flex-wrap align-items-center justify-content-lg-start">
-            <div className="dropdown">
-              <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                en
-              </button>
-              <div id="languages" className="dropdown-menu" aria-labelledby="languageMenuButton">
-                <a className="dropdown-item" href="#">en</a>
-                <a className="dropdown-item" href="#">fr</a>
-                <a className="dropdown-item" href="#">ru</a>
-              </div>
-            </div>
+            <ul class="nav col-sm-auto mb-2 justify-content-center mb-md-0">
+              <select class="form-select form-select-sm" aria-label="language">
+                <option selected>en</option>
+                <option value="ru">ru</option>
+                <option value="fr">fr</option>
+              </select>
+            </ul>
             <a href="/" className="d-flex align-items-center ms-3 mb-3 mb-md-0 me-md-auto text-decoration-none text-white">
               <span className="fs-4">Transcendance</span>
             </a>
