@@ -4,7 +4,7 @@ import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import enJSON from './translations/en.json'
-import esJSON from './translations/es.json'
+import ruJSON from './translations/ru.json'
 import frJSON from './translations/fr.json'
 
 
@@ -43,14 +43,9 @@ i18n
         whitelist: languages,
         resources: {
             en: {"translation": enJSON},
-            es: {"translation": esJSON},
+            es: {"translation": ruJSON},
             fr: {"translation": frJSON}
         },
-        // backend: {
-        //     // for all available options read the backend's repository readme file
-        //     loadPath: '/locales/{{lng}}/{{ns}}.json'
-        // },
-
         react: {
             useSuspense: false
         }

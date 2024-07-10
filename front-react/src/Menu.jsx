@@ -2,9 +2,11 @@ import { useState } from "react";
 import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
 import SettingsModal from "./SettingsModal";
+import { useTranslation } from "react-i18next";
 
 function Menu()
 {
+  const { t } = useTranslation();
   // if user already connected == SettingsModal
   // else LoginModal && RegisterModal
 	return (
@@ -20,7 +22,7 @@ function Menu()
               </select>
             </ul>
             <a href="/" className="d-flex align-items-center ms-3 mb-3 mb-md-0 me-md-auto text-decoration-none text-white">
-              <span className="fs-4">Transcendance</span>
+              <span className="fs-4">{t('title')}</span>
             </a>
             <div className="d-flex text-end">
               <button type="button" className="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
