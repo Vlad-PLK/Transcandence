@@ -69,7 +69,7 @@ function RegisterModal() {
                                     <label htmlFor="paramcPassword">Confirm Password</label>
                                 </div>
                                 <button className="w-70 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign-up</button>
-                                {error && <p className="text-danger">{JSON.stringify(error)}</p>}
+                                {error && <p className="text-danger">{error}</p>}
                             </form>
                         </div>
                     </div>

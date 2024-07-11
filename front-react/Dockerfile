@@ -4,8 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install \
-    axios
+RUN npm install
 
 EXPOSE 3000
 
