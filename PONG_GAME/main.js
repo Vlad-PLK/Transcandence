@@ -224,7 +224,7 @@ function updateKey()
             }
             else if (cameraPosition == 2)
             {
-                camera.position.set(0, 20, 1000);
+                camera.position.set(0, 20, 65);
                 camera.lookAt(0, 0, 0);
             }
             else if (cameraPosition == 3)
