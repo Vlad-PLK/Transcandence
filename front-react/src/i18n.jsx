@@ -43,7 +43,7 @@ i18n
         whitelist: languages,
         resources: {
             en: {"translation": enJSON},
-            es: {"translation": ruJSON},
+            ru: {"translation": ruJSON},
             fr: {"translation": frJSON}
         },
         react: {
