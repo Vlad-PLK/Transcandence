@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
 import SettingsModal from "./SettingsModal";
 import { useTranslation } from "react-i18next";
+import { UserDataContext } from "./UserDataContext";
 
 function Menu()
 {
   const { t, i18n: { changeLanguage, language } } = useTranslation();
-
-    const handleLanguageChange = (event) => {
+  const {userData, setUserData} = useContext(UserDataContext);
+   const handleLanguageChange = (event) => {
         const selectedLang = event.target.value;
         changeLanguage(selectedLang);
     };
@@ -28,12 +29,15 @@ function Menu()
               <span className="fs-4">{t('title')}</span>
             </a>
             <div className="d-flex text-end">
-              <button type="button" className="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">{t('login')}</button>
-              <button type="button" className="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#signupModal" >{t('signup')}</button>
-              <div className="">
-                <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#settingsModal" >{t('settings')}</button>
+              { userData === null ?
+                <div>
+                  <button type="button" className="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">{t('login')}</button>
+                  <button type="button" className="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#signupModal" >{t('signup')}</button>
+                </div>
+              :  
+              <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#settingsModal" >{t('settings')}</button>
+              }
               </div>
-            </div>
           </div>
         </div>
       </header>

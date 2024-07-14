@@ -11,7 +11,7 @@ import Root from "./Root";
 import Menu from "./Menu";
 import Settings from "./Settings";
 import Error404 from "./Error404";
-import HomePage from "./HomePage";
+import Home from "./Home";
 
 const router = createBrowserRouter([
     {
@@ -21,7 +21,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "",
-                element: <HomePage/>
+                element: <Home/>
             },
             {
                 path: "user/:id",

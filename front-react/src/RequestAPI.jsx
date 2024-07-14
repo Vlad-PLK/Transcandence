@@ -1,12 +1,19 @@
-import axios from 'axios';
+// REQUEST_BASE_LINK = "http://localhost:3000/api/"
 
-const RequestAPI = async (endpoint, data) => {
-    try {
-        const response = await axios.post(`http://localhost:8000/${endpoint}`, data);
-        return response.data;
-    } catch (error) {
-        throw error.response.data;
-    }
-};
+function RequestAPI(endpoint, postdata)
+{
+	fetch('http://localhost:3000/api/' + endpoint, {
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/json'
+		},
+		body: postdata ? JSON.stringify(postdata) : NULL
+	  })
+	  .then(() => {
+		console.log('new POST send !');
+	  })
+	  .then(response => response.json())
+	  // need to analyse the response consequently //
+}
 
-export default RequestAPI;
+export default RequestAPI
