@@ -4,15 +4,18 @@ import RegisterModal from "./RegisterModal";
 import SettingsModal from "./SettingsModal";
 import { useTranslation } from "react-i18next";
 import { UserDataContext } from "./UserDataContext";
+import { Link, useParams } from 'react-router-dom';
 
 function Menu()
 {
   const { t, i18n: { changeLanguage, language } } = useTranslation();
   const {userData, setUserData} = useContext(UserDataContext);
+  const {id} = useParams();
    const handleLanguageChange = (event) => {
         const selectedLang = event.target.value;
         changeLanguage(selectedLang);
     };
+  // setUserData("vlado");
 	return (
     <>
       <header className="p-4 text-bg-dark">
@@ -35,7 +38,16 @@ function Menu()
                   <button type="button" className="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#signupModal" >{t('signup')}</button>
                 </div>
               :  
-              <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#settingsModal" >{t('settings')}</button>
+                <div class="dropdown">
+                  <a href="" data-bs-toggle="dropdown" data-bs-dismiss="false">
+                    <img src="./guychill.jpg" alt="" width="45" height="45" className="rounded-circle"/>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><Link to="/user/1" className="text-decoration-none ms-3">{userData}</Link></li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal">Settings</a></li>
+                    <li><a class="dropdown-item" href="#">Disconnect</a></li>
+                  </ul>
+                </div>
               }
               </div>
           </div>
@@ -45,6 +57,11 @@ function Menu()
       <LoginModal/>
       <RegisterModal/>
       <SettingsModal/>
+                {/* <div> */}
+                  {/* <button data-bs-toggle="modal" data-bs-target="#settingsModal" > */}
+                    {/* <img src="./guychill.jpg" alt="" width="50" height="50"/> */}
+                  {/* </button> */}
+                {/* </div> */}
     </>
   );
 }
