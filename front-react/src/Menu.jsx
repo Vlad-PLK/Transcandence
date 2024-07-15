@@ -15,7 +15,7 @@ function Menu()
       const selectedLang = event.target.value;
       changeLanguage(selectedLang);
   };
-  setUserData("vlad", 10, 5, 2, 150);
+  // setUserData("vlad", 10, 5, 2, 150);
 	return (
     <>
       <header className="p-4 text-bg-dark">
