@@ -12,6 +12,7 @@ import Menu from "./Menu";
 import Settings from "./Settings";
 import Error404 from "./Error404";
 import Home from "./Home";
+import Scene from "./Scene";
 
 const router = createBrowserRouter([
     {
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "game",
-                element: <div>Game Page</div>
+                element: <Scene/>
             }
         ]
     }

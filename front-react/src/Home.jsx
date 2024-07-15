@@ -25,7 +25,7 @@ function HomePageUnknown(){
 					<div className="card text-center text-bg-dark">
 						<img src="./Pong.png" className="card-img-top"/>
 						<div className="card-body">
-							<p className="card-text">Experience Pong with your friends, localy or online !</p>
+							<p className="card-text">Experience Pong with your friends, <br/>localy or online !</p>
 						</div>
 					</div>
 				</div>

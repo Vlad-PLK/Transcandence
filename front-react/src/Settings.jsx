@@ -1,21 +1,23 @@
 import { useParams } from "react-router";
 import PlayerStats from "./PlayerStats";
-
-const playerData = {
-    name: 'John Doe',
-    wins: 10,
-    losses: 5,
-    draws: 2,
-    goals: 150,
-    matchHistory: [
-      { opponent: 'Jane Doe', result: 'Win', score: '10-4' },
-      { opponent: 'Bob Smith', result: 'Loss', score: '8-9' },
-    ],
-  };
+import { useContext } from "react";
+import { UserDataContext } from "./UserDataContext";
 
 function Settings()
 {
     const {id} = useParams()
+    const {userData, setUserData} = useContext(UserDataContext);
+    const playerData = {
+        name: userData,
+        wins: 10,
+        losses: 5,
+        draws: 2,
+        goals: 150,
+        matchHistory: [
+          { opponent: 'Jane Doe', result: 'Win', score: '10-4' },
+          { opponent: 'Bob Smith', result: 'Loss', score: '8-9' },
+        ],
+      };
 
     return (
         <>
