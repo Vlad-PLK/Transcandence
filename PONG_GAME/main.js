@@ -2,42 +2,23 @@
 import * as THREE from "./node_modules/three/src/Three.js";
 import { Vector, vectorize, normalizeVector, vecAdd, vecSubtract, dot, crossProduct, scalarProduct, reflectVector } from './vector_utils.js';
 import { setObjects, rotateSphere } from './3D_objects.js';
-import { checkSun, setScene } from './scene.js';
+import { setVariables, checkSun, setAll } from './scene.js';
 import { setScore } from './score.js';
 import { setFeatures } from "./features.js";
 
+const { cameraPosition, player1Score, player2Score, boostMultiplier, boost1Flag, boost2Flag, speedBoostSpeed, cameraKeyIsPressed, paddle1Right, paddle1Left, paddle2Right, paddle2Left, velocity } = setVariables();
 
-
-const {scene, camera, renderer, ambientLight, directionalLight, earthMesh, lightsMesh, sunMesh, stars} = setScene();
-
-let cameraPosition = 1;
-const orbitRadius = 50;
-const orbitSpeed = 0.01;
-const fullIntensity = 2; // Maximum intensity of the light
-
-let angleLight = 0; // Initial angle for orbit
-let intensityPhase = 0; // Phase of intensity cycle
+const { scene, camera, renderer, ambientLight, earthMesh, lightsMesh, sunMesh, stars, textureLoader } = setAll();
 
 const { sphere, sphereGeometry, planeGeometry, leftWall, rightWall, bottomWall, topWall, bottomPaddle, bottomPaddleGeometry, topPaddle, topPaddleGeometry } = setObjects(scene);
-let velocity = vectorize(0, 0, 0);
 setTimeout(() => {velocity = vectorize(0, 0, 1);}, 3000);
 
-
-
-// Scoring variables
-let player1Score = 0;
-let player2Score = 0;
 const { player1ScoreElement, player2ScoreElement } = setScore(player1Score, player2Score);
 
-
-let boostMultiplier;
-let boost1Flag = 1; // Initial direction (1 for right, -1 for left)
-let boost2Flag = -1; // Initial direction (1 for right, -1 for left)
-const speedBoostSpeed = 0.1;
 const { speedBoostGeometry, speedBoost1, speedBoost2 } = setFeatures(scene);
 
 
-function isBallOverBoostSurface(surface)
+function isBallOverBoostSurface(surface, sphere)
 {
     // Create a sphere to represent the ball's collision volume
     const ballBoundingSphere = new THREE.Sphere(
@@ -101,8 +82,6 @@ function resetSphere(sphere, sphereGeometry)
     
 }
 
-let k = 10;
-
 function checkCollision()
 {
     const { normal, flag } = calculateCollisionNormal();
@@ -159,12 +138,6 @@ document.addEventListener('keydown', (event) => {
 document.addEventListener('keyup', (event) => {
     keyboardState[event.key] = false;
 });
-
-let cameraKeyIsPressed = false;
-let paddle1Right = false;
-let paddle1Left = false;
-let paddle2Right = false;
-let paddle2Left = false;
 
 // Update function
 function updateKey()
@@ -240,16 +213,6 @@ function updateKey()
     }
     else
     {   
-        // if (cameraKeyIsPressed == true || paddle1Right == true || paddle1Left == true || paddle2Right == true || paddle2Left == true)
-        // {
-        //     console.log("RELEASED");
-        //     console.log("cameraKeyIsPressed", cameraKeyIsPressed);
-        //     console.log("paddle1Right", paddle1Right);
-        //     console.log("paddle1Left", paddle1Left);
-        //     console.log("paddle2Right", paddle2Right);
-        //     console.log("paddle2Left", paddle2Left);
-        // }
-        // Reset flag when 'c' key is released
         cameraKeyIsPressed = false;
         paddle1Right = false;
         paddle1Left = false;
@@ -260,7 +223,7 @@ function updateKey()
 
 function checkBoost()
 {
-    if (isBallOverBoostSurface(speedBoost1) || isBallOverBoostSurface(speedBoost2))
+    if (isBallOverBoostSurface(speedBoost1, sphere) || isBallOverBoostSurface(speedBoost2, sphere))
         boostMultiplier = 2; // Double the ball's speed while over boost surface
     else
         boostMultiplier = 1; // Reset to normal speed if not over boost surface
@@ -297,7 +260,6 @@ function animate()
     lightsMesh.rotation.y += 0.002;
     sunMesh.rotation.y += 0.001;
 
-    // checkSun(camera, sunMesh);
     // Check for collisions and update velocity/direction accordingly
     checkCollision();
 

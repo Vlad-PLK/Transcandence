@@ -1,6 +1,6 @@
 import * as THREE from "./node_modules/three/src/Three.js";
 
-export function setObjects(scene)
+function setPlane(scene)
 {
     // Create a plane on the X and Y axis
     const planeGeometry = new THREE.PlaneGeometry(75, 100); // Width, height
@@ -10,7 +10,11 @@ export function setObjects(scene)
     plane.receiveShadow = true;
     plane.castShadow = true;
     scene.add(plane);
+    return (planeGeometry);
+}
 
+function setWalls(scene, planeGeometry)
+{
     // Add walls around the plane
     const wallMaterial = new THREE.MeshStandardMaterial({ color: 0xaaaaaa }); // Gray color
 
@@ -62,6 +66,11 @@ export function setObjects(scene)
     topWall.castShadow = true;
     scene.add(topWall);
 
+    return { leftWall, rightWall, bottomWall, topWall };
+}
+
+function setPaddles(scene, planeGeometry)
+{
     // Paddle dimensions
     const paddleWidth = 12;
     const paddleHeight = 2;
@@ -85,15 +94,33 @@ export function setObjects(scene)
     topPaddle.castShadow = true;
     scene.add(topPaddle);
 
+    return { bottomPaddle, topPaddle, bottomPaddleGeometry, topPaddleGeometry};
+}
+
+function setSphere(scene)
+{
     // Create a sphere
     const sphereGeometry = new THREE.SphereGeometry(2, 32, 32); // Radius, width segments, height segments
     // const textureLoaderSphere = new THREE.TextureLoader().load('./texture1.jpg');
     const sphereMaterial = new THREE.MeshStandardMaterial({color:0xFFFFFF}); // Dark
     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    sphere.position.y = sphereGeometry.parameters.radius; // Position the sphere above the plane
+    sphere.position.set(0, sphereGeometry.parameters.radius, 0);
     sphere.receiveShadow = true;
     sphere.castShadow = true; 
     scene.add(sphere);
+    
+    return (sphere, sphereGeometry);
+}
+
+export function setObjects(scene)
+{
+    const planeGeometry = setPlane(scene);
+
+    const { leftWall, rightWall, bottomWall, topWall } = setWalls(scene, planeGeometry);
+
+    const { bottomPaddle, topPaddle, bottomPaddleGeometry, topPaddleGeometry } = setPaddles(scene, planeGeometry);
+
+    const { sphere, sphereGeometry } = setSphere(scene);
 
     return {sphere, sphereGeometry, planeGeometry, leftWall, rightWall, bottomWall, topWall, bottomPaddle, bottomPaddleGeometry, topPaddle, topPaddleGeometry};
 }

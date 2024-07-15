@@ -2,6 +2,29 @@ import * as THREE from "./node_modules/three/src/Three.js";
 import { Vector, vectorize, normalizeVector, vecAdd, vecSubtract, dot, crossProduct, scalarProduct, reflectVector } from './vector_utils.js';
 
 
+export function setVariables()
+{
+    let cameraPosition = 1;
+    // Scoring variables
+    let player1Score = 0;
+    let player2Score = 0;
+
+    let boostMultiplier = 0;
+    let boost1Flag = 1; // Initial direction (1 for right, -1 for left)
+    let boost2Flag = -1; // Initial direction (1 for right, -1 for left)
+    const speedBoostSpeed = 0.1;
+
+    let cameraKeyIsPressed = false;
+    let paddle1Right = false;
+    let paddle1Left = false;
+    let paddle2Right = false;
+    let paddle2Left = false;
+
+    let velocity = vectorize(0, 0, 0);
+
+    return { cameraPosition, player1Score, player2Score, boostMultiplier, boost1Flag, boost2Flag, speedBoostSpeed, cameraKeyIsPressed, paddle1Right, paddle1Left, paddle2Right, paddle2Left, velocity };
+}
+
 export function checkSun(camera, sunMesh, stars)
 {
     const cameraDirection = new THREE.Vector3();
@@ -42,7 +65,7 @@ function setStarfield(scene)
     return (stars);
 }
 
-export function setScene()
+function setScene()
 {
     // Create a scene
     const scene = new THREE.Scene();
@@ -50,6 +73,11 @@ export function setScene()
     // const textureLoaderScene = new THREE.TextureLoader().load('./space.jpg');
     scene.background = new THREE.Color(0x000000);
 
+    return {scene, textureLoader};
+}
+
+function setCamera()
+{
     // Create a camera, which determines what we'll see when we render the scene
     const camera = new THREE.PerspectiveCamera(
         90, // Field of view
@@ -64,6 +92,11 @@ export function setScene()
     const cameraDirection = new THREE.Vector3();
     camera.getWorldDirection(cameraDirection);
 
+    return {camera};
+}
+
+function setRenderer()
+{
     // Create a renderer and add it to the DOM
     const renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -71,10 +104,20 @@ export function setScene()
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     document.body.appendChild(renderer.domElement);
 
+    return {renderer};
+}
+
+function setAmbient(scene)
+{
     // Add ambient light (provides a base level of light to the scene)
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.2); // Color, intensity
     scene.add(ambientLight);
 
+    return {ambientLight};
+}
+
+function setSolarySystem(scene, textureLoader)
+{
     const earthGroup = new THREE.Group();
     earthGroup.rotation.z = -23.4 * Math.PI / 180;
     const earthGeometry = new THREE.IcosahedronGeometry(300, 12);
@@ -83,6 +126,7 @@ export function setScene()
     earthMesh.position.set(600, 300, 1400);
     // earthMesh.position.set(0, 0, 0);
     earthGroup.add(earthMesh);
+
 
     const lightMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load("./earthByNight.jpg"), blending: THREE.AdditiveBlending });
     const lightsMesh = new THREE.Mesh(earthGeometry, lightMaterial);
@@ -122,5 +166,16 @@ export function setScene()
     sunGroup.position.set(-600, 500, -2000);
     scene.add(sunGroup);
 
-    return {scene, camera, renderer, ambientLight, earthMesh, lightsMesh, sunMesh, stars};
+    return {earthMesh, lightsMesh, sunMesh, stars};
+}
+
+export function setAll()
+{
+    const { scene, textureLoader } = setScene();
+    const camera = setCamera();
+    const renderer = setRenderer();
+    const ambientLight = setAmbient(scene);
+    const { earthMesh, lightsMesh, sunMesh, stars } = setSolarySystem(scene, textureLoader);
+    
+    return { scene, camera, renderer, ambientLight, earthMesh, lightsMesh, sunMesh, stars, textureLoader};
 }
