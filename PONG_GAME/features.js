@@ -21,3 +21,45 @@ export function setFeatures(scene)
 
     return {speedBoostGeometry, speedBoost1, speedBoost2};
 }
+
+function animateShockwave(shockwave, scene, flag)
+{
+    const initialScale = 1;
+    const targetScale = 1.1; // Example: Scale up to 10 times the initial size
+
+    const animationDuration = 1000; // Animation duration in milliseconds
+    const startTime = Date.now();
+
+    function animateWave()
+    {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / animationDuration, 1);
+
+        // if (!flag)
+            shockwave.scale.set(initialScale + (targetScale - initialScale) * progress, initialScale + (targetScale - initialScale) * progress, 1);
+        // else
+        //     shockwave.scale.set(initialScale + (targetScale - initialScale) * progress, initialScale + (targetScale - initialScale) * progress, -1);
+        if (progress < 1)
+            requestAnimationFrame(animateWave);
+        else
+            scene.remove(shockwave); // Remove shockwave after animation completes   
+    }
+    animateWave();
+}
+
+export function shockWave(scene, contactPoint, flag)
+{
+    const geometry = new THREE.PlaneGeometry(5, 5);
+    const material = new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF,
+        transparent: true,
+        opacity: 0.6,
+        depthTest: false // Ensure it renders over everything
+    });
+
+    const shockwave = new THREE.Mesh(geometry, material);
+    shockwave.position.copy(contactPoint);
+    scene.add(shockwave);
+
+    animateShockwave(shockwave, scene, flag);
+}

@@ -1,29 +1,6 @@
 import * as THREE from "./node_modules/three/src/Three.js";
 import { Vector, vectorize, normalizeVector, vecAdd, vecSubtract, dot, crossProduct, scalarProduct, reflectVector } from './vector_utils.js';
-
-
-export function setVariables()
-{
-    let cameraPosition = 1;
-    // Scoring variables
-    let player1Score = 0;
-    let player2Score = 0;
-
-    let boostMultiplier = 0;
-    let boost1Flag = 1; // Initial direction (1 for right, -1 for left)
-    let boost2Flag = -1; // Initial direction (1 for right, -1 for left)
-    const speedBoostSpeed = 0.1;
-
-    let cameraKeyIsPressed = false;
-    let paddle1Right = false;
-    let paddle1Left = false;
-    let paddle2Right = false;
-    let paddle2Left = false;
-
-    let velocity = vectorize(0, 0, 0);
-
-    return { cameraPosition, player1Score, player2Score, boostMultiplier, boost1Flag, boost2Flag, speedBoostSpeed, cameraKeyIsPressed, paddle1Right, paddle1Left, paddle2Right, paddle2Left, velocity };
-}
+import { getFresnelMat } from "./getFresnelMat.js";
 
 export function checkSun(camera, sunMesh, stars)
 {
@@ -80,19 +57,19 @@ function setCamera()
 {
     // Create a camera, which determines what we'll see when we render the scene
     const camera = new THREE.PerspectiveCamera(
-        90, // Field of view
+        45, // Field of view
         window.innerWidth / window.innerHeight, // Aspect ratio
         0.1, // Near clipping plane
-        10000 // Far clipping plane
+        8000 // Far clipping plane
     );
 
     // Position the camera to look over the Pong game
-    camera.position.set(0, 20, -65);
+    camera.position.set(0, 20, -80);
     camera.lookAt(0, 0, 0); // Look at the center of the scene
     const cameraDirection = new THREE.Vector3();
     camera.getWorldDirection(cameraDirection);
 
-    return {camera};
+    return (camera);
 }
 
 function setRenderer()
@@ -102,36 +79,67 @@ function setRenderer()
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
     document.body.appendChild(renderer.domElement);
 
-    return {renderer};
+    return (renderer);
 }
 
 function setAmbient(scene)
 {
     // Add ambient light (provides a base level of light to the scene)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2); // Color, intensity
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Color, intensity
     scene.add(ambientLight);
 
-    return {ambientLight};
+    return (ambientLight);
 }
 
 function setSolarySystem(scene, textureLoader)
 {
+    const mainGroup = new THREE.Group();
+
     const earthGroup = new THREE.Group();
     earthGroup.rotation.z = -23.4 * Math.PI / 180;
     const earthGeometry = new THREE.IcosahedronGeometry(300, 12);
-    const earthMaterial = new THREE.MeshStandardMaterial({map: textureLoader.load("./earthmap1k.jpg")});
+    const earthMaterial = new THREE.MeshPhongMaterial({
+        map: textureLoader.load("./earthmap1k.jpg"),
+        specularMap: textureLoader.load("./earthspec1k.jpg"),
+        bumpMap: textureLoader.load("./earthbump1k.jpg"),
+        bumpScale: 0.05,
+      });
     const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
-    earthMesh.position.set(600, 300, 1400);
-    // earthMesh.position.set(0, 0, 0);
+    earthMesh.position.set(200, 0, 1400);
     earthGroup.add(earthMesh);
 
-
-    const lightMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load("./earthByNight.jpg"), blending: THREE.AdditiveBlending });
+    const lightMaterial = new THREE.MeshBasicMaterial({
+        map: textureLoader.load("./earthByNight.jpg"),
+        blending: THREE.AdditiveBlending,
+      });
     const lightsMesh = new THREE.Mesh(earthGeometry, lightMaterial);
     earthGroup.add(lightsMesh);
-    scene.add(earthGroup);
+
+    const cloudMaterial = new THREE.MeshStandardMaterial({
+        map: textureLoader.load("./earthcloudmap.jpg"),
+        transparent: true,
+        opacity: 0.8,
+        blending: THREE.AdditiveBlending,
+        alphaMap: textureLoader.load('./earthcloudmaptrans.jpg')
+        // alphaTest: 0.3,
+      });
+    const cloudssMesh = new THREE.Mesh(earthGeometry, cloudMaterial);
+    earthGroup.add(cloudssMesh);
+
+    mainGroup.add(earthGroup);
+
+    // Create the moon mesh and add it to the moon's orbit group
+    const moonGeometry = new THREE.IcosahedronGeometry(82, 12);
+    const moonMaterial = new THREE.MeshStandardMaterial({map: textureLoader.load("./moonmap2k.jpg"), bumpMap: textureLoader.load("./moonbump2k.jpg"),
+    bumpScale: 0.05});
+    const moonMesh = new THREE.Mesh(moonGeometry, moonMaterial);
+    const orbitRadius = 500; // Distance from the Earth mesh
+    moonMesh.position.set(earthMesh.position.x + orbitRadius, earthMesh.position.y, earthMesh.position.z);
+    mainGroup.add(moonMesh);
 
     const stars = setStarfield(scene);
 
@@ -139,15 +147,15 @@ function setSolarySystem(scene, textureLoader)
     const sunGeometry = new THREE.IcosahedronGeometry(600, 12); // Radius, detail
     const sunMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load("sunmap.jpg") }); // Yellow color
     const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
-    sunMesh.position.set(-600, 500, -5000);
+    sunMesh.position.set(-600, 200, -5000);
 
     // Create a point light to simulate the sun's light
-    const sunLight = new THREE.DirectionalLight(0xFFFFFF, 0.6); // Color, intensity
-    sunLight.position.set(-600, 500, -2000); // Position it at the center of the sun
+    const sunLight = new THREE.DirectionalLight(0xFFFFFF, 3); // Color, intensity
     sunLight.castShadow = true;
-    // Increase shadow map size for better quality shadows
-    sunLight.shadow.mapSize.width = 10000; // Default is 512
-    sunLight.shadow.mapSize.height = 10000; // Default is 512
+    sunLight.position.set(-400, 500, -2000);
+
+    sunLight.shadow.mapSize.width = 10000;
+    sunLight.shadow.mapSize.height = 10000;
 
     // Set up shadow properties for the light
     sunLight.shadow.camera.near = 0.5;
@@ -161,12 +169,12 @@ function setSolarySystem(scene, textureLoader)
     const sunGroup = new THREE.Group();
     sunGroup.add(sunMesh);
     sunGroup.add(sunLight);
+    mainGroup.add(sunGroup);
 
     // Position the sunGroup in the scene
-    sunGroup.position.set(-600, 500, -2000);
-    scene.add(sunGroup);
+    scene.add(mainGroup);
 
-    return {earthMesh, lightsMesh, sunMesh, stars};
+    return {earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars};
 }
 
 export function setAll()
@@ -174,8 +182,9 @@ export function setAll()
     const { scene, textureLoader } = setScene();
     const camera = setCamera();
     const renderer = setRenderer();
+    // new OrbitControls(camera, renderer.domElement);
     const ambientLight = setAmbient(scene);
-    const { earthMesh, lightsMesh, sunMesh, stars } = setSolarySystem(scene, textureLoader);
+    const { earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars } = setSolarySystem(scene, textureLoader);
     
-    return { scene, camera, renderer, ambientLight, earthMesh, lightsMesh, sunMesh, stars, textureLoader};
+    return { scene, camera, renderer, ambientLight, earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars };
 }
