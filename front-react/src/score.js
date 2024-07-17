@@ -1,6 +1,6 @@
-import * as THREE from "./node_modules/three/src/Three.js";
+import * as THREE from 'three';
 
-export function setScore(player1Score, player2Score)
+export function setScore(player1Score, player2Score, fps)
 {
     // Create HTML elements to display scores
     const player1ScoreElement = document.createElement('div');
@@ -21,5 +21,14 @@ export function setScore(player1Score, player2Score)
     player2ScoreElement.innerHTML = `Player 2: ${player2Score}`;
     document.body.appendChild(player2ScoreElement);
 
-    return {player1ScoreElement, player2ScoreElement};
+    const fpsElement = document.createElement('div');
+    fpsElement.style.position = 'absolute';
+    fpsElement.style.top = '40px';
+    fpsElement.style.left = '10px';
+    fpsElement.style.fontSize = '24px';
+    fpsElement.style.color = 'white';
+    fpsElement.innerHTML = `FPS: ${fps}`;
+    document.body.appendChild(fpsElement);
+
+    return {player1ScoreElement, player2ScoreElement, fpsElement};
 }

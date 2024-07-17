@@ -36,9 +36,7 @@ const router = createBrowserRouter([
             {
                 path: "game",
                 element: (
-                    <ProtectedRoute>
                         <MyScene/>
-                    </ProtectedRoute>
                 )
             }
         ]

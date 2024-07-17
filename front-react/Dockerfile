@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install && npm install jwt-decode && npm install three
+RUN npm install && npm install react-three-fiber
 
 EXPOSE 3000
 

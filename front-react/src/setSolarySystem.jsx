@@ -1,22 +1,4 @@
 import * as THREE from 'three';
-import { Vector, vectorize, normalizeVector, vecAdd, vecSubtract, dot, crossProduct, scalarProduct, reflectVector } from './vector_utils.js';
-import { getFresnelMat } from "./getFresnelMat.js";
-
-export function checkSun(camera, sunMesh, stars)
-{
-    const cameraDirection = new THREE.Vector3();
-    camera.getWorldDirection(cameraDirection);
-
-    const sunDirection = new THREE.Vector3().subVectors(sunMesh.position, camera.position).normalize();
-
-    const angle = cameraDirection.angleTo(sunDirection);
-
-    // Adjust stars opacity based on the angle
-    const maxAngle = Math.PI / 2;
-    const opacity = THREE.MathUtils.clamp(angle / maxAngle, 0, 1);
-
-    stars.material.opacity = opacity;
-}
 
 function setStarfield(scene)
 {
@@ -40,59 +22,6 @@ function setStarfield(scene)
     const stars = new THREE.Points(starGeometry, starMaterial);
     scene.add(stars);
     return (stars);
-}
-
-function setScene()
-{
-    // Create a scene
-    const scene = new THREE.Scene();
-    const textureLoader = new THREE.TextureLoader();
-    // const textureLoaderScene = new THREE.TextureLoader().load('./space.jpg');
-    scene.background = new THREE.Color(0x000000);
-
-    return {scene, textureLoader};
-}
-
-function setCamera()
-{
-    // Create a camera, which determines what we'll see when we render the scene
-    const camera = new THREE.PerspectiveCamera(
-        45, // Field of view
-        window.innerWidth / window.innerHeight, // Aspect ratio
-        0.1, // Near clipping plane
-        8000 // Far clipping plane
-    );
-
-    // Position the camera to look over the Pong game
-    camera.position.set(0, 20, -80);
-    camera.lookAt(0, 0, 0); // Look at the center of the scene
-    const cameraDirection = new THREE.Vector3();
-    camera.getWorldDirection(cameraDirection);
-
-    return (camera);
-}
-
-function setRenderer()
-{
-    // Create a renderer and add it to the DOM
-    const renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
-    document.body.appendChild(renderer.domElement);
-
-    return (renderer);
-}
-
-function setAmbient(scene)
-{
-    // Add ambient light (provides a base level of light to the scene)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2.5); // Color, intensity
-    scene.add(ambientLight);
-
-    return (ambientLight);
 }
 
 function setSolarySystem(scene, textureLoader)
@@ -144,8 +73,7 @@ function setSolarySystem(scene, textureLoader)
 
     // Create the sun geometry
     const sunGeometry = new THREE.IcosahedronGeometry(600, 12); // Radius, detail
-    const sunMaterial = new THREE.MeshBasicMaterial({ emissive: new THREE.Color(0xFFFF00),
-    emissiveIntensity: 1.5, map: textureLoader.load("sunmap.jpg") });
+    const sunMaterial = new THREE.MeshBasicMaterial({map: textureLoader.load("sunmap.jpg")});
     const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
     sunMesh.position.set(-600, 200, -5000);
 
@@ -177,14 +105,4 @@ function setSolarySystem(scene, textureLoader)
     return {earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars};
 }
 
-export function setAll()
-{
-    const { scene, textureLoader } = setScene();
-    const camera = setCamera();
-    const renderer = setRenderer();
-    // new OrbitControls(camera, renderer.domElement);
-    const ambientLight = setAmbient(scene);
-    const { earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars } = setSolarySystem(scene, textureLoader);
-    
-    return { scene, camera, renderer, ambientLight, earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars, textureLoader };
-}
+export default setSolarySystem

@@ -1,24 +1,42 @@
 // Import Three.js
-import * as THREE from "./node_modules/three/src/Three.js";
+import * as THREE from 'three';
+import Stats from "./node_modules/stats.js/src/Stats.js";
 import { Vector, vectorize, normalizeVector, vecAdd, vecSubtract, dot, crossProduct, scalarProduct, reflectVector } from './vector_utils.js';
 import { setObjects, rotateSphere } from './3D_objects.js';
-import { setVariables, checkSun, setAll } from './scene.js';
+import { checkSun, setAll } from './scene.js';
 import { setScore } from './score.js';
-import { setFeatures } from "./features.js";
+import { setBoosts, shockWave } from "./features.js";
 
-const { cameraPosition, player1Score, player2Score, boostMultiplier, boost1Flag, boost2Flag, speedBoostSpeed, cameraKeyIsPressed, paddle1Right, paddle1Left, paddle2Right, paddle2Left, velocity } = setVariables();
+const { scene, camera, renderer, ambientLight, earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars, textureLoader } = setAll();
 
-const { scene, camera, renderer, ambientLight, earthMesh, lightsMesh, sunMesh, stars, textureLoader } = setAll();
+const { sphere, sphereGeometry, planeGeometry, leftWall, rightWall, bottomWall, topWall, bottomPaddle, bottomPaddleGeometry, topPaddle, topPaddleGeometry } = setObjects(scene, textureLoader);
 
-const { sphere, sphereGeometry, planeGeometry, leftWall, rightWall, bottomWall, topWall, bottomPaddle, bottomPaddleGeometry, topPaddle, topPaddleGeometry } = setObjects(scene);
-setTimeout(() => {velocity = vectorize(0, 0, 1);}, 3000);
+const { speedBoostGeometry, speedBoost1, speedBoost2 } = setBoosts(scene);
 
-const { player1ScoreElement, player2ScoreElement } = setScore(player1Score, player2Score);
+let boostMultiplier = 1;
+let boost1Flag = 1; // Initial direction (1 for right, -1 for left)
+let boost2Flag = -1; // Initial direction (1 for right, -1 for left)
 
-const { speedBoostGeometry, speedBoost1, speedBoost2 } = setFeatures(scene);
+let cameraPosition = 1;
 
 
-function isBallOverBoostSurface(surface, sphere)
+const speedBoostSpeed = 0.1;
+
+let velocity = vectorize(0, 0, 0);
+
+// Scoring variables
+let player1Score = 0;
+let player2Score = 0;
+let fps = 0;
+const { player1ScoreElement, player2ScoreElement, fpsElement } = setScore(player1Score, player2Score, fps);
+
+let cameraKeyIsPressed = false;
+let paddle1Right = false;
+let paddle1Left = false;
+let paddle2Right = false;
+let paddle2Left = false;
+
+function isBallOverBoostSurface(surface)
 {
     // Create a sphere to represent the ball's collision volume
     const ballBoundingSphere = new THREE.Sphere(
@@ -91,22 +109,22 @@ function checkCollision()
         if (paddle1Left && flag == 3)
         {
             velocity.x += 0.2;
-            velocity.z += 0.1;
+            // velocity.z += 0.1;
         }
         else if (paddle1Right && flag == 3)
         {
             velocity.x -= 0.2;
-            velocity.z += 0.1
+            // velocity.z += 0.1
         }
         else if (paddle2Left && flag == 4)
         {
             velocity.x += 0.2;
-            velocity.z += 0.1
+            // velocity.z += 0.1
         }
         else if (paddle2Right && flag == 4)
         {
             velocity.x -= 0.2;
-            velocity.z += 0.1
+            // velocity.z += 0.1
         }
         velocity = reflectVector(velocity, normal);
     }
@@ -114,12 +132,16 @@ function checkCollision()
     // Check if the sphere goes out of the vertical bounds for scoring
     if (sphere.position.z + sphereGeometry.parameters.radius >= planeGeometry.parameters.height / 2)
     {
+        let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
+        shockWave(scene, contactPoint);
         player1Score += 1;
         player1ScoreElement.innerHTML = `Player 1: ${player1Score}`;
         resetSphere(sphere, sphereGeometry);
     }
     else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2)
     {
+        let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
+        shockWave(scene, contactPoint);
         player2Score += 1;
         player2ScoreElement.innerHTML = `Player 2: ${player2Score}`;
         resetSphere(sphere, sphereGeometry);
@@ -183,26 +205,30 @@ function updateKey()
         // Check if 'c' key is pressed and wasn't already handled
         if (!cameraKeyIsPressed)
         {
-            if (cameraPosition > 3)
+            if (cameraPosition > 4)
                 cameraPosition = 0;
             // Toggle camera position based on cameraPosition flag
             if (cameraPosition == 0)
             {
-                camera.position.set(0, 20, -65);
+                camera.position.set(0, 20, -80);
                 camera.lookAt(0, 0, 0);
             }
             else if (cameraPosition == 1)
             {
-                camera.position.set(0, 45, -80);
+                camera.position.set(0, 40, -130);
             }
             else if (cameraPosition == 2)
             {
-                camera.position.set(0, 20, 65);
+                camera.position.set(0, 20, 80);
                 camera.lookAt(0, 0, 0);
             }
             else if (cameraPosition == 3)
             {
-                camera.position.set(0, 60, 0); // Place the camera above the scene
+                camera.position.set(0, 40, 130);
+            }
+            else if (cameraPosition == 4)
+            {
+                camera.position.set(0, 120, 0); // Place the camera above the scene
                 camera.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
             }
             checkSun(camera, sunMesh, stars);
@@ -223,7 +249,7 @@ function updateKey()
 
 function checkBoost()
 {
-    if (isBallOverBoostSurface(speedBoost1, sphere) || isBallOverBoostSurface(speedBoost2, sphere))
+    if (isBallOverBoostSurface(speedBoost1) || isBallOverBoostSurface(speedBoost2))
         boostMultiplier = 2; // Double the ball's speed while over boost surface
     else
         boostMultiplier = 1; // Reset to normal speed if not over boost surface
@@ -232,47 +258,83 @@ function checkBoost()
     speedBoost2.position.x += boost2Flag * speedBoostSpeed;
 
     // Check if boost surfaces reached the edge of the plane and reverse direction if needed
-    if (speedBoost1.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) {
-        boost1Flag = -1; // Reverse direction for speedBoost1
-    } else if (speedBoost1.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2) {
-        boost1Flag = 1; // Reverse direction for speedBoost1
-    }
+    if ((speedBoost1.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost1.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
+        boost1Flag *= -1; // Reverse direction for speedBoost1
 
-    if (speedBoost2.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) {
-        boost2Flag = -1; // Reverse direction for speedBoost2
-    } else if (speedBoost2.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2) {
-        boost2Flag = 1; // Reverse direction for speedBoost2
-    }
+    if ((speedBoost2.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost2.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
+        boost2Flag *= -1; // Reverse direction for speedBoost2
+}
+
+resetSphere(sphere, sphereGeometry);
+
+// Define the orbit parameters
+const semiMajorAxis = 500; // Semi-major axis in km
+const eccentricity = 0.0549; // Orbital eccentricity
+const semiMinorAxis = semiMajorAxis * Math.sqrt(1 - eccentricity * eccentricity);
+
+const a = semiMajorAxis;
+const inclination = 5.145 * Math.PI / 180;
+const b = semiMinorAxis
+
+let earthRotationSpeed = 0.1;
+let moonOrbitSpeed = earthRotationSpeed / 27
+let angle = 0;
+
+let frameCounter = 0;
+let lastTime = performance.now();
+
+function checkFPS(frameCount)
+{
+    const currentTime = performance.now();
+    const deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
+    const fps = frameCount / deltaTime;
+    fpsElement.innerHTML = `FPS: ${fps}`;
+    frameCounter = 0; // Reset frame counter
+    lastTime = currentTime; // Update the lastTime
 }
 
 function animate()
 {
     requestAnimationFrame(animate);
 
-    //checkBoost();
+    updateKey();
+
+    checkBoost();
 
     // Update the sphere's position
-    //sphere.position.x += velocity.x * boostMultiplier;
-    //sphere.position.z += velocity.z * boostMultiplier;
+    sphere.position.x += velocity.x * boostMultiplier;
+    sphere.position.z += velocity.z * boostMultiplier;
     // rotateSphere(sphere, sphereGeometry, velocity);
 
-    earthMesh.rotation.y += 0.002;
-    lightsMesh.rotation.y += 0.002;
+    earthMesh.rotation.y += earthRotationSpeed;
+    lightsMesh.rotation.y += earthRotationSpeed;
     sunMesh.rotation.y += 0.001;
 
-    // Check for collisions and update velocity/direction accordingly
-    //checkCollision();
+    angle += moonOrbitSpeed;
+    moonMesh.position.x = earthMesh.position.x + a * Math.cos(angle);
+    moonMesh.position.y = earthMesh.position.y + (a * Math.sin(angle)) * Math.sin(inclination);
+    moonMesh.position.z = earthMesh.position.z + b * Math.sin(angle);
+    moonMesh.rotation.y = -angle;
 
-    //updateKey();
+    // Check for collisions and update velocity/direction accordingly
+    checkCollision();
 
     // Render the scene from the perspective of the camera
     renderer.render(scene, camera);
+    frameCounter++;
 }
+
+// Start the FPS check interval
+setInterval(() =>
+{
+    checkFPS(frameCounter);
+}, 1000);
 
 animate();
 
 // Handle window resizing
-window.addEventListener('resize', () => {
+window.addEventListener('resize', () =>
+{
     // Update camera aspect ratio
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
