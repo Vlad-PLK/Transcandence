@@ -8,7 +8,7 @@ function Settings()
     const {id} = useParams()
     const {userData, setUserData} = useContext(UserDataContext);
     const playerData = {
-        name: userData,
+        name: userData.username,
         wins: 10,
         losses: 5,
         draws: 2,

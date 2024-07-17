@@ -43,7 +43,7 @@ function Menu()
                     <img src="./guychill.jpg" alt="" width="45" height="45" className="rounded-circle"/>
                   </a>
                   <ul class="dropdown-menu">
-                    <li><Link to="/user/1" className="dropdown-item ms-1">{userData}</Link></li>
+                    <li><Link to="/user/1" className="dropdown-item ms-1">{userData.username}</Link></li>
                     <li><button className="dropdown-item ms-1" style={{background: 'none'}}  data-bs-toggle="modal" data-bs-target="#settingsModal">Settings</button></li>
                     <li><button className="dropdown-item ms-1" style={{background: 'none'}}>Disconnect</button></li>
                   </ul>

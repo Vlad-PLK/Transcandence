@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import api from "./api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
 import { Navigate } from 'react-router-dom';
+import { UserDataContext } from './UserDataContext';
 
 function RegisterModal() {
     const [username, setUsername] = useState('');
@@ -9,6 +10,7 @@ function RegisterModal() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const {setUserData} = useContext(UserDataContext);
 
     const signupbutton = async (e) => {
         e.preventDefault();
@@ -20,27 +22,24 @@ function RegisterModal() {
         }
 
         try {
-            const response = await api.post('/users/user/register/', {
-                username: username,
-                email: email,
-                password: password
-            });
-			setUserData(response.data.data);
+            const response = await api.post('users/user/register/', { username, email, password });
             console.log(response.data);
+			setUserData(response.data);
             // Очистить форму после успешной регистрации
             setUsername('');
             setEmail('');
             setPassword('');
             setConfirmPassword('');
             setError('');
-            alert('Registration successful'); // Всплывающее уведомление или другой способ уведомления пользователя
-        } catch (err) {
-            if (err.response && err.response.status === 400) {
-                setError(err.response.data); // Ошибка валидации с сервера
-            } else {
-                setError('Registration failed'); // Общая ошибка
-            }
-            console.error(err);
+            // alert('Registration successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+        } catch (error) {
+            alert(error)
+            // if (err.response && err.response.status === 400) {
+            //     setError(err.response.data); // Ошибка валидации с сервера
+            // } else {
+            //     setError('Registration failed'); // Общая ошибка
+            // }
+            // console.error(err);
         }
     }
 

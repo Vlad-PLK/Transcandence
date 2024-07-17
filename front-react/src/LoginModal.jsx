@@ -2,38 +2,32 @@ import React, { useContext, useState } from 'react';
 import api from "./api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
 import { UserDataContext } from './UserDataContext';
+import { useNavigate } from 'react-router-dom';
 
 function LoginModal()
 {
-    const [email, setEmail] = useState('');
+	const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
-	const {userData, setUserData} = useContext(UserDataContext);
+	const {userData} = useContext(UserDataContext);
+	const navigate = useNavigate();
 
     const loginbutton = async (e) => {
         e.preventDefault();
 
         try {
-            const response = await api.post('/users/user/login/', {
-                email: email,
-                password: password
-            });
+            const response = await api.post('users/token/', { username, password });
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-            Navigate("/user/1");
-			setUserData(response.data.data);
             console.log(response.data);
+			navigate("/user/" + userData.username);
             // Очистить форму после успешной регистрации
-            setEmail('');
+            setUsername('');
             setPassword('');
             setError('');
-            alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
-		} catch (err) {
-            if (err.response && err.response.status === 400) {
-                setError(err.response.data); // Ошибка валидации с сервера
-            } else {
-                setError('Login failed'); // Общая ошибка
-            }
+            // alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+		} catch (error) {
+            alert(error);
             console.error(err);
         }
     }
@@ -49,8 +43,8 @@ function LoginModal()
         		  <div className="modal-body p-5 pt-0">
         		    <form onSubmit={loginbutton}>
         		      <div className="form-floating mb-2">
-        		        <input type="email" className="form-control rounded-3" id="paramEmail-log" placeholder="name@example.com" value={email} onChange={(e) => setEmail(e.target.value)}/>
-        		        <label htmlFor="paramEmail-log">Email address</label>
+        		        <input type="nickname" className="form-control rounded-3" id="paramUsername-log" placeholder="name" value={username} onChange={(e) => setUsername(e.target.value)}/>
+        		        <label htmlFor="paramUsername-log">Username</label>
         		      </div>
         		      <div className="form-floating mb-2">
         		        <input type="password" className="form-control rounded-3" id="paramPassword-log" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
