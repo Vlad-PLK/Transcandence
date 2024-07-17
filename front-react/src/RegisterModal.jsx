@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // импортируем axios
+import api from "./api";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
+import { Navigate } from 'react-router-dom';
 
 function RegisterModal() {
     const [username, setUsername] = useState('');
@@ -18,11 +20,12 @@ function RegisterModal() {
         }
 
         try {
-            const response = await axios.post('http://localhost:8000/api/register/', {
+            const response = await api.post('/users/user/register/', {
                 username: username,
                 email: email,
                 password: password
             });
+			setUserData(response.data.data);
             console.log(response.data);
             // Очистить форму после успешной регистрации
             setUsername('');

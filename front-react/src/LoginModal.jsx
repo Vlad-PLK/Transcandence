@@ -1,28 +1,34 @@
-import React, { useState } from 'react';
-import axios from 'axios'; // импортируем axios
+import React, { useContext, useState } from 'react';
 import api from "./api";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
+import { UserDataContext } from './UserDataContext';
 
 function LoginModal()
 {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
+	const {userData, setUserData} = useContext(UserDataContext);
 
     const loginbutton = async (e) => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:8000/api/login/', {
+            const response = await api.post('/users/user/login/', {
                 email: email,
                 password: password
             });
+			localStorage.setItem(ACCESS_TOKEN, response.data.access);
+			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
+            Navigate("/user/1");
+			setUserData(response.data.data);
             console.log(response.data);
             // Очистить форму после успешной регистрации
             setEmail('');
             setPassword('');
             setError('');
             alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
-        } catch (err) {
+		} catch (err) {
             if (err.response && err.response.status === 400) {
                 setError(err.response.data); // Ошибка валидации с сервера
             } else {

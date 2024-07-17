@@ -13,6 +13,7 @@ import Settings from "./Settings";
 import Error404 from "./Error404";
 import Home from "./Home";
 import MyScene from "./MyScene";
+import ProtectedRoute from "./ProtectedRoute";
 
 const router = createBrowserRouter([
     {
@@ -26,11 +27,19 @@ const router = createBrowserRouter([
             },
             {
                 path: "user/:id",
-                element: <Settings/>
+                element: (
+                    <ProtectedRoute>
+                        <Settings/>
+                    </ProtectedRoute>
+                )
             },
             {
                 path: "game",
-                element: <MyScene/>
+                element: (
+                    <ProtectedRoute>
+                        <MyScene/>
+                    </ProtectedRoute>
+                )
             }
         ]
     }

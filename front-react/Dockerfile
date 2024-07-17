@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install && npm install jwt-decode
+RUN npm install && npm install jwt-decode && npm install three
 
 EXPOSE 3000
 
