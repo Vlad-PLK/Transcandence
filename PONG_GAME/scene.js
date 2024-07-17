@@ -12,7 +12,7 @@ export function checkSun(camera, sunMesh, stars)
     const angle = cameraDirection.angleTo(sunDirection);
 
     // Adjust stars opacity based on the angle
-    const maxAngle = Math.PI / 3;
+    const maxAngle = Math.PI / 2;
     const opacity = THREE.MathUtils.clamp(angle / maxAngle, 0, 1);
 
     stars.material.opacity = opacity;
@@ -22,7 +22,7 @@ function setStarfield(scene)
 {
     // Create a star field
     const starGeometry = new THREE.BufferGeometry();
-    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1, transparent: true });
+    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 });
 
     // Generate random star positions
     const starCount = 10000;
@@ -89,7 +89,7 @@ function setRenderer()
 function setAmbient(scene)
 {
     // Add ambient light (provides a base level of light to the scene)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Color, intensity
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2.5); // Color, intensity
     scene.add(ambientLight);
 
     return (ambientLight);
@@ -125,7 +125,6 @@ function setSolarySystem(scene, textureLoader)
         opacity: 0.8,
         blending: THREE.AdditiveBlending,
         alphaMap: textureLoader.load('./earthcloudmaptrans.jpg')
-        // alphaTest: 0.3,
       });
     const cloudssMesh = new THREE.Mesh(earthGeometry, cloudMaterial);
     earthGroup.add(cloudssMesh);
@@ -145,7 +144,8 @@ function setSolarySystem(scene, textureLoader)
 
     // Create the sun geometry
     const sunGeometry = new THREE.IcosahedronGeometry(600, 12); // Radius, detail
-    const sunMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load("sunmap.jpg") }); // Yellow color
+    const sunMaterial = new THREE.MeshBasicMaterial({ emissive: new THREE.Color(0xFFFF00),
+    emissiveIntensity: 1.5, map: textureLoader.load("sunmap.jpg") });
     const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
     sunMesh.position.set(-600, 200, -5000);
 
@@ -154,16 +154,16 @@ function setSolarySystem(scene, textureLoader)
     sunLight.castShadow = true;
     sunLight.position.set(-400, 500, -2000);
 
-    sunLight.shadow.mapSize.width = 10000;
-    sunLight.shadow.mapSize.height = 10000;
+    // sunLight.shadow.mapSize.width = 10000;
+    // sunLight.shadow.mapSize.height = 10000;
 
-    // Set up shadow properties for the light
-    sunLight.shadow.camera.near = 0.5;
-    sunLight.shadow.camera.far = 10000;
-    sunLight.shadow.camera.left = -100;
-    sunLight.shadow.camera.right = 100;
-    sunLight.shadow.camera.top = 100;
-    sunLight.shadow.camera.bottom = -100;
+    // // Set up shadow properties for the light
+    // sunLight.shadow.camera.near = 0.5;
+    // sunLight.shadow.camera.far = 10000;
+    // sunLight.shadow.camera.left = -100;
+    // sunLight.shadow.camera.right = 100;
+    // sunLight.shadow.camera.top = 100;
+    // sunLight.shadow.camera.bottom = -100;
 
     // Optional: create an object to hold the sun and light together
     const sunGroup = new THREE.Group();
@@ -186,5 +186,5 @@ export function setAll()
     const ambientLight = setAmbient(scene);
     const { earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars } = setSolarySystem(scene, textureLoader);
     
-    return { scene, camera, renderer, ambientLight, earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars };
+    return { scene, camera, renderer, ambientLight, earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars, textureLoader };
 }

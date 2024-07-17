@@ -1,16 +1,17 @@
 // Import Three.js
 import * as THREE from "./node_modules/three/src/Three.js";
+import Stats from "./node_modules/stats.js/src/Stats.js";
 import { Vector, vectorize, normalizeVector, vecAdd, vecSubtract, dot, crossProduct, scalarProduct, reflectVector } from './vector_utils.js';
 import { setObjects, rotateSphere } from './3D_objects.js';
 import { checkSun, setAll } from './scene.js';
 import { setScore } from './score.js';
-import { setFeatures, shockWave } from "./features.js";
+import { setBoosts, shockWave } from "./features.js";
 
-const { scene, camera, renderer, ambientLight, earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars } = setAll();
+const { scene, camera, renderer, ambientLight, earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars, textureLoader } = setAll();
 
-const { sphere, sphereGeometry, planeGeometry, leftWall, rightWall, bottomWall, topWall, bottomPaddle, bottomPaddleGeometry, topPaddle, topPaddleGeometry } = setObjects(scene);
+const { sphere, sphereGeometry, planeGeometry, leftWall, rightWall, bottomWall, topWall, bottomPaddle, bottomPaddleGeometry, topPaddle, topPaddleGeometry } = setObjects(scene, textureLoader);
 
-const { speedBoostGeometry, speedBoost1, speedBoost2 } = setFeatures(scene);
+const { speedBoostGeometry, speedBoost1, speedBoost2 } = setBoosts(scene);
 
 let boostMultiplier = 1;
 let boost1Flag = 1; // Initial direction (1 for right, -1 for left)
@@ -26,7 +27,8 @@ let velocity = vectorize(0, 0, 0);
 // Scoring variables
 let player1Score = 0;
 let player2Score = 0;
-const { player1ScoreElement, player2ScoreElement } = setScore(player1Score, player2Score);
+let fps = 0;
+const { player1ScoreElement, player2ScoreElement, fpsElement } = setScore(player1Score, player2Score, fps);
 
 let cameraKeyIsPressed = false;
 let paddle1Right = false;
@@ -130,16 +132,16 @@ function checkCollision()
     // Check if the sphere goes out of the vertical bounds for scoring
     if (sphere.position.z + sphereGeometry.parameters.radius >= planeGeometry.parameters.height / 2)
     {
-        let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y, topWall.position.z);
-        shockWave(scene, contactPoint, 1);
+        let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
+        shockWave(scene, contactPoint);
         player1Score += 1;
         player1ScoreElement.innerHTML = `Player 1: ${player1Score}`;
         resetSphere(sphere, sphereGeometry);
     }
     else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2)
     {
-        let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y, bottomWall.position.z);
-        shockWave(scene, contactPoint,);
+        let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
+        shockWave(scene, contactPoint);
         player2Score += 1;
         player2ScoreElement.innerHTML = `Player 2: ${player2Score}`;
         resetSphere(sphere, sphereGeometry);
@@ -263,10 +265,10 @@ function checkBoost()
         boost2Flag *= -1; // Reverse direction for speedBoost2
 }
 
-setTimeout(() => {resetSphere(sphere, sphereGeometry);}, 3000);
+resetSphere(sphere, sphereGeometry);
 
 // Define the orbit parameters
-const semiMajorAxis = 700; // Semi-major axis in km
+const semiMajorAxis = 500; // Semi-major axis in km
 const eccentricity = 0.0549; // Orbital eccentricity
 const semiMinorAxis = semiMajorAxis * Math.sqrt(1 - eccentricity * eccentricity);
 
@@ -274,12 +276,28 @@ const a = semiMajorAxis;
 const inclination = 5.145 * Math.PI / 180;
 const b = semiMinorAxis
 
+let earthRotationSpeed = 0.1;
+let moonOrbitSpeed = earthRotationSpeed / 27
 let angle = 0;
-const rotationSpeed = 0.004;
+
+let frameCounter = 0;
+let lastTime = performance.now();
+
+function checkFPS(frameCount)
+{
+    const currentTime = performance.now();
+    const deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
+    const fps = frameCount / deltaTime;
+    fpsElement.innerHTML = `FPS: ${fps}`;
+    frameCounter = 0; // Reset frame counter
+    lastTime = currentTime; // Update the lastTime
+}
 
 function animate()
 {
     requestAnimationFrame(animate);
+
+    updateKey();
 
     checkBoost();
 
@@ -288,11 +306,11 @@ function animate()
     sphere.position.z += velocity.z * boostMultiplier;
     // rotateSphere(sphere, sphereGeometry, velocity);
 
-    earthMesh.rotation.y += 0.002;
-    lightsMesh.rotation.y += 0.002;
+    earthMesh.rotation.y += earthRotationSpeed;
+    lightsMesh.rotation.y += earthRotationSpeed;
     sunMesh.rotation.y += 0.001;
 
-    angle += rotationSpeed;
+    angle += moonOrbitSpeed;
     moonMesh.position.x = earthMesh.position.x + a * Math.cos(angle);
     moonMesh.position.y = earthMesh.position.y + (a * Math.sin(angle)) * Math.sin(inclination);
     moonMesh.position.z = earthMesh.position.z + b * Math.sin(angle);
@@ -301,16 +319,22 @@ function animate()
     // Check for collisions and update velocity/direction accordingly
     checkCollision();
 
-    updateKey();
-
     // Render the scene from the perspective of the camera
     renderer.render(scene, camera);
+    frameCounter++;
 }
+
+// Start the FPS check interval
+setInterval(() =>
+{
+    checkFPS(frameCounter);
+}, 1000);
 
 animate();
 
 // Handle window resizing
-window.addEventListener('resize', () => {
+window.addEventListener('resize', () =>
+{
     // Update camera aspect ratio
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();

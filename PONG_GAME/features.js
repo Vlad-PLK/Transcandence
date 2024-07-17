@@ -1,6 +1,6 @@
 import * as THREE from "./node_modules/three/src/Three.js";
 
-export function setFeatures(scene)
+export function setBoosts(scene)
 {
     // Speed boost surfaces
     const speedBoostMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff, transparent:true, opacity:0.6}); // Blue color for speed boost surfaces
@@ -22,10 +22,10 @@ export function setFeatures(scene)
     return {speedBoostGeometry, speedBoost1, speedBoost2};
 }
 
-function animateShockwave(shockwave, scene, flag)
+function animateShockwave(shockwave, scene)
 {
     const initialScale = 1;
-    const targetScale = 1.1; // Example: Scale up to 10 times the initial size
+    const targetScale = 1.2; // Example: Scale up to 10 times the initial size
 
     const animationDuration = 1000; // Animation duration in milliseconds
     const startTime = Date.now();
@@ -47,19 +47,23 @@ function animateShockwave(shockwave, scene, flag)
     animateWave();
 }
 
-export function shockWave(scene, contactPoint, flag)
+export function shockWave(scene, contactPoint)
 {
-    const geometry = new THREE.PlaneGeometry(5, 5);
+    const textureLoad = new THREE.TextureLoader();
+    const texture = textureLoad.load("./scoring.jpeg");
+    const geometry = new THREE.PlaneGeometry(10, 4);
     const material = new THREE.MeshBasicMaterial({
-        color: 0xFFFFFF,
-        transparent: true,
-        opacity: 0.6,
-        depthTest: false // Ensure it renders over everything
+        map: texture,
+        // transparent: true,
+        // opacity: 0.6,
+        side: THREE.DoubleSide,
+        depthTest: true // Ensure it renders over everything
+
     });
 
     const shockwave = new THREE.Mesh(geometry, material);
     shockwave.position.copy(contactPoint);
     scene.add(shockwave);
 
-    animateShockwave(shockwave, scene, flag);
+    animateShockwave(shockwave, scene);
 }
