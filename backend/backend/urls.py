@@ -10,4 +10,5 @@ urlpatterns = [
     path("users/token/", TokenObtainPairView.as_view(), name="get_token"),
     path("users/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
     path("users-auth/", include("rest_framework.urls")),
+    path("", include("gameinfo.urls"))
 ]

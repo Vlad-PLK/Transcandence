@@ -6,8 +6,8 @@ all: ${NAME}
 ${NAME}:
 	@printf "Creating directories for Frontend Volume ! !\n"
 #mkdir -p /Users/macbook/volumes/
-	mkdir -p /home/vpolojie/volumes
-	chmod -f 777 /home/vpolojie/volumes
+	mkdir -p /home/l1mpoln/app/volumes
+	chmod -f 777 /home/l1mpoln/app/volumes
 # chmod -f 777 /Users/macbook/volumes/
 # chmod -f 777 /home/l1mpoln/app/volumes/
 # chmod -f 777 /vkuzmin-path/volumes

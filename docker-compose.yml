@@ -19,7 +19,7 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/home/vpolojie/volumes/'
+      device: '/home/l1mpoln/app/volumes'
       #device: '/home/l1mpoln/app/volumes'
       #device: '/vkuzmin/volumes/'
       #device: '/tvincile/volumes/'

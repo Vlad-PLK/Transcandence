@@ -12,10 +12,10 @@ const PlayerStats = ({name, wins, losses, draws, goals, matchHistory }) => {
         <h2>{name}'s Stats</h2>
       </div>
       <ul className="list-group list-group-flush">
-        <li className="list-group-item">Wins: {wins}</li>
-        <li className="list-group-item">Losses: {losses}</li>
-        <li className="list-group-item">Draws: {draws}</li>
-        <li className="list-group-item">Goals: {goals}</li>
+        <li className="list-group-item">Wins: </li>
+        <li className="list-group-item">Losses: </li>
+        <li className="list-group-item">Draws: </li>
+        <li className="list-group-item">Goals: </li>
       </ul>
       <div className="card-header d-flex justify-content-between bg-primary text-white">
         <h3>Match History</h3>
@@ -28,7 +28,7 @@ const PlayerStats = ({name, wins, losses, draws, goals, matchHistory }) => {
 			<ul className="match-history list-group">
 			  {matchHistory.map((match, index) => (
 				<li key={index} className="list-group-item">
-				  Opponent : {match.opponent} - Result : {match.result} - Final Score : {match.score}
+				  Opponent :  - Result :  - Final Score : 
 				</li>
 			  ))}
 			</ul>
