@@ -5,9 +5,17 @@ import SettingsModal from "./SettingsModal";
 import { useTranslation } from "react-i18next";
 import { UserDataContext } from "./UserDataContext";
 import { Link, useParams } from 'react-router-dom';
+import './customFonts.css';
 
 function Menu()
 {
+  // refaire design principal //
+  // diviser menu //
+  // fix login, signup pour tout afficher correctement //
+  // refaire stats //
+  // finir le modal settings //
+  // traduction complete //
+
   const { t, i18n: { changeLanguage, language } } = useTranslation();
   const {userData, setUserData} = useContext(UserDataContext);
   const {id} = useParams();
@@ -15,10 +23,24 @@ function Menu()
       const selectedLang = event.target.value;
       changeLanguage(selectedLang);
   };
-  // setUserData("vlad", 10, 5, 2, 150);
+  const myStyle = {
+		backgroundImage: `url('/cyberpunk1.jpg')`,
+		backgroundSize: 'cover', // Adjust background size as needed
+		backgroundPosition: 'center', // Adjust background position as needed
+	};
+  const textStyle = {
+    backgroundClip: 'text',
+    WebkitBackgroundClip: 'text', // WebKit browsers support
+    backgroundColor: 'transparent',
+    color: 'transparent',
+    backgroundImage: 'linear-gradient(to bottom, #ff00a0,  #ff911a)',
+    fontFamily: 'cyberFont',
+    fontSize: '100px',
+  };
 	return (
     <>
-      <header className="p-4 text-bg-dark">
+		<div className="d-flex flex-column vh-100" style={myStyle}>
+      <header className="p-4 opacity-75">
         <div className="container">
           <div className="d-flex flex-wrap align-items-center justify-content-lg-start">
             <ul className="nav col-sm-auto mb-2 justify-content-center mb-md-0">
@@ -31,11 +53,11 @@ function Menu()
             <a href="/" className="d-flex align-items-center ms-3 mb-3 mb-md-0 me-md-auto text-decoration-none text-white">
               <span className="fs-4">{t('title')}</span>
             </a>
-            <div className="d-flex text-end">
+            <div className="text-end">
               { userData === null ?
                 <div>
-                  <button type="button" className="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">{t('login')}</button>
-                  <button type="button" className="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#signupModal">{t('signup')}</button>
+                  <button type="button" className="btn btn-outline-light rounded-3 me-2" data-bs-toggle="modal" data-bs-target="#loginModal">{t('login')}</button>
+                  <button type="button" className="btn btn-warning rounded-3 me-2" data-bs-toggle="modal" data-bs-target="#signupModal">{t('signup')}</button>
                 </div>
               :  
                 <div class="dropdown">
@@ -53,6 +75,12 @@ function Menu()
           </div>
         </div>
       </header>
+      <div className="d-flex justify-content-center">
+        <p style={textStyle}>
+          Transcendance
+        </p>
+      </div>
+    </div>
       {/* <!-- Modal --> */}
       <LoginModal/>
       <RegisterModal/>

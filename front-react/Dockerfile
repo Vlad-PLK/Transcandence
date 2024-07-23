@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install && npm install react-three-fiber
+RUN npm install
 
 EXPOSE 3000
 

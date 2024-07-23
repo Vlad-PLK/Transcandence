@@ -7,7 +7,6 @@ function Root({children}){
   return (
   <>
     <UserDataContext.Provider value={{userData, setUserData}}>
-      <Menu/>
       <div>{children}</div>
     </UserDataContext.Provider>
   </>

@@ -5,11 +5,10 @@ all: ${NAME}
 #uncomment your own path and comment others in Makefile and docker-compose.yml
 ${NAME}:
 	@printf "Creating directories for Frontend Volume ! !\n"
-#mkdir -p /Users/macbook/volumes/
-	mkdir -p /home/l1mpoln/app/volumes
-	chmod -f 777 /home/l1mpoln/app/volumes
-# chmod -f 777 /Users/macbook/volumes/
-# chmod -f 777 /home/l1mpoln/app/volumes/
+	mkdir -p /Users/macbook/volumes/
+#mkdir -p /home/l1mpoln/app/volumes
+#chmod -f 777 /home/l1mpoln/app/volumes
+	chmod -f 777 /Users/macbook/volumes/
 # chmod -f 777 /vkuzmin-path/volumes
 # chmod -f 777 /tvincile-path/volumes
 	@printf "\n"

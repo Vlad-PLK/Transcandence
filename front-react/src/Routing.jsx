@@ -14,6 +14,7 @@ import Error404 from "./Error404";
 import Home from "./Home";
 import MyScene from "./MyScene";
 import ProtectedRoute from "./ProtectedRoute";
+import HomePageKnown from "./HomeKnown";
 
 const router = createBrowserRouter([
     {
@@ -23,7 +24,15 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "",
-                element: <Home/>
+                element: <Menu/>
+            },
+            {
+                path: "userhome",
+                element: (
+                    <ProtectedRoute>
+                        <HomePageKnown/>
+                    </ProtectedRoute>
+                )
             },
             {
                 path: "user/:id",

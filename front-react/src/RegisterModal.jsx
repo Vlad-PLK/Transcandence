@@ -3,6 +3,7 @@ import api from "./api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
 import { Navigate } from 'react-router-dom';
 import { UserDataContext } from './UserDataContext';
+import LoginModal from './LoginModal';
 
 function RegisterModal() {
     const [username, setUsername] = useState('');
@@ -70,13 +71,14 @@ function RegisterModal() {
                                     <input type="password" className="form-control rounded-3" id="paramcPassword" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                                     <label htmlFor="paramcPassword">Confirm Password</label>
                                 </div>
-                                <button className="w-70 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign-up</button>
+                                <button className="w-70 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#loginModal">Sign-up</button>
                                 {error && <p className="text-danger">{error}</p>}
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
+            <LoginModal/>
         </>
     );
 }

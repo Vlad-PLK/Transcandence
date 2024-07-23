@@ -6,7 +6,6 @@ import setBoosts from './setBoosts';
 import setSolarySystem from './setSolarySystem';
 import checkSun from './checkSun';
 import isBallOverBoostSurface from './isBall';
-import { useLoader } from '@react-three/fiber';
 import checkCollision from './checkCollision';
 
 class Vector
