@@ -12,3 +12,14 @@ class UserSerializer(serializers.ModelSerializer):
         print(validated_data)
         user = User.objects.create_user(**validated_data)
         return user
+    
+
+class UsernameUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username']
+
+    def validate_username(sekf, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("This username is already taken")
+        return value
