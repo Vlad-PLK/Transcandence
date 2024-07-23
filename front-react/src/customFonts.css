@@ -4,3 +4,18 @@
 	font-style: normal;
 	font-weight: normal;
 }
+
+@font-face {
+	font-family: 'cyber4';
+	src: url('/ponderosa/ponde___.ttf') format('truetype');
+	font-style: normal;
+	font-weight: normal;
+}
+
+@font-face {
+	font-family: 'cyber5';
+	src: url('/kongtext/kongtext.ttf') format('truetype');
+	font-style: normal;
+	font-weight: normal;
+}
+

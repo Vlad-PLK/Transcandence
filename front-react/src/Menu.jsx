@@ -34,13 +34,20 @@ function Menu()
     backgroundColor: 'transparent',
     color: 'transparent',
     backgroundImage: 'linear-gradient(to bottom, #ff00a0,  #ff911a)',
-    fontFamily: 'cyberFont',
-    fontSize: '100px',
+    fontFamily: 'cyber5',
+    fontSize: '500%',
+  };
+  const gradientBlue = {
+    backgroundClip: 'text',
+    WebkitBackgroundClip: 'text', // WebKit browsers support
+    backgroundColor: 'transparent',
+    color: 'white',
+    backgroundImage: 'linear-gradient(to left, #21006f,  #450eff)',
   };
 	return (
     <>
 		<div className="d-flex flex-column vh-100" style={myStyle}>
-      <header className="p-4 opacity-75">
+      <header className="p-4 opacity-75" style={{fontFamily: 'cyber4'}}>
         <div className="container">
           <div className="d-flex flex-wrap align-items-center justify-content-lg-start">
             <ul className="nav col-sm-auto mb-2 justify-content-center mb-md-0">
@@ -51,13 +58,12 @@ function Menu()
               </select>
             </ul>
             <a href="/" className="d-flex align-items-center ms-3 mb-3 mb-md-0 me-md-auto text-decoration-none text-white">
-              <span className="fs-4">{t('title')}</span>
+              <span className="fs-4">{t('main.title')}</span>
             </a>
             <div className="text-end">
               { userData === null ?
                 <div>
                   <button type="button" className="btn btn-outline-light rounded-3 me-2" data-bs-toggle="modal" data-bs-target="#loginModal">{t('login')}</button>
-                  <button type="button" className="btn btn-warning rounded-3 me-2" data-bs-toggle="modal" data-bs-target="#signupModal">{t('signup')}</button>
                 </div>
               :  
                 <div class="dropdown">
@@ -77,8 +83,11 @@ function Menu()
       </header>
       <div className="d-flex justify-content-center">
         <p style={textStyle}>
-          Transcendance
+          {t('title')}
         </p>
+      </div>
+      <div className="opacity-75" style={{position: 'absolute', top: '50%', left: '51%', transform: 'translate(-50%, -50%)', fontFamily: 'cyber4'}}>
+        <button type="button" className="btn btn-dark rounded-3 me-2" data-bs-toggle="modal" data-bs-target="#signupModal">{t('signup')}</button>
       </div>
     </div>
       {/* <!-- Modal --> */}
