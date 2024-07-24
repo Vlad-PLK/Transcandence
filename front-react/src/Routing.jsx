@@ -27,7 +27,7 @@ const router = createBrowserRouter([
                 element: <Menu/>
             },
             {
-                path: "userhome",
+                path: "userhome/:id",
                 element: (
                     <ProtectedRoute>
                         <HomePageKnown/>
