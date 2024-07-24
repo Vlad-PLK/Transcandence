@@ -33,6 +33,21 @@ function SettingsModal()
 			</div>
 		</>
 	);
+	{/* <div> */}
+      {/* <button data-bs-toggle="modal" data-bs-target="#settingsModal" > */}
+        {/* <img src="./guychill.jpg" alt="" width="50" height="50"/> */}
+      {/* </button> */}
+    {/* </div> */}
+    {/* <div class="dropdown"> */}
+      {/* <a href="" data-bs-toggle="dropdown" data-bs-dismiss="false"> */}
+        {/* <img src="./guychill.jpg" alt="" width="45" height="45" className="rounded-circle"/> */}
+      {/* </a> */}
+      {/* <ul class="dropdown-WelcomePage"> */}
+        {/* <li><Link to={"/user/" + userData.id} className="dropdown-item ms-1">{userData.username}</Link></li> */}
+        {/* <li><button className="dropdown-item ms-1" style={{background: 'none'}}  data-bs-toggle="modal" data-bs-target="#settingsModal">Settings</button></li> */}
+        {/* <li><button className="dropdown-item ms-1" style={{background: 'none'}}>Disconnect</button></li> */}
+      {/* </ul> */}
+    {/* </div> */}
 }
 
 export default SettingsModal

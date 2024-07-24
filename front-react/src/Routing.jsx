@@ -8,13 +8,12 @@ import {
   Outlet
 } from "react-router-dom";
 import Root from "./Root";
-import Menu from "./Menu";
-import Settings from "./Settings";
+import WelcomePage from "./WelcomePage";
+import UserSettings from "./UserSettings";
 import Error404 from "./Error404";
-import Home from "./Home";
-import MyScene from "./MyScene";
+import UserGame from "./game_jsx/UserGame";
 import ProtectedRoute from "./ProtectedRoute";
-import HomePageKnown from "./HomeKnown";
+import UserHomePage from "./UserHomePage";
 
 const router = createBrowserRouter([
     {
@@ -24,28 +23,28 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "",
-                element: <Menu/>
+                element: <WelcomePage/>
             },
             {
-                path: "userhome/:id",
+                path: "userPage/",
                 element: (
                     <ProtectedRoute>
-                        <HomePageKnown/>
+                        <UserHomePage/>
                     </ProtectedRoute>
                 )
             },
             {
-                path: "user/:id",
+                path: "userSettings/",
                 element: (
                     <ProtectedRoute>
-                        <Settings/>
+                        <UserSettings/>
                     </ProtectedRoute>
                 )
             },
             {
-                path: "game",
+                path: "userGame/",
                 element: (
-                        <MyScene/>
+                        <UserGame/>
                 )
             }
         ]

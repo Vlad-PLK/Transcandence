@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Menu from "./Menu";
+import WelcomePage from "./WelcomePage";
 import { UserDataContext } from "./UserDataContext";
 
 function Root({children}){

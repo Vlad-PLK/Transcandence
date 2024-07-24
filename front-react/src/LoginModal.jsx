@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import api from "./api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
 import { UserDataContext } from './UserDataContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function LoginModal()
 {
@@ -20,7 +20,7 @@ function LoginModal()
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
             console.log(response.data);
-			navigate("userhome");
+			navigate("userPage/");
             // Очистить форму после успешной регистрации
             setUsername('');
             setPassword('');
@@ -28,7 +28,7 @@ function LoginModal()
             // alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
 		} catch (error) {
             alert(error);
-            console.error(err);
+            console.error(error);
         }
     }
 	return (

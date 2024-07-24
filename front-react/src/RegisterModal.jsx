@@ -40,7 +40,7 @@ function RegisterModal() {
             // } else {
             //     setError('Registration failed'); // Общая ошибка
             // }
-            // console.error(err);
+            console.error(err);
         }
     }
 
