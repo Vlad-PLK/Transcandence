@@ -6,7 +6,7 @@ function takeData(setIsUserReady, setUserData)
 	try {
 		const response = api.post('users/@me');
 		console.log(response.data);
-		setUserData(reponse.data);
+		setUserData(response.data);
 		setIsUserReady(true);
 		setError('');
 	} catch (error) {
