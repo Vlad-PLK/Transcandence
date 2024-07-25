@@ -11,7 +11,7 @@ function RegisterModal() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
-    const {setUserData} = useContext(UserDataContext);
+    const {UserData, setUserData} = useContext(UserDataContext);
 
     const signupbutton = async (e) => {
         e.preventDefault();
@@ -23,6 +23,7 @@ function RegisterModal() {
         }
 
         try {
+            localStorage.clear();
             const response = await api.post('users/user/register/', { username, email, password });
             console.log(response.data);
 			setUserData(response.data);
@@ -40,7 +41,7 @@ function RegisterModal() {
             // } else {
             //     setError('Registration failed'); // Общая ошибка
             // }
-            console.error(err);
+            //console.error(error);
         }
     }
 

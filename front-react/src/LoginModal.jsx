@@ -21,7 +21,7 @@ function LoginModal()
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
             console.log(response.data);
 			console.log(userData.username);
-			//navigate("userPage/");
+			navigate("userPage/");
             // Очистить форму после успешной регистрации
             setUsername('');
             setPassword('');
