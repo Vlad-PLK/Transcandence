@@ -9,7 +9,7 @@ function LoginModal()
 	const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
-	const {userData, setUserData} = useContext(UserDataContext);
+	const {userData} = useContext(UserDataContext);
 	const navigate = useNavigate();
 
     const loginbutton = async (e) => {
@@ -20,7 +20,8 @@ function LoginModal()
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
             console.log(response.data);
-			navigate("userPage/");
+			console.log(userData.username);
+			//navigate("userPage/");
             // Очистить форму после успешной регистрации
             setUsername('');
             setPassword('');
