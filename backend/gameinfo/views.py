@@ -4,17 +4,17 @@ from rest_framework import status
 from .models import PlayerStats
 from .serializers import PlayerStatsSerializer
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
 class PlayerStatsView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
-        player_id = kwargs.get('player_id')
+    def get(self, request):
+        user = request.user
         try:
-            player_stats = PlayerStats.objects.get(player_id=player_id)
+            player_stats = PlayerStats.objects.get(player=user)
             serializer = PlayerStatsSerializer(player_stats)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except PlayerStats.DoesNotExist:
-            return Response({'error': 'Player not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(serializer.data)
+        except:
+            return Response({"error": "Player stats not found"}, status=404)
