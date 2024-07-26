@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { UserDataContext } from "./UserDataContext";
 import takeData from "./takeData";
+import { ACCESS_TOKEN } from "./constants";
+import { jwtDecode } from "jwt-decode";
+
 
 function Root({children}){
   const [userData, setUserData] = useState(null);
@@ -9,17 +12,16 @@ function Root({children}){
   useEffect(() => {
     if (isUserReady == false){
       const token = localStorage.getItem(ACCESS_TOKEN);
-      if (token != null)
-        takeData(setUserData, setIsUserReady);
-      else
-        setIsUserReady(true)
+      if (!token)
+          setIsUserReady(true);
+      takeData(setUserData, setIsUserReady);
     }
   }, [isUserReady])
 
   return (
   <>
     <UserDataContext.Provider value={{userData, setUserData}}>
-      {isUserReady && <div>{children}</div>}
+      <div>{children}</div>
     </UserDataContext.Provider>
   </>
   );

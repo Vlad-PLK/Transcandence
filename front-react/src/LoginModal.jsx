@@ -29,7 +29,6 @@ function LoginModal()
             // alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
 		} catch (error) {
             alert(error);
-            console.error(error);
         }
     }
 	return (
