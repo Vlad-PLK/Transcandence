@@ -1,17 +1,16 @@
-import { useState } from "react";
+import api from "./api";
 
 function takeData(setIsUserReady, setUserData)
 {
-	const [error, setError] = useState('');
-	try {
-		const response = api.post('users/@me');
+	const response = api.get('api/player-stats');
+	if (response.data != null)
+	{
 		console.log(response.data);
 		setUserData(response.data);
 		setIsUserReady(true);
-		setError('');
-	} catch (error) {
-		alert(error);
-		console.error(error);
+	}
+	else{
+		console.log("empty");
 	}
 }
 
