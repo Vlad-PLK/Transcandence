@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import PlayerStats
-from django.contrib.auth.models import User
+from users.models import CustomUser
 
 class PlayerStatsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,5 +10,5 @@ class PlayerStatsSerializer(serializers.ModelSerializer):
 
 class PlayerInfoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['id', 'username', 'email']
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'avatar']

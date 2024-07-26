@@ -1,8 +1,6 @@
 from django.urls import path
-from .views import register, login, UsernameUpdateView
+from .views import AvatarUploadView
 
 urlpatterns = [
-    path('api/register/', register, name='register'),
-    path('api/login/', login, name='login'),
-    path('api/change-username/', UsernameUpdateView.as_view() ,name='change-username')
+    path('users/avatar_upload/', AvatarUploadView.as_view(), name='avatar-upload'),
 ]
