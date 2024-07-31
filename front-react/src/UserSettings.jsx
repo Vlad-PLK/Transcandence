@@ -5,7 +5,6 @@ import { UserDataContext } from "./UserDataContext";
 
 function UserSettings()
 {
-    const {id} = useParams()
     const {userData, setUserData} = useContext(UserDataContext);
     const playerData = {
         name: userData.username,
@@ -23,7 +22,7 @@ function UserSettings()
         <>
             <div className="row justify-content-center mt-5">
                 <div className="col-sm-6 text-center">
-                    <h1>Player ID {id}</h1>
+                    <h1>Player ID</h1>
                     <PlayerStats {...playerData} />
                 </div>
             </div>

@@ -1,17 +1,18 @@
+import { useContext, useEffect, useState } from "react";
 import api from "./api";
 
-function takeData(setIsUserReady, setUserData)
+function takeData(setUserData, setIsUserReady)
 {
-	const response = api.get('api/player-stats');
-	if (response.data != null)
-	{
-		console.log(response.data);
-		setUserData(response.data);
-		setIsUserReady(true);
-	}
-	else{
-		console.log("empty");
-	}
+	api.get('api/player-info/')
+	.then(response => {
+		console.log(response.data)
+		if (setIsUserReady != null)
+			setIsUserReady(true);
+		setUserData(response.data)
+	  })
+	.catch(error => {
+		console.error('Error:', error);   
+	  });
 }
 
 export default takeData

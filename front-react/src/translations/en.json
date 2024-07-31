@@ -3,5 +3,6 @@
     "main.title": "42",
     "login": "Login",
     "signup": "Take me there!",
-    "settings": "Settings"
+    "settings": "Settings",
+    "play_game": "Start a new game now !"
 }

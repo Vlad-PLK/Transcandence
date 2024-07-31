@@ -3,13 +3,14 @@ import api from "./api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
 import { UserDataContext } from './UserDataContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import takeData from './takeData';
 
 function LoginModal()
 {
 	const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
-	const {userData} = useContext(UserDataContext);
+	const {setUserData} = useContext(UserDataContext);
 	const navigate = useNavigate();
 
     const loginbutton = async (e) => {
@@ -19,8 +20,8 @@ function LoginModal()
             const response = await api.post('users/token/', { username, password });
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-            console.log(response.data);
-			console.log(userData.username);
+			console.log(response.data);
+			takeData(setUserData);
 			navigate("userPage/");
             // Очистить форму после успешной регистрации
             setUsername('');
@@ -50,7 +51,7 @@ function LoginModal()
         		        <input type="password" className="form-control rounded-3" id="paramPassword-log" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
         		        <label htmlFor="paramPassword-log">Password</label>
         		      </div>
-        		      <button className="w-90 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Login</button>
+        		      <button className="w-90 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" data-bs-dismiss="modal">Login</button>
         		      {error && <p className="text-danger">{error}</p>}
 					  <hr className="my-4"/>
         		      </form>

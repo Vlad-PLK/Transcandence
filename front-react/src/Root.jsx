@@ -4,7 +4,6 @@ import takeData from "./takeData";
 import { ACCESS_TOKEN } from "./constants";
 import { jwtDecode } from "jwt-decode";
 
-
 function Root({children}){
   const [userData, setUserData] = useState(null);
   const [isUserReady, setIsUserReady] = useState(false);
