@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
+import setRenderer from './setRenderer';
 import setWalls from './setWalls';
 import setPaddles from './setPaddles';
 import setBoosts from './setBoosts';
@@ -7,6 +8,8 @@ import setSolarySystem from './setSolarySystem';
 import checkSun from './checkSun';
 import isBallOverBoostSurface from './isBall';
 import checkCollision from './checkCollision';
+import setCamera from './setCamera';
+import setPlane from './setPlane';
 
 class Vector
 {
@@ -104,19 +107,6 @@ document.addEventListener('keydown', (event) => {
 document.addEventListener('keyup', (event) => {
     keyboardState[event.key] = false;
 });
-
-function setPlane(scene, TextureLoader)
-{
-    // Create a plane on the X and Y axis
-    const planeGeometry = new THREE.PlaneGeometry(75, 100); // Width, height
-    const planeMaterial = new THREE.MeshStandardMaterial({map: TextureLoader.load("./planetexture.png"), side: THREE.DoubleSide}); // Green color, double-sided
-    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.rotation.x = -Math.PI / 2; // Rotate the plane to lie flat on the X and Y axis
-    plane.receiveShadow = true;
-    plane.castShadow = true;
-    scene.add(plane);
-    return (planeGeometry);
-}
 
 function setSphere(scene)
 {
@@ -234,33 +224,19 @@ function animateShockwave(shockwave, scene)
 function UserGame(){
 	const canvasRef = useRef(null);
 
-  useEffect(() => {
+    useEffect(() => {
 
-    // Three.js code goes here
-
-    // scene, lights, textures //
+    // scene, lights, textures  //
     // scene //
     const scene = new THREE.Scene();
     const textureLoader = new THREE.TextureLoader();
-    //scene.background = new THREE.Color(0x000000);
-    ///////////
-    //const texturePath = './planetexture.png';
-
     // renderer //
     const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current});
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
-    document.body.appendChild(renderer.domElement);
-    ///////////
-
+    setRenderer(renderer);
+    canvasRef && canvasRef.current.body.appendChild(renderer.domElement);
     // ambient light //
     const ambientLight = new THREE.AmbientLight(0xffffff, 2); // Color, intensity
     scene.add(ambientLight);
-    ///////////
-
     // camera setup //
     const camera = new THREE.PerspectiveCamera(
       45, // Field of view
@@ -268,12 +244,8 @@ function UserGame(){
       0.1, // Near clipping plane
       10000 // Far clipping plane
     );
-    // Position the camera to look over the Pong game
-    camera.position.set(0, 20, -80);
-    camera.lookAt(0, 0, 0); // Look at the center of the scene
     const cameraDirection = new THREE.Vector3();
-    camera.getWorldDirection(cameraDirection);
-    ///////////
+    setCamera(camera, cameraDirection);
     // scene, lights, textures //
 
     // ... Add geometry, materials, lights, etc.
@@ -289,118 +261,118 @@ function UserGame(){
     const animate = () => {
       requestAnimationFrame(animate);
 
-      if (keyboardState['d'])
-      {
-          // Move left paddle right
-          if (bottomPaddle.position.x > -planeGeometry.parameters.width / 2 + bottomPaddleGeometry.parameters.width / 2)
-          {
-              bottomPaddle.position.x -= 1;
-              paddle1Right = true;
-          }
-      }
-      else if (keyboardState['q'])
-      {
-          // Move left paddle right
-          if (bottomPaddle.position.x < planeGeometry.parameters.width / 2 - bottomPaddleGeometry.parameters.width / 2)
-          {
-              bottomPaddle.position.x += 1;
-              paddle1Left = true
-          }
-      }
-      else if (keyboardState['m'])
-      {
-          // Move right paddle left
-          if (topPaddle.position.x > -planeGeometry.parameters.width / 2 + topPaddleGeometry.parameters.width / 2)
-          {
-              topPaddle.position.x -= 1;
-              paddle2Right = true;
-          }
-      }
-      else if (keyboardState['k'])
-      {
-          // Move right paddle right
-          if (topPaddle.position.x < planeGeometry.parameters.width / 2 - topPaddleGeometry.parameters.width / 2)
-          {
-              topPaddle.position.x += 1;
-              paddle2Left = true
-          }    
-      }
-      else if (keyboardState['c'])
-      {
-          // Check if 'c' key is pressed and wasn't already handled
-          if (!cameraKeyIsPressed)
-          {
-              if (cameraPosition > 4)
-                  cameraPosition = 0;
-              // Toggle camera position based on cameraPosition flag
-              if (cameraPosition == 0)
-              {
-                  camera.position.set(0, 20, -80);
-                  camera.lookAt(0, 0, 0);
-              }
-              else if (cameraPosition == 1)
-              {
-                  camera.position.set(0, 40, -130);
-              }
-              else if (cameraPosition == 2)
-              {
-                  camera.position.set(0, 20, 80);
-                  camera.lookAt(0, 0, 0);
-              }
-              else if (cameraPosition == 3)
-              {
-                  camera.position.set(0, 40, 130);
-              }
-              else if (cameraPosition == 4)
-              {
-                  camera.position.set(0, 120, 0); // Place the camera above the scene
-                  camera.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
-              }
-              checkSun(camera, sunMesh, stars);
-              ++cameraPosition;   
-              // Set flag to true to prevent multiple toggles in rapid succession
-              cameraKeyIsPressed = true;
-          }
-      }
-      else
-      {   
-          cameraKeyIsPressed = false;
-          paddle1Right = false;
-          paddle1Left = false;
-          paddle2Right = false;
-          paddle2Left = false;
-      }
+    //   if (keyboardState['d'])
+    //   {
+        //   // Move left paddle right
+        //   if (bottomPaddle.position.x > -planeGeometry.parameters.width / 2 + bottomPaddleGeometry.parameters.width / 2)
+        //   {
+            //   bottomPaddle.position.x -= 1;
+            //   paddle1Right = true;
+        //   }
+    //   }
+    //   else if (keyboardState['q'])
+    //   {
+        //   // Move left paddle right
+        //   if (bottomPaddle.position.x < planeGeometry.parameters.width / 2 - bottomPaddleGeometry.parameters.width / 2)
+        //   {
+            //   bottomPaddle.position.x += 1;
+            //   paddle1Left = true
+        //   }
+    //   }
+    //   else if (keyboardState['m'])
+    //   {
+        //   // Move right paddle left
+        //   if (topPaddle.position.x > -planeGeometry.parameters.width / 2 + topPaddleGeometry.parameters.width / 2)
+        //   {
+            //   topPaddle.position.x -= 1;
+            //   paddle2Right = true;
+        //   }
+    //   }
+    //   else if (keyboardState['k'])
+    //   {
+        //   // Move right paddle right
+        //   if (topPaddle.position.x < planeGeometry.parameters.width / 2 - topPaddleGeometry.parameters.width / 2)
+        //   {
+            //   topPaddle.position.x += 1;
+            //   paddle2Left = true
+        //   }    
+    //   }
+    //   else if (keyboardState['c'])
+    //   {
+        //   // Check if 'c' key is pressed and wasn't already handled
+        //   if (!cameraKeyIsPressed)
+        //   {
+            //   if (cameraPosition > 4)
+                //   cameraPosition = 0;
+            //   // Toggle camera position based on cameraPosition flag
+            //   if (cameraPosition == 0)
+            //   {
+                //   camera.position.set(0, 20, -80);
+                //   camera.lookAt(0, 0, 0);
+            //   }
+            //   else if (cameraPosition == 1)
+            //   {
+                //   camera.position.set(0, 40, -130);
+            //   }
+            //   else if (cameraPosition == 2)
+            //   {
+                //   camera.position.set(0, 20, 80);
+                //   camera.lookAt(0, 0, 0);
+            //   }
+            //   else if (cameraPosition == 3)
+            //   {
+                //   camera.position.set(0, 40, 130);
+            //   }
+            //   else if (cameraPosition == 4)
+            //   {
+                //   camera.position.set(0, 120, 0); // Place the camera above the scene
+                //   camera.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
+            //   }
+            //   checkSun(camera, sunMesh, stars);
+            //   ++cameraPosition;   
+            //   // Set flag to true to prevent multiple toggles in rapid succession
+            //   cameraKeyIsPressed = true;
+        //   }
+    //   }
+    //   else
+    //   {   
+        //   cameraKeyIsPressed = false;
+        //   paddle1Right = false;
+        //   paddle1Left = false;
+        //   paddle2Right = false;
+        //   paddle2Left = false;
+    //   }
 
-      if (isBallOverBoostSurface(speedBoost1, sphere, sphereGeometry) || isBallOverBoostSurface(speedBoost2, sphere, sphereGeometry))
-          boostMultiplier = 2; // Double the ball's speed while over boost surface
-      else
-          boostMultiplier = 1; // Reset to normal speed if not over boost surface
+    //   if (isBallOverBoostSurface(speedBoost1, sphere, sphereGeometry) || isBallOverBoostSurface(speedBoost2, sphere, sphereGeometry))
+        //   boostMultiplier = 2; // Double the ball's speed while over boost surface
+    //   else
+        //   boostMultiplier = 1; // Reset to normal speed if not over boost surface
 
-      speedBoost1.position.x += boost1Flag * speedBoostSpeed;
-      speedBoost2.position.x += boost2Flag * speedBoostSpeed;
+    //   speedBoost1.position.x += boost1Flag * speedBoostSpeed;
+    //   speedBoost2.position.x += boost2Flag * speedBoostSpeed;
 
-      // Check if boost surfaces reached the edge of the plane and reverse direction if needed
-      if ((speedBoost1.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost1.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
-          boost1Flag *= -1; // Reverse direction for speedBoost1
+    //   // Check if boost surfaces reached the edge of the plane and reverse direction if needed
+    //   if ((speedBoost1.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost1.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
+        //   boost1Flag *= -1; // Reverse direction for speedBoost1
 
-      if ((speedBoost2.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost2.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
-          boost2Flag *= -1; // Reverse direction for speedBoost2
+    //   if ((speedBoost2.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost2.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
+        //   boost2Flag *= -1; // Reverse direction for speedBoost2
 
-      sphere.position.x += velocity.x * boostMultiplier;
-      sphere.position.z += velocity.z * boostMultiplier;
-      // rotateSphere(sphere, sphereGeometry, velocity);
+    //   sphere.position.x += velocity.x * boostMultiplier;
+    //   sphere.position.z += velocity.z * boostMultiplier;
+    //   // rotateSphere(sphere, sphereGeometry, velocity);
 
-      earthMesh.rotation.y += earthRotationSpeed;
-      lightsMesh.rotation.y += earthRotationSpeed;
-      sunMesh.rotation.y += 0.001;
+    //   earthMesh.rotation.y += earthRotationSpeed;
+    //   lightsMesh.rotation.y += earthRotationSpeed;
+    //   sunMesh.rotation.y += 0.001;
 
-      angle += moonOrbitSpeed;
-      moonMesh.position.x = earthMesh.position.x + a * Math.cos(angle);
-      moonMesh.position.y = earthMesh.position.y + (a * Math.sin(angle)) * Math.sin(inclination);
-      moonMesh.position.z = earthMesh.position.z + b * Math.sin(angle);
-      moonMesh.rotation.y = -angle;
+    //   angle += moonOrbitSpeed;
+    //   moonMesh.position.x = earthMesh.position.x + a * Math.cos(angle);
+    //   moonMesh.position.y = earthMesh.position.y + (a * Math.sin(angle)) * Math.sin(inclination);
+    //   moonMesh.position.z = earthMesh.position.z + b * Math.sin(angle);
+    //   moonMesh.rotation.y = -angle;
 
-      checkCollision(sphere, sphereGeometry, topPaddle, bottomPaddle, planeGeometry, paddle1Left, paddle1Right, paddle2Left, paddle2Right, velocity, bottomWall, topWall, scene);
+      //checkCollision(sphere, sphereGeometry, topPaddle, bottomPaddle, planeGeometry, paddle1Left, paddle1Right, paddle2Left, paddle2Right, velocity, bottomWall, topWall, scene);
 
       renderer.render(scene, camera);
       // Update scene logic here
@@ -411,7 +383,7 @@ function UserGame(){
     return () => {
       // Cleanup Three.js objects and event listeners
     };
-  }, []); // Empty dependency array to run effect only once
+    }, []); // Empty dependency array to run effect only once
 
   return <canvas ref={canvasRef} />;
 };
