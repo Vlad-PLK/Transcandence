@@ -233,7 +233,7 @@ function UserGame(){
     // renderer //
     const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current});
     setRenderer(renderer);
-    canvasRef && canvasRef.current.body.appendChild(renderer.domElement);
+    document.body.appendChild(renderer.domElement);
     // ambient light //
     const ambientLight = new THREE.AmbientLight(0xffffff, 2); // Color, intensity
     scene.add(ambientLight);
