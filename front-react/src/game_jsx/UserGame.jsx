@@ -7,68 +7,10 @@ import setBoosts from './setBoosts';
 import setSolarySystem from './setSolarySystem';
 import checkSun from './checkSun';
 import isBallOverBoostSurface from './isBall';
-import checkCollision from './checkCollision';
 import setCamera from './setCamera';
 import setPlane from './setPlane';
-
-class Vector
-{
-    constructor(x, y, z)
-    {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-}
-
-// Function to create a vector
-function vectorize(x, y, z)
-{
-    return new Vector(x, y, z);
-}
-
-// Function to normalize a vector
-function normalizeVector(v)
-{
-    let denominator = Math.sqrt(dot(v, v));
-    return vectorize(v.x / denominator, v.y / denominator, v.z / denominator);
-}
-
-// Function to add two vectors
-function vecAdd(v1, v2)
-{
-    return vectorize(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
-}
-
-// Function to subtract one vector from another
-function vecSubtract(v1, v2)
-{
-    return vectorize(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
-}
-
-// Function to calculate the dot product of two vectors
-function dot(v1, v2)
-{
-    return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
-}
-
-function reflectVector(v, n)
-{
-    const dotProduct = dot(v, n);
-    return vectorize(v.x - 2 * dotProduct * n.x, v.y - 2 * dotProduct * n.y, v.z - 2 * dotProduct * n.z);
-}
-
-// Function to calculate the cross product of two vectors
-function crossProduct(v1, v2)
-{
-    return vectorize((v1.y * v2.z) - (v1.z * v2.y), (v1.z * v2.x) - (v1.x * v2.z), (v1.x * v2.y) - (v1.y * v2.x));
-}
-
-// Function to calculate the scalar product of a vector and a scalar
-function scalarProduct(v, a)
-{
-    return vectorize(v.x * a, v.y * a, v.z * a);
-}
+import updateKey from './updateKey';
+import * as vec from './vectors_functions'
 
 let cameraKeyIsPressed = false;
 let paddle1Right = false;
@@ -76,9 +18,11 @@ let paddle1Left = false;
 let paddle2Right = false;
 let paddle2Left = false;
 let cameraPosition = 1;
+
 let boostMultiplier = 1;
 let boost1Flag = 1; // Initial direction (1 for right, -1 for left)
 let boost2Flag = -1; // Initial direction (1 for right, -1 for left)
+
 // Define the orbit parameters
 const semiMajorAxis = 500; // Semi-major axis in km
 const eccentricity = 0.0549; // Orbital eccentricity
@@ -96,7 +40,7 @@ let frameCounter = 0;
 let lastTime = performance.now();
 
 const speedBoostSpeed = 0.1;
-let velocity = vectorize(0, 0, 0);
+let velocity = vec.vectorize(0, 0, 0);
 // Keyboard controls
 const keyboardState = {};
 
@@ -126,7 +70,6 @@ function setSphere(scene)
 
 function calculateCollisionNormal(sphere, sphereGeometry, topPaddle, bottomPaddle, planeGeometry)
 {
-    console.log("calcul");
     const radius = sphereGeometry.parameters.radius;
 
     // Check collision with left vertical wall
@@ -160,8 +103,7 @@ function calculateCollisionNormal(sphere, sphereGeometry, topPaddle, bottomPaddl
 function resetSphere(sphere, sphereGeometry)
 {
     // Reset ball position to the center of the plane with no speed
-    console.log("resetSphere");
-    velocity = vectorize(0, 0, 0);
+    velocity = vec.vectorize(0, 0, 0);
     sphere.position.set(0, sphereGeometry.parameters.radius, 0);
 
     // Delay changing the velocity by 3 seconds
@@ -175,50 +117,54 @@ function resetSphere(sphere, sphereGeometry)
     
 }
 
-function shockWave(scene, contactPoint)
+function checkCollision(sphere, sphereGeometry, planeGeometry,
+    topPaddle, bottomPaddle)
 {
-    const textureLoad = new THREE.TextureLoader();
-    const texture = textureLoad.load("./scoring.jpeg");
-    const geometry = new THREE.PlaneGeometry(10, 4);
-    const material = new THREE.MeshBasicMaterial({
-        map: texture,
-        // transparent: true,
-        // opacity: 0.6,
-        side: THREE.DoubleSide,
-        depthTest: true // Ensure it renders over everything
+    const { normal, flag } = calculateCollisionNormal(sphere, sphereGeometry, 
+        topPaddle, bottomPaddle, planeGeometry);
 
-    });
-
-    const shockwave = new THREE.Mesh(geometry, material);
-    shockwave.position.copy(contactPoint);
-    scene.add(shockwave);
-
-    animateShockwave(shockwave, scene);
-}
-
-function animateShockwave(shockwave, scene)
-{
-    const initialScale = 1;
-    const targetScale = 1.2; // Example: Scale up to 10 times the initial size
-
-    const animationDuration = 1000; // Animation duration in milliseconds
-    const startTime = Date.now();
-
-    function animateWave()
+    if (normal && flag > 0)
     {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / animationDuration, 1);
-
-        // if (!flag)
-            shockwave.scale.set(initialScale + (targetScale - initialScale) * progress, initialScale + (targetScale - initialScale) * progress, 1);
-        // else
-        //     shockwave.scale.set(initialScale + (targetScale - initialScale) * progress, initialScale + (targetScale - initialScale) * progress, -1);
-        if (progress < 1)
-            requestAnimationFrame(animateWave);
-        else
-            scene.remove(shockwave); // Remove shockwave after animation completes   
+        if (paddle1Left && flag == 3)
+        {
+            velocity.x += 0.2;
+            // velocity.z += 0.1;
+        }
+        else if (paddle1Right && flag == 3)
+        {
+            velocity.x -= 0.2;
+            // velocity.z += 0.1
+        }
+        else if (paddle2Left && flag == 4)
+        {
+            velocity.x += 0.2;
+            // velocity.z += 0.1
+        }
+        else if (paddle2Right && flag == 4)
+        {
+            velocity.x -= 0.2;
+            // velocity.z += 0.1
+        }
+        velocity = vec.reflectVector(velocity, normal);
     }
-    animateWave();
+
+    // Check if the sphere goes out of the vertical bounds for scoring
+    if (sphere.position.z + sphereGeometry.parameters.radius >= planeGeometry.parameters.height / 2)
+    {
+        //let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
+        //shockWave(scene, contactPoint);
+        //player1Score += 1;
+        //player1ScoreElement.innerHTML = `Player 1: ${player1Score}`;
+        resetSphere(sphere, sphereGeometry);
+    }
+    else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2)
+    {
+        //let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
+        //shockWave(scene, contactPoint);
+        //player2Score += 1;
+        //player2ScoreElement.innerHTML = `Player 2: ${player2Score}`;
+        resetSphere(sphere, sphereGeometry);
+    }
 }
 
 function UserGame(){
@@ -261,87 +207,10 @@ function UserGame(){
     const animate = () => {
       requestAnimationFrame(animate);
 
-    //   if (keyboardState['d'])
-    //   {
-        //   // Move left paddle right
-        //   if (bottomPaddle.position.x > -planeGeometry.parameters.width / 2 + bottomPaddleGeometry.parameters.width / 2)
-        //   {
-            //   bottomPaddle.position.x -= 1;
-            //   paddle1Right = true;
-        //   }
-    //   }
-    //   else if (keyboardState['q'])
-    //   {
-        //   // Move left paddle right
-        //   if (bottomPaddle.position.x < planeGeometry.parameters.width / 2 - bottomPaddleGeometry.parameters.width / 2)
-        //   {
-            //   bottomPaddle.position.x += 1;
-            //   paddle1Left = true
-        //   }
-    //   }
-    //   else if (keyboardState['m'])
-    //   {
-        //   // Move right paddle left
-        //   if (topPaddle.position.x > -planeGeometry.parameters.width / 2 + topPaddleGeometry.parameters.width / 2)
-        //   {
-            //   topPaddle.position.x -= 1;
-            //   paddle2Right = true;
-        //   }
-    //   }
-    //   else if (keyboardState['k'])
-    //   {
-        //   // Move right paddle right
-        //   if (topPaddle.position.x < planeGeometry.parameters.width / 2 - topPaddleGeometry.parameters.width / 2)
-        //   {
-            //   topPaddle.position.x += 1;
-            //   paddle2Left = true
-        //   }    
-    //   }
-    //   else if (keyboardState['c'])
-    //   {
-        //   // Check if 'c' key is pressed and wasn't already handled
-        //   if (!cameraKeyIsPressed)
-        //   {
-            //   if (cameraPosition > 4)
-                //   cameraPosition = 0;
-            //   // Toggle camera position based on cameraPosition flag
-            //   if (cameraPosition == 0)
-            //   {
-                //   camera.position.set(0, 20, -80);
-                //   camera.lookAt(0, 0, 0);
-            //   }
-            //   else if (cameraPosition == 1)
-            //   {
-                //   camera.position.set(0, 40, -130);
-            //   }
-            //   else if (cameraPosition == 2)
-            //   {
-                //   camera.position.set(0, 20, 80);
-                //   camera.lookAt(0, 0, 0);
-            //   }
-            //   else if (cameraPosition == 3)
-            //   {
-                //   camera.position.set(0, 40, 130);
-            //   }
-            //   else if (cameraPosition == 4)
-            //   {
-                //   camera.position.set(0, 120, 0); // Place the camera above the scene
-                //   camera.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
-            //   }
-            //   checkSun(camera, sunMesh, stars);
-            //   ++cameraPosition;   
-            //   // Set flag to true to prevent multiple toggles in rapid succession
-            //   cameraKeyIsPressed = true;
-        //   }
-    //   }
-    //   else
-    //   {   
-        //   cameraKeyIsPressed = false;
-        //   paddle1Right = false;
-        //   paddle1Left = false;
-        //   paddle2Right = false;
-        //   paddle2Left = false;
-    //   }
+    updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry, 
+        topPaddleGeometry, planeGeometry, cameraKeyIsPressed,
+        paddle1Left, paddle1Right, paddle2Left, paddle2Right,
+        camera, cameraPosition, sunMesh, stars);
 
     //   if (isBallOverBoostSurface(speedBoost1, sphere, sphereGeometry) || isBallOverBoostSurface(speedBoost2, sphere, sphereGeometry))
         //   boostMultiplier = 2; // Double the ball's speed while over boost surface
@@ -358,9 +227,9 @@ function UserGame(){
     //   if ((speedBoost2.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost2.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
         //   boost2Flag *= -1; // Reverse direction for speedBoost2
 
-    //   sphere.position.x += velocity.x * boostMultiplier;
-    //   sphere.position.z += velocity.z * boostMultiplier;
-    //   // rotateSphere(sphere, sphereGeometry, velocity);
+    sphere.position.x += velocity.x;
+    sphere.position.z += velocity.z;
+    //rotateSphere(sphere, sphereGeometry, velocity);
 
     //   earthMesh.rotation.y += earthRotationSpeed;
     //   lightsMesh.rotation.y += earthRotationSpeed;
@@ -372,14 +241,26 @@ function UserGame(){
     //   moonMesh.position.z = earthMesh.position.z + b * Math.sin(angle);
     //   moonMesh.rotation.y = -angle;
 
-      //checkCollision(sphere, sphereGeometry, topPaddle, bottomPaddle, planeGeometry, paddle1Left, paddle1Right, paddle2Left, paddle2Right, velocity, bottomWall, topWall, scene);
+    checkCollision(sphere, sphereGeometry, planeGeometry, topPaddle, bottomPaddle);
+
+    ////////////////////////////RESET SPHERE MAKES PONG WORK - COMMENT TO START A GAME ////////////////////////////
+    resetSphere(sphere, sphereGeometry);
+    ////////////////////////////RESET SPHERE MAKES PONG WORK - COMMENT TO START A GAME ////////////////////////////
 
       renderer.render(scene, camera);
       // Update scene logic here
     };
 
     animate();
-
+    window.addEventListener('resize', () =>
+    {
+         // Update camera aspect ratio
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        
+        // Update renderer size
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
     return () => {
       // Cleanup Three.js objects and event listeners
     };

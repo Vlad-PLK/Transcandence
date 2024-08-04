@@ -1,12 +1,9 @@
 import * as THREE from 'three';
+import checkSun from './checkSun';
 
-let cameraKeyIsPressed = false;
-let paddle1Right = false;
-let paddle1Left = false;
-let paddle2Right = false;
-let paddle2Left = false;
-
-function updateKey()
+function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry, topPaddleGeometry,  
+    planeGeometry, cameraKeyIsPressed, paddle1Left, paddle1Right, 
+    paddle2Left, paddle2Right, camera, cameraPosition, sunMesh, stars)
 {
     if (keyboardState['d'])
     {
@@ -49,6 +46,7 @@ function updateKey()
         // Check if 'c' key is pressed and wasn't already handled
         if (!cameraKeyIsPressed)
         {
+            console.log(cameraPosition);
             if (cameraPosition > 4)
                 cameraPosition = 0;
             // Toggle camera position based on cameraPosition flag
@@ -75,8 +73,8 @@ function updateKey()
                 camera.position.set(0, 120, 0); // Place the camera above the scene
                 camera.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
             }
-            checkSun(camera, sunMesh, stars);
-            ++cameraPosition;   
+            //checkSun(camera, sunMesh, stars);
+            cameraPosition += 1;  
             // Set flag to true to prevent multiple toggles in rapid succession
             cameraKeyIsPressed = true;
         }
@@ -90,3 +88,5 @@ function updateKey()
         paddle2Left = false;
     }
 }
+
+export default updateKey
