@@ -165,106 +165,124 @@ function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
 }
 
 function UserGame(){
-	const canvasRef = useRef(null);
-
+    const animationFrameId = useRef(null);
+    const mountRef = useRef(null);
+    const sceneRef = useRef(null);
+    const cameraRef = useRef(null);
+    const rendererRef = useRef(null);
     useEffect(() => {
 
     // scene, lights, textures  //
     // scene //
-    const scene = new THREE.Scene();
+    sceneRef.current = new THREE.Scene();
     const textureLoader = new THREE.TextureLoader();
-    scene.background = new THREE.Color(0x000000);
+    sceneRef.current.background = new THREE.Color(0x000000);
     // renderer //
-    const renderer = new THREE.WebGLRenderer({alpha: true, antialias: true, canvas: canvasRef.current});
-    setRenderer(renderer);
-    document.body.appendChild(renderer.domElement);
+    rendererRef.current = new THREE.WebGLRenderer();
+    setRenderer(rendererRef.current);
+    mountRef.current.appendChild(rendererRef.current.domElement);
     // ambient light //
     const ambientLight = new THREE.AmbientLight(0x404040, 4); // Color, intensity
-    scene.add(ambientLight);
+    sceneRef.current.add(ambientLight);
     // camera setup //
-    const camera = new THREE.PerspectiveCamera(
+    cameraRef.current = new THREE.PerspectiveCamera(
       45, // Field of view
       window.innerWidth / window.innerHeight, // Aspect ratio
       0.1, // Near clipping plane
       10000 // Far clipping plane
     );
     const cameraDirection = new THREE.Vector3();
-    setCamera(camera, cameraDirection);
-    // scene, lights, textures //
+    setCamera(cameraRef.current, cameraDirection);
+    // sceneRef.current, lights, textures //
 
     // ... Add geometry, materials, lights, etc.
-    const planeGeometry = setPlane(scene, textureLoader);
-    const { leftWall, rightWall, bottomWall, topWall } = setWalls(scene, planeGeometry);
-    const { bottomPaddle, topPaddle, bottomPaddleGeometry, topPaddleGeometry } = setPaddles(scene, planeGeometry); 
-    const { sphere, sphereGeometry } = setSphere(scene);
-    const { speedBoostGeometry, speedBoost1, speedBoost2 } = setBoosts(scene);
-    const { earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars } = setSolarySystem(scene, textureLoader);
+    const planeGeometry = setPlane(sceneRef.current, textureLoader);
+    const { leftWall, rightWall, bottomWall, topWall } = setWalls(sceneRef.current, planeGeometry);
+    const { bottomPaddle, topPaddle, bottomPaddleGeometry, topPaddleGeometry } = setPaddles(sceneRef.current, planeGeometry); 
+    const { sphere, sphereGeometry } = setSphere(sceneRef.current);
+    const { speedBoostGeometry, speedBoost1, speedBoost2 } = setBoosts(sceneRef.current);
+    const { earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars } = setSolarySystem(sceneRef.current, textureLoader);
+    
     // animation
     const animate = () => {
-      requestAnimationFrame(animate);
+        animationFrameId.current = requestAnimationFrame(animate);
 
-    const updatedValues = updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry, 
-        topPaddleGeometry, planeGeometry, cameraKeyIsPressed,
-        paddle1Left, paddle1Right, paddle2Left, paddle2Right,
-        camera, cameraPosition, sunMesh, stars);
+        const updatedValues = updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry, 
+            topPaddleGeometry, planeGeometry, cameraKeyIsPressed,
+            paddle1Left, paddle1Right, paddle2Left, paddle2Right,
+            cameraRef.current, cameraPosition, sunMesh, stars);
 
-    ({ cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition } = updatedValues);
+        ({ cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition } = updatedValues);
 
-      if (isBallOverBoostSurface(speedBoost1, sphere, sphereGeometry) || isBallOverBoostSurface(speedBoost2, sphere, sphereGeometry))
-          boostMultiplier = 2; // Double the ball's speed while over boost surface
-      else
-          boostMultiplier = 1; // Reset to normal speed if not over boost surface
+        if (isBallOverBoostSurface(speedBoost1, sphere, sphereGeometry) || isBallOverBoostSurface(speedBoost2, sphere, sphereGeometry))
+            boostMultiplier = 2; // Double the ball's speed while over boost surface
+        else
+            boostMultiplier = 1; // Reset to normal speed if not over boost surface
 
-      speedBoost1.position.x += boost1Flag * speedBoostSpeed;
-      speedBoost2.position.x += boost2Flag * speedBoostSpeed;
+        speedBoost1.position.x += boost1Flag * speedBoostSpeed;
+        speedBoost2.position.x += boost2Flag * speedBoostSpeed;
 
-      // Check if boost surfaces reached the edge of the plane and reverse direction if needed
-      if ((speedBoost1.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost1.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
-          boost1Flag *= -1; // Reverse direction for speedBoost1
+        // Check if boost surfaces reached the edge of the plane and reverse direction if needed
+        if ((speedBoost1.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost1.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
+            boost1Flag *= -1; // Reverse direction for speedBoost1
 
-      if ((speedBoost2.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost2.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
-          boost2Flag *= -1; // Reverse direction for speedBoost2
+        if ((speedBoost2.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost2.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
+            boost2Flag *= -1; // Reverse direction for speedBoost2
 
-    sphere.position.x += velocity.x * boostMultiplier;
-    sphere.position.z += velocity.z * boostMultiplier;
-    // rotateSphere(sphere, sphereGeometry, velocity);
+        sphere.position.x += velocity.x * boostMultiplier;
+        sphere.position.z += velocity.z * boostMultiplier;
+        //   rotateSphere(sphere, sphereGeometry, velocity);
 
-      earthMesh.rotation.y += earthRotationSpeed;
-      lightsMesh.rotation.y += earthRotationSpeed;
-      sunMesh.rotation.y += 0.001;
+        earthMesh.rotation.y += earthRotationSpeed;
+        lightsMesh.rotation.y += earthRotationSpeed;
+        sunMesh.rotation.y += 0.001;
 
-      angle += moonOrbitSpeed;
-      moonMesh.position.x = earthMesh.position.x + a * Math.cos(angle);
-      moonMesh.position.y = earthMesh.position.y + (a * Math.sin(angle)) * Math.sin(inclination);
-      moonMesh.position.z = earthMesh.position.z + b * Math.sin(angle);
-      moonMesh.rotation.y = -angle;
+        angle += moonOrbitSpeed;
+        moonMesh.position.x = earthMesh.position.x + a * Math.cos(angle);
+        moonMesh.position.y = earthMesh.position.y + (a * Math.sin(angle)) * Math.sin(inclination);
+        moonMesh.position.z = earthMesh.position.z + b * Math.sin(angle);
+        moonMesh.rotation.y = -angle;
 
-    checkCollision(scene, sphere, sphereGeometry, planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall);
+        checkCollision(sceneRef.current, sphere, sphereGeometry, planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall);
 
-    ////////////////////////////RESET SPHERE MAKES PONG WORK - COMMENT TO START A GAME ////////////////////////////
-    //resetSphere(sphere, sphereGeometry);
-    ////////////////////////////RESET SPHERE MAKES PONG WORK - COMMENT TO START A GAME ////////////////////////////
+        ////////////////////////////RESET SPHERE MAKES PONG WORK - COMMENT TO START A GAME ////////////////////////////
+        //resetSphere(sphere, sphereGeometry);
+        ////////////////////////////RESET SPHERE MAKES PONG WORK - COMMENT TO START A GAME ////////////////////////////
 
-      renderer.render(scene, camera);
-      // Update scene logic here
+        rendererRef.current.render(sceneRef.current, cameraRef.current);
+        // Update sceneRef.current logic here
     };
 
     animate();
     window.addEventListener('resize', () =>
     {
          // Update camera aspect ratio
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
+        cameraRef.current.aspect = window.innerWidth / window.innerHeight;
+        cameraRef.current.updateProjectionMatrix();
         
         // Update renderer size
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        rendererRef.current.setSize(window.innerWidth, window.innerHeight);
     });
     return () => {
+        //if (sceneRef.current) sceneRef.current.dispose();
+        cancelAnimationFrame(animationFrameId.current);
+        if (rendererRef.current) {
+            rendererRef.current.dispose();
+        }
+        mountRef.current.removeChild(rendererRef.current.domElement);
       // Cleanup Three.js objects and event listeners
     };
     }, []); // Empty dependency array to run effect only once
 
-  return <canvas ref={canvasRef} />;
+  return (
+    <>
+        <div className="d-flex flex-row">
+            <h1 className="justify-content-end">Player 1 : </h1>
+            <h1 className="justify-content-end">Player 2 : </h1>
+        </div>
+        <div ref={mountRef} />;
+    </>
+  )
 };
 
 export default UserGame
