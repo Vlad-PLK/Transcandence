@@ -35,18 +35,18 @@ function checkCollision(sphere, sphereGeometry, planeGeometry,
     }
 
     // Check if the sphere goes out of the vertical bounds for scoring
-    if (sphere.position.z + sphereGeometry.parameters.radius >= planeGeometry.parameters.height / 2)
+    if (sphere.position.z + sphereGeometry.parameters.radius >= planeGeometry.parameters.height / 2 + 0.1)
     {
-        //let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
-        //shockWave(scene, contactPoint);
+        let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
+        shockWave(scene, contactPoint);
         //player1Score += 1;
         //player1ScoreElement.innerHTML = `Player 1: ${player1Score}`;
         resetSphere(sphere, sphereGeometry);
     }
-    else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2)
+    else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2 - 0.1)
     {
-        //let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
-        //shockWave(scene, contactPoint);
+        let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
+        shockWave(scene, contactPoint);
         //player2Score += 1;
         //player2ScoreElement.innerHTML = `Player 2: ${player2Score}`;
         resetSphere(sphere, sphereGeometry);

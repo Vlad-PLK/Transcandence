@@ -1,14 +1,9 @@
 import * as THREE from 'three';
 
-export function shockWave(scene, contactPoint)
+function shockWave(scene, contactPoint)
 {
-    const textureLoad = new THREE.TextureLoader();
-    const texture = textureLoad.load("./scoring.jpeg");
-    const geometry = new THREE.PlaneGeometry(10, 4);
+    const geometry = new THREE.SphereGeometry(4, 32, 32);
     const material = new THREE.MeshBasicMaterial({
-        map: texture,
-        // transparent: true,
-        // opacity: 0.6,
         side: THREE.DoubleSide,
         depthTest: true // Ensure it renders over everything
 
@@ -21,10 +16,10 @@ export function shockWave(scene, contactPoint)
     animateShockwave(shockwave, scene);
 }
 
-export function animateShockwave(shockwave, scene)
+function animateShockwave(shockwave, scene)
 {
     const initialScale = 1;
-    const targetScale = 1.2; // Example: Scale up to 10 times the initial size
+    const targetScale = 1.5; 
 
     const animationDuration = 1000; // Animation duration in milliseconds
     const startTime = Date.now();
@@ -45,3 +40,6 @@ export function animateShockwave(shockwave, scene)
     }
     animateWave();
 }
+
+export default shockWave
+

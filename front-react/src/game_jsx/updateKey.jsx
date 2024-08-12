@@ -14,7 +14,7 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
             paddle1Right = true;
         }
     }
-    else if (keyboardState['q'])
+    else if (keyboardState['a'])
     {
         // Move left paddle right
         if (bottomPaddle.position.x < planeGeometry.parameters.width / 2 - bottomPaddleGeometry.parameters.width / 2)
@@ -23,7 +23,7 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
             paddle1Left = true
         }
     }
-    else if (keyboardState['m'])
+    if (keyboardState['6'])
     {
         // Move right paddle left
         if (topPaddle.position.x > -planeGeometry.parameters.width / 2 + topPaddleGeometry.parameters.width / 2)
@@ -32,7 +32,7 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
             paddle2Right = true;
         }
     }
-    else if (keyboardState['k'])
+    else if (keyboardState['4'])
     {
         // Move right paddle right
         if (topPaddle.position.x < planeGeometry.parameters.width / 2 - topPaddleGeometry.parameters.width / 2)
@@ -43,10 +43,11 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
     }
     else if (keyboardState['c'])
     {
+
         // Check if 'c' key is pressed and wasn't already handled
         if (!cameraKeyIsPressed)
         {
-            console.log(cameraPosition);
+            console.log("HERE");
             if (cameraPosition > 4)
                 cameraPosition = 0;
             // Toggle camera position based on cameraPosition flag
@@ -73,20 +74,22 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
                 camera.position.set(0, 120, 0); // Place the camera above the scene
                 camera.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
             }
-            //checkSun(camera, sunMesh, stars);
-            cameraPosition += 1;  
+            checkSun(camera, sunMesh, stars);
+            ++cameraPosition;   
             // Set flag to true to prevent multiple toggles in rapid succession
             cameraKeyIsPressed = true;
         }
     }
     else
-    {   
+    {
         cameraKeyIsPressed = false;
         paddle1Right = false;
         paddle1Left = false;
         paddle2Right = false;
         paddle2Left = false;
     }
+
+    return { cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition};
 }
 
 export default updateKey

@@ -10,7 +10,7 @@ function checkSun(camera, sunMesh, stars)
     const angle = cameraDirection.angleTo(sunDirection);
 
     // Adjust stars opacity based on the angle
-    const maxAngle = Math.PI / 2;
+    const maxAngle = Math.PI / 6;
     const opacity = THREE.MathUtils.clamp(angle / maxAngle, 0, 1);
 
     stars.material.opacity = opacity;

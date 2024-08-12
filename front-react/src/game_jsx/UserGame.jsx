@@ -10,6 +10,7 @@ import isBallOverBoostSurface from './isBall';
 import setCamera from './setCamera';
 import setPlane from './setPlane';
 import updateKey from './updateKey';
+import shockWave from './shockWave';
 import * as vec from './vectors_functions'
 
 let cameraKeyIsPressed = false;
@@ -32,14 +33,14 @@ const a = semiMajorAxis;
 const inclination = 5.145 * Math.PI / 180;
 const b = semiMinorAxis
 
-let earthRotationSpeed = 0.1;
-let moonOrbitSpeed = earthRotationSpeed / 27
+let earthRotationSpeed = 0.005;
+let moonOrbitSpeed = earthRotationSpeed / 2
 let angle = 0;
 
 let frameCounter = 0;
 let lastTime = performance.now();
 
-const speedBoostSpeed = 0.1;
+const speedBoostSpeed = 0.8;
 let velocity = vec.vectorize(0, 0, 0);
 // Keyboard controls
 const keyboardState = {};
@@ -68,37 +69,33 @@ function setSphere(scene)
     return { sphere, sphereGeometry };
 }
 
-function calculateCollisionNormal(sphere, sphereGeometry, topPaddle, bottomPaddle, planeGeometry)
+const calculateCollisionNormal = (sphere, sphereGeometry, topPaddle, bottomPaddle, planeGeometry) =>
 {
     const radius = sphereGeometry.parameters.radius;
 
-    // Check collision with left vertical wall
-    if (sphere.position.x - radius <= -planeGeometry.parameters.width / 2)
+    if (sphere.position.x - radius <= -planeGeometry.parameters.width / 2) {
         return { normal: new THREE.Vector3(1, 0, 0).normalize(), flag: 1 };
-    
-    // Check collision with right vertical wall
-    if (sphere.position.x + radius >= planeGeometry.parameters.width / 2)
-        return { normal: new THREE.Vector3(-1, 0, 0).normalize(), flag: 2 };
+    }
 
-    // Check collision with bottom paddle
+    if (sphere.position.x + radius >= planeGeometry.parameters.width / 2) {
+        return { normal: new THREE.Vector3(-1, 0, 0).normalize(), flag: 2 };
+    }
+
     if (sphere.position.z - radius <= bottomPaddle.position.z + bottomPaddle.geometry.parameters.depth / 2 &&
         sphere.position.x >= bottomPaddle.position.x - (bottomPaddle.geometry.parameters.width / 2) - 2 &&
-        sphere.position.x <= bottomPaddle.position.x + (bottomPaddle.geometry.parameters.width / 2) + 2)
-    {
+        sphere.position.x <= bottomPaddle.position.x + (bottomPaddle.geometry.parameters.width / 2) + 2) {
         return { normal: new THREE.Vector3(0, 0, 1).normalize(), flag: 3 };
     }
 
-    // Check collision with top paddle
     if (sphere.position.z + radius >= topPaddle.position.z - topPaddle.geometry.parameters.depth / 2 &&
         sphere.position.x >= topPaddle.position.x - (topPaddle.geometry.parameters.width / 2) - 2 &&
-        sphere.position.x <= topPaddle.position.x + (topPaddle.geometry.parameters.width / 2) + 2)
-    {
+        sphere.position.x <= topPaddle.position.x + (topPaddle.geometry.parameters.width / 2) + 2) {
         return { normal: new THREE.Vector3(0, 0, -1).normalize(), flag: 4 };
     }
 
     // Default normal (no collision)
-    return { normal: null, flag: 0};
-}
+    return { normal: null, flag: 0 };
+};
 
 function resetSphere(sphere, sphereGeometry)
 {
@@ -117,13 +114,13 @@ function resetSphere(sphere, sphereGeometry)
     
 }
 
-function checkCollision(sphere, sphereGeometry, planeGeometry,
-    topPaddle, bottomPaddle)
+function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
+    topPaddle, bottomPaddle, bottomWall, topWall)
 {
     const { normal, flag } = calculateCollisionNormal(sphere, sphereGeometry, 
         topPaddle, bottomPaddle, planeGeometry);
 
-    if (normal && flag > 0)
+    if (normal != null && flag > 0)
     {
         if (paddle1Left && flag == 3)
         {
@@ -149,18 +146,18 @@ function checkCollision(sphere, sphereGeometry, planeGeometry,
     }
 
     // Check if the sphere goes out of the vertical bounds for scoring
-    if (sphere.position.z + sphereGeometry.parameters.radius >= planeGeometry.parameters.height / 2)
+    if (sphere.position.z + sphereGeometry.parameters.radius >= planeGeometry.parameters.height / 2 + 0.01)
     {
-        //let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
-        //shockWave(scene, contactPoint);
+        let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
+        shockWave(scene, contactPoint);
         //player1Score += 1;
         //player1ScoreElement.innerHTML = `Player 1: ${player1Score}`;
         resetSphere(sphere, sphereGeometry);
     }
-    else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2)
+    else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2 - 0.01)
     {
-        //let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
-        //shockWave(scene, contactPoint);
+        let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
+        shockWave(scene, contactPoint);
         //player2Score += 1;
         //player2ScoreElement.innerHTML = `Player 2: ${player2Score}`;
         resetSphere(sphere, sphereGeometry);
@@ -176,12 +173,13 @@ function UserGame(){
     // scene //
     const scene = new THREE.Scene();
     const textureLoader = new THREE.TextureLoader();
+    scene.background = new THREE.Color(0x000000);
     // renderer //
-    const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current});
+    const renderer = new THREE.WebGLRenderer({alpha: true, antialias: true, canvas: canvasRef.current});
     setRenderer(renderer);
     document.body.appendChild(renderer.domElement);
     // ambient light //
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2); // Color, intensity
+    const ambientLight = new THREE.AmbientLight(0x404040, 4); // Color, intensity
     scene.add(ambientLight);
     // camera setup //
     const camera = new THREE.PerspectiveCamera(
@@ -201,50 +199,50 @@ function UserGame(){
     const { sphere, sphereGeometry } = setSphere(scene);
     const { speedBoostGeometry, speedBoost1, speedBoost2 } = setBoosts(scene);
     const { earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars } = setSolarySystem(scene, textureLoader);
-
-    
     // animation
     const animate = () => {
       requestAnimationFrame(animate);
 
-    updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry, 
+    const updatedValues = updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry, 
         topPaddleGeometry, planeGeometry, cameraKeyIsPressed,
         paddle1Left, paddle1Right, paddle2Left, paddle2Right,
         camera, cameraPosition, sunMesh, stars);
 
-    //   if (isBallOverBoostSurface(speedBoost1, sphere, sphereGeometry) || isBallOverBoostSurface(speedBoost2, sphere, sphereGeometry))
-        //   boostMultiplier = 2; // Double the ball's speed while over boost surface
-    //   else
-        //   boostMultiplier = 1; // Reset to normal speed if not over boost surface
+    ({ cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition } = updatedValues);
 
-    //   speedBoost1.position.x += boost1Flag * speedBoostSpeed;
-    //   speedBoost2.position.x += boost2Flag * speedBoostSpeed;
+      if (isBallOverBoostSurface(speedBoost1, sphere, sphereGeometry) || isBallOverBoostSurface(speedBoost2, sphere, sphereGeometry))
+          boostMultiplier = 2; // Double the ball's speed while over boost surface
+      else
+          boostMultiplier = 1; // Reset to normal speed if not over boost surface
 
-    //   // Check if boost surfaces reached the edge of the plane and reverse direction if needed
-    //   if ((speedBoost1.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost1.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
-        //   boost1Flag *= -1; // Reverse direction for speedBoost1
+      speedBoost1.position.x += boost1Flag * speedBoostSpeed;
+      speedBoost2.position.x += boost2Flag * speedBoostSpeed;
 
-    //   if ((speedBoost2.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost2.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
-        //   boost2Flag *= -1; // Reverse direction for speedBoost2
+      // Check if boost surfaces reached the edge of the plane and reverse direction if needed
+      if ((speedBoost1.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost1.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
+          boost1Flag *= -1; // Reverse direction for speedBoost1
 
-    sphere.position.x += velocity.x;
-    sphere.position.z += velocity.z;
-    //rotateSphere(sphere, sphereGeometry, velocity);
+      if ((speedBoost2.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost2.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
+          boost2Flag *= -1; // Reverse direction for speedBoost2
 
-    //   earthMesh.rotation.y += earthRotationSpeed;
-    //   lightsMesh.rotation.y += earthRotationSpeed;
-    //   sunMesh.rotation.y += 0.001;
+    sphere.position.x += velocity.x * boostMultiplier;
+    sphere.position.z += velocity.z * boostMultiplier;
+    // rotateSphere(sphere, sphereGeometry, velocity);
 
-    //   angle += moonOrbitSpeed;
-    //   moonMesh.position.x = earthMesh.position.x + a * Math.cos(angle);
-    //   moonMesh.position.y = earthMesh.position.y + (a * Math.sin(angle)) * Math.sin(inclination);
-    //   moonMesh.position.z = earthMesh.position.z + b * Math.sin(angle);
-    //   moonMesh.rotation.y = -angle;
+      earthMesh.rotation.y += earthRotationSpeed;
+      lightsMesh.rotation.y += earthRotationSpeed;
+      sunMesh.rotation.y += 0.001;
 
-    checkCollision(sphere, sphereGeometry, planeGeometry, topPaddle, bottomPaddle);
+      angle += moonOrbitSpeed;
+      moonMesh.position.x = earthMesh.position.x + a * Math.cos(angle);
+      moonMesh.position.y = earthMesh.position.y + (a * Math.sin(angle)) * Math.sin(inclination);
+      moonMesh.position.z = earthMesh.position.z + b * Math.sin(angle);
+      moonMesh.rotation.y = -angle;
+
+    checkCollision(scene, sphere, sphereGeometry, planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall);
 
     ////////////////////////////RESET SPHERE MAKES PONG WORK - COMMENT TO START A GAME ////////////////////////////
-    resetSphere(sphere, sphereGeometry);
+    //resetSphere(sphere, sphereGeometry);
     ////////////////////////////RESET SPHERE MAKES PONG WORK - COMMENT TO START A GAME ////////////////////////////
 
       renderer.render(scene, camera);
