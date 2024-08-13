@@ -32,9 +32,9 @@ function setSolarySystem(scene, textureLoader)
     earthGroup.rotation.z = -23.4 * Math.PI / 180;
     const earthGeometry = new THREE.IcosahedronGeometry(300, 12);
     const earthMaterial = new THREE.MeshPhongMaterial({
-        map: textureLoader.load("../public/earthmap1k.jpg"),
-        specularMap: textureLoader.load("../public/earthspec1k.jpg"),
-        bumpMap: textureLoader.load("../public/earthbump1k.jpg"),
+        map: textureLoader.load("../earthmap1k.jpg"),
+        specularMap: textureLoader.load("../earthspec1k.jpg"),
+        bumpMap: textureLoader.load("../earthbump1k.jpg"),
         bumpScale: 0.05,
       });
     const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
@@ -42,18 +42,18 @@ function setSolarySystem(scene, textureLoader)
     earthGroup.add(earthMesh);
 
     const lightMaterial = new THREE.MeshBasicMaterial({
-        map: textureLoader.load("../public/earthByNight.jpg"),
+        map: textureLoader.load("..earthByNight.jpg"),
         blending: THREE.AdditiveBlending,
       });
     const lightsMesh = new THREE.Mesh(earthGeometry, lightMaterial);
     earthGroup.add(lightsMesh);
 
     const cloudMaterial = new THREE.MeshStandardMaterial({
-        map: textureLoader.load("../public/earthcloudmap.jpg"),
+        map: textureLoader.load("../earthcloudmap.jpg"),
         transparent: true,
         opacity: 0.8,
         blending: THREE.AdditiveBlending,
-        alphaMap: textureLoader.load("../public/earthcloudmaptrans.jpg")
+        alphaMap: textureLoader.load("../pearthcloudmaptrans.jpg")
       });
     const cloudssMesh = new THREE.Mesh(earthGeometry, cloudMaterial);
     earthGroup.add(cloudssMesh);

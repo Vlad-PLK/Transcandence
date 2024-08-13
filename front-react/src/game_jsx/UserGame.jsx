@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import setRenderer from './setRenderer';
 import setWalls from './setWalls';
@@ -115,7 +115,8 @@ function resetSphere(sphere, sphereGeometry)
 }
 
 function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
-    topPaddle, bottomPaddle, bottomWall, topWall)
+    topPaddle, bottomPaddle, bottomWall, topWall, 
+    player1SC, player2SC)
 {
     const { normal, flag } = calculateCollisionNormal(sphere, sphereGeometry, 
         topPaddle, bottomPaddle, planeGeometry);
@@ -150,7 +151,8 @@ function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
     {
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
         shockWave(scene, contactPoint);
-        //player1Score += 1;
+        console.log(player1SC);
+        player1SC += 1;
         //player1ScoreElement.innerHTML = `Player 1: ${player1Score}`;
         resetSphere(sphere, sphereGeometry);
     }
@@ -158,7 +160,7 @@ function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
     {
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
         shockWave(scene, contactPoint);
-        //player2Score += 1;
+        player2SC += 1;
         //player2ScoreElement.innerHTML = `Player 2: ${player2Score}`;
         resetSphere(sphere, sphereGeometry);
     }
@@ -170,6 +172,8 @@ function UserGame(){
     const sceneRef = useRef(null);
     const cameraRef = useRef(null);
     const rendererRef = useRef(null);
+    const player1SC = 0;
+    const player2SC = 0;
     useEffect(() => {
 
     // scene, lights, textures  //
@@ -243,7 +247,9 @@ function UserGame(){
         moonMesh.position.z = earthMesh.position.z + b * Math.sin(angle);
         moonMesh.rotation.y = -angle;
 
-        checkCollision(sceneRef.current, sphere, sphereGeometry, planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall);
+        checkCollision(sceneRef.current, sphere, sphereGeometry, planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall,
+            player1SC, player2SC
+        );
 
         ////////////////////////////RESET SPHERE MAKES PONG WORK - COMMENT TO START A GAME ////////////////////////////
         //resetSphere(sphere, sphereGeometry);
@@ -276,9 +282,9 @@ function UserGame(){
 
   return (
     <>
-        <div className="d-flex flex-row">
-            <h1 className="justify-content-end">Player 1 : </h1>
-            <h1 className="justify-content-end">Player 2 : </h1>
+        <div className="d-flex justify-content-evenly">
+            <h1 className="border border-primary">Player 1 : {player1SC}</h1>
+            <h1 className="border border-danger">Player 2 : {player2SC}</h1>
         </div>
         <div ref={mountRef} />;
     </>

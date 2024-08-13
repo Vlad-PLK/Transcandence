@@ -4,5 +4,8 @@
     "login": "Login",
     "signup": "Take me there!",
     "settings": "Settings",
-    "play_game": "Start a new game now !"
+    "play_game": "Start a new game now !",
+    "local": "LOCAL GAME",
+    "multiplayer": "MULTIPLAYER",
+    "game_settings": "CHANGE GAME SETTINGS"
 }

@@ -6,11 +6,14 @@ import { useTranslation } from "react-i18next";
 import TranslationSelect from "./TranslationSelect";
 import { Link } from "react-router-dom";
 import './customFonts.css';
-import UserGameSetup from "./UserGameSetup";
 import UserSettings from "./UserSettings";
 import { useNavigate } from "react-router-dom";
+import GameSettingsModal from "./GameSettingsModal";
+import LocalGameModal from "./LocalGameModal";
+import MultiplayerModal from "./MultiplayerModal";
 
-function UserHomePage(){
+function UserGameSetup()
+{
 	const {userData} = useContext(UserDataContext);
 	const navigate = useNavigate();
 	const {t} = useTranslation();
@@ -33,7 +36,7 @@ function UserHomePage(){
       			      <a href="/userPage/" className="d-flex align-items-center ms-3 mb-3 mb-md-0 me-md-auto text-decoration-none text-white">
       			        <span className="fs-4">{t('main.title')}</span>
       			      </a>
-      			      <div className="text-end">
+                      <div className="text-end">
       			          <div className="btn-group dropstart">
 							<button type="button" className="btn btn-outline-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
 								<span className="visually-hidden">Toggle Dropstart</span>
@@ -47,18 +50,23 @@ function UserHomePage(){
 							{userData && <Link to={`../userSettings/`} type="button" className="btn btn-outline-light me-2">{userData.username}
 								<img className="ms-2 rounded" src="/robot.webp" alt="" height="40" widht="40"/>
 							</Link>}
-      			          </div>
+      			       </div>
       			      </div>
       			    </div>
       			  </div>
       			</header>
-      			<div className="opacity-75" style={{position: 'absolute', top: '50%', left: '51%', transform: 'translate(-50%, -50%)', fontFamily: 'cyber4'}}>
-      			  <Link to={`../userGameSetup/`} type="button" className="btn btn-dark rounded-3 me-2">{t('play_game')}</Link>
-      			</div>
     		</div>
-			<SettingsModal/>
+            <div className="" style={{position: 'absolute', top: '50%', left: '51%', transform: 'translate(-50%, -50%)', fontFamily: 'cyber4'}}>
+                <button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#localGame" style={{color: '#6B3EB8'}}>{t('local')}</button>
+                <button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#multiplayer" style={{color: '#5961D0'}}>{t('multiplayer')}</button>
+            </div>
+            <div className="" style={{position: 'absolute', top: '57%', left: '51%', transform: 'translate(-50%, -50%)',fontFamily: 'cyber4'}}>
+                <button type="button" className="btn btn-danger btn-lg rounded-3 me-4 text-dark" data-bs-toggle="modal" data-bs-target="#gameSettings">{t('game_settings')}</button>
+            </div>
+            <LocalGameModal/>
+            <MultiplayerModal/>
+            <GameSettingsModal/>
 		</>
-	);
+    )
 }
-
-export default UserHomePage
+export default UserGameSetup

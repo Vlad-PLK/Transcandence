@@ -4,7 +4,7 @@ import * as vec from './vectors_functions'
 import {paddle1Left, paddle1Right, paddle2Left, paddle2Right, velocity} from './UserGame'
 
 function checkCollision(sphere, sphereGeometry, planeGeometry,
-    topPaddle, bottomPaddle)
+    topPaddle, bottomPaddle, player1Score, player2Score)
 {
     const { normal, flag } = calculateCollisionNormal(sphere, sphereGeometry, 
         topPaddle, bottomPaddle, planeGeometry);
@@ -39,7 +39,7 @@ function checkCollision(sphere, sphereGeometry, planeGeometry,
     {
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
         shockWave(scene, contactPoint);
-        //player1Score += 1;
+        player1Score += 1;
         //player1ScoreElement.innerHTML = `Player 1: ${player1Score}`;
         resetSphere(sphere, sphereGeometry);
     }
@@ -47,7 +47,7 @@ function checkCollision(sphere, sphereGeometry, planeGeometry,
     {
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
         shockWave(scene, contactPoint);
-        //player2Score += 1;
+        player2Score += 1;
         //player2ScoreElement.innerHTML = `Player 2: ${player2Score}`;
         resetSphere(sphere, sphereGeometry);
     }
