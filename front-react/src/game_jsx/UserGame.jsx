@@ -262,7 +262,7 @@ function UserGame(){
     animate();
     window.addEventListener('resize', () =>
     {
-         // Update camera aspect ratio
+      // Update camera aspect ratio
         cameraRef.current.aspect = window.innerWidth / window.innerHeight;
         cameraRef.current.updateProjectionMatrix();
         
