@@ -191,7 +191,7 @@ function UserGame(){
     // camera setup //
     cameraRef.current = new THREE.PerspectiveCamera(
       45, // Field of view
-      window.innerWidth / window.innerHeight, // Aspect ratio
+      (window.innerWidth / 1.5) / (window.innerHeight / 1.2), // Aspect ratio
       0.1, // Near clipping plane
       10000 // Far clipping plane
     );
@@ -200,8 +200,8 @@ function UserGame(){
     // sceneRef.current, lights, textures //
 
     // ... Add geometry, materials, lights, etc.
-    const planeGeometry = setPlane(sceneRef.current, textureLoader);
-    const { leftWall, rightWall, bottomWall, topWall } = setWalls(sceneRef.current, planeGeometry);
+    const planeGeometry = setPlane(sceneRef.current);
+    const { leftWall, rightWall, bottomWall, topWall} = setWalls(sceneRef.current, planeGeometry);
     const { bottomPaddle, topPaddle, bottomPaddleGeometry, topPaddleGeometry } = setPaddles(sceneRef.current, planeGeometry); 
     const { sphere, sphereGeometry } = setSphere(sceneRef.current);
     const { speedBoostGeometry, speedBoost1, speedBoost2 } = setBoosts(sceneRef.current);
@@ -260,22 +260,72 @@ function UserGame(){
     };
 
     animate();
-    window.addEventListener('resize', () =>
-    {
-      // Update camera aspect ratio
-        cameraRef.current.aspect = window.innerWidth / window.innerHeight;
+
+    const onWindowResize = () => {
+        // Update camera aspect ratio
+        cameraRef.current.aspect = (window.innerWidth / 1.5) / (window.innerHeight / 1.2);
         cameraRef.current.updateProjectionMatrix();
         
         // Update renderer size
-        rendererRef.current.setSize(window.innerWidth, window.innerHeight);
-    });
+        rendererRef.current.setSize(window.innerWidth / 1.5, window.innerHeight / 1.2);
+    }
+
+    window.addEventListener('resize', onWindowResize)
     return () => {
         //if (sceneRef.current) sceneRef.current.dispose();
         cancelAnimationFrame(animationFrameId.current);
+        if (sceneRef.current){
+            sceneRef.current.remove(planeGeometry);
+            sceneRef.current.remove(bottomPaddle);
+            sceneRef.current.remove(topPaddle);
+            sceneRef.current.remove(sphere);
+            sceneRef.current.remove(speedBoostGeometry);
+            sceneRef.current.remove(leftWall);
+            sceneRef.current.remove(rightWall);
+            sceneRef.current.remove(topWall);
+            sceneRef.current.remove(bottomWall);
+            sceneRef.current.remove(speedBoost1);
+            sceneRef.current.remove(speedBoost2);
+            sceneRef.current.remove(earthMesh);
+            sceneRef.current.remove(moonMesh);
+            sceneRef.current.remove(sunMesh);
+            sceneRef.current.remove(lightsMesh);
+
+            planeGeometry.dispose();
+            speedBoostGeometry.dispose();
+            bottomPaddle.geometry.dispose();
+            bottomPaddle.material.dispose();
+            topPaddle.geometry.dispose();
+            topPaddle.material.dispose();
+            sphere.geometry.dispose();
+            sphere.material.dispose();
+            leftWall.geometry.dispose();
+            leftWall.geometry.dispose();
+            rightWall.material.dispose();
+            topWall.geometry.dispose();
+            topWall.material.dispose();
+            bottomWall.geometry.dispose();
+            bottomWall.material.dispose();
+            speedBoost1.geometry.dispose();
+            speedBoost1.material.dispose();
+            speedBoost2.geometry.dispose();
+            speedBoost2.material.dispose();
+            earthMesh.geometry.dispose();
+            earthMesh.material.dispose();
+            moonMesh.geometry.dispose();
+            moonMesh.material.dispose();
+            sunMesh.geometry.dispose();
+            sunMesh.material.dispose();
+            lightsMesh.geometry.dispose();
+            lightsMesh.material.dispose();
+        }
+        window.removeEventListener('resize', onWindowResize);
         if (rendererRef.current) {
             rendererRef.current.dispose();
         }
-        mountRef.current.removeChild(rendererRef.current.domElement);
+        if (mountRef.current){
+            mountRef.current.removeChild(rendererRef.current.domElement);
+        }
       // Cleanup Three.js objects and event listeners
     };
     }, []); // Empty dependency array to run effect only once

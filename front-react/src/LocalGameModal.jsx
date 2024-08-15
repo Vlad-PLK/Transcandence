@@ -19,7 +19,7 @@ function LocalGameModal() {
         		  </div>
         		  <div className="modal-body mt-3 p-5 pt-0">
                     <div className="">
-                        <p className="" style={{color:'blue'}}>Player 1 : {userData.username}</p>
+                        {userData && <p className="" style={{color:'blue'}}>Player 1 : {userData.username}</p>}
                         <p className="" style={{color:'red'}}>Player 2 : GUEST</p>
                     </div>
                     <div className="d-flex justify-content-center">
