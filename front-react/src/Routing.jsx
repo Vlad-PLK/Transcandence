@@ -12,6 +12,7 @@ import WelcomePage from "./WelcomePage";
 import UserSettings from "./UserSettings";
 import Error404 from "./Error404";
 import UserGame from "./game_jsx/UserGame";
+import UserGameWindow from "./game_jsx/UserGameWindow";
 import ProtectedRoute from "./ProtectedRoute";
 import UserHomePage from "./UserHomePage";
 import UserFriends from "./UserFriends";
@@ -48,6 +49,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <UserGame/>
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: "userGameWindow/",
+                element: (
+                    <ProtectedRoute>
+                        <UserGameWindow/>
                     </ProtectedRoute>
                 )
             },

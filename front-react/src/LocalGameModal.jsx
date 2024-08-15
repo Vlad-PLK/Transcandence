@@ -6,7 +6,7 @@ function LocalGameModal() {
     const {userData} = useContext(UserDataContext);
     const navigate = useNavigate();
     const startGame=()=>{
-        navigate("/userGame/")
+        navigate("/userGameWindow/")
     }
     return (
         <>

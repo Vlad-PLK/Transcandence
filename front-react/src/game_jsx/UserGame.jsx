@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useContext } from 'react';
 import * as THREE from 'three';
 import setRenderer from './setRenderer';
 import setWalls from './setWalls';
@@ -12,6 +12,7 @@ import setPlane from './setPlane';
 import updateKey from './updateKey';
 import shockWave from './shockWave';
 import * as vec from './vectors_functions'
+import { UserDataContext } from '../UserDataContext';
 
 let cameraKeyIsPressed = false;
 let paddle1Right = false;
@@ -42,16 +43,18 @@ let lastTime = performance.now();
 
 const speedBoostSpeed = 0.8;
 let velocity = vec.vectorize(0, 0, 0);
-// Keyboard controls
+
 const keyboardState = {};
-
-document.addEventListener('keydown', (event) => {
+    
+const handleKeyDown = (event) => {
     keyboardState[event.key] = true;
-});
-
-document.addEventListener('keyup', (event) => {
+};
+const handleKeyUp = (event) => {
     keyboardState[event.key] = false;
-});
+};
+
+document.addEventListener('keydown', handleKeyDown);
+document.addEventListener('keyup', handleKeyUp);
 
 function setSphere(scene)
 {
@@ -160,6 +163,7 @@ function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
     {
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
         shockWave(scene, contactPoint);
+        console.log(player2SC);
         player2SC += 1;
         //player2ScoreElement.innerHTML = `Player 2: ${player2Score}`;
         resetSphere(sphere, sphereGeometry);
@@ -167,6 +171,7 @@ function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
 }
 
 function UserGame(){
+    const {userData} = useContext(UserDataContext);
     const animationFrameId = useRef(null);
     const mountRef = useRef(null);
     const sceneRef = useRef(null);
@@ -174,6 +179,7 @@ function UserGame(){
     const rendererRef = useRef(null);
     const player1SC = 0;
     const player2SC = 0;
+    // Keyboard controls
     useEffect(() => {
 
     // scene, lights, textures  //
@@ -290,7 +296,6 @@ function UserGame(){
             sceneRef.current.remove(moonMesh);
             sceneRef.current.remove(sunMesh);
             sceneRef.current.remove(lightsMesh);
-
             planeGeometry.dispose();
             speedBoostGeometry.dispose();
             bottomPaddle.geometry.dispose();
@@ -320,6 +325,8 @@ function UserGame(){
             lightsMesh.material.dispose();
         }
         window.removeEventListener('resize', onWindowResize);
+        //document.removeEventListener('keydown', handleKeyDown);
+        //document.removeEventListener('keyup', handleKeyUp);
         if (rendererRef.current) {
             rendererRef.current.dispose();
         }
@@ -332,11 +339,11 @@ function UserGame(){
 
   return (
     <>
-        <div className="d-flex justify-content-evenly">
-            <h1 className="border border-primary">Player 1 : {player1SC}</h1>
-            <h1 className="border border-danger">Player 2 : {player2SC}</h1>
+        <div className="d-flex justify-content-evenly text-white pt-5">
+            {userData && <h2 className="me-2">{userData.username} : {player1SC}</h2>}
+            <h2 className="ms-2">GUEST : {player2SC}</h2>
         </div>
-        <div ref={mountRef} />;
+        <div className="d-flex justify-content-center" ref={mountRef} />;
     </>
   )
 };
