@@ -46,5 +46,7 @@ class GetMatches(APIView):
     def get(self, request):
         user = request.user
         matches = Match.objects.filter(player1=user) | Match.objects.filter(player2=user)
+        if matches.count() == 0:
+            return Response({"error": "No matches found"}, status=200)
         serializer = MatchSerializer(matches, many=True)
         return Response(serializer.data)
