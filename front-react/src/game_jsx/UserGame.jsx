@@ -1,5 +1,8 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
 import * as THREE from 'three';
+import { TTFLoader } from 'three/examples/jsm/loaders/TTFLoader.js';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 import setRenderer from './setRenderer';
 import setWalls from './setWalls';
 import setPaddles from './setPaddles';
@@ -118,8 +121,7 @@ function resetSphere(sphere, sphereGeometry)
 }
 
 function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
-    topPaddle, bottomPaddle, bottomWall, topWall, 
-    player1SC, player2SC)
+    topPaddle, bottomPaddle, bottomWall, topWall, player1, setPlayer1, player2, setPlayer2)
 {
     const { normal, flag } = calculateCollisionNormal(sphere, sphereGeometry, 
         topPaddle, bottomPaddle, planeGeometry);
@@ -154,8 +156,7 @@ function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
     {
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
         shockWave(scene, contactPoint);
-        console.log(player1SC);
-        player1SC += 1;
+        setPlayer1(player1 + 1);
         //player1ScoreElement.innerHTML = `Player 1: ${player1Score}`;
         resetSphere(sphere, sphereGeometry);
     }
@@ -163,8 +164,7 @@ function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
     {
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
         shockWave(scene, contactPoint);
-        console.log(player2SC);
-        player2SC += 1;
+        setPlayer2(player2 + 1);
         //player2ScoreElement.innerHTML = `Player 2: ${player2Score}`;
         resetSphere(sphere, sphereGeometry);
     }
@@ -177,9 +177,8 @@ function UserGame(){
     const sceneRef = useRef(null);
     const cameraRef = useRef(null);
     const rendererRef = useRef(null);
-    const player1SC = 0;
-    const player2SC = 0;
-    // Keyboard controls
+    const [player1, setPlayer1] = useState(0);
+    const [player2, setPlayer2] = useState(0);
     useEffect(() => {
 
     // scene, lights, textures  //
@@ -212,8 +211,8 @@ function UserGame(){
     const { sphere, sphereGeometry } = setSphere(sceneRef.current);
     const { speedBoostGeometry, speedBoost1, speedBoost2 } = setBoosts(sceneRef.current);
     const { earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars } = setSolarySystem(sceneRef.current, textureLoader);
-    
-    // animation
+
+    // animatin
     const animate = () => {
         animationFrameId.current = requestAnimationFrame(animate);
 
@@ -253,9 +252,10 @@ function UserGame(){
         moonMesh.position.z = earthMesh.position.z + b * Math.sin(angle);
         moonMesh.rotation.y = -angle;
 
-        checkCollision(sceneRef.current, sphere, sphereGeometry, planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall,
-            player1SC, player2SC
-        );
+        
+        checkCollision(sceneRef.current, sphere, sphereGeometry, 
+            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, 
+            player1, setPlayer1, player2, setPlayer2);
 
         ////////////////////////////RESET SPHERE MAKES PONG WORK - COMMENT TO START A GAME ////////////////////////////
         //resetSphere(sphere, sphereGeometry);
@@ -340,8 +340,8 @@ function UserGame(){
   return (
     <>
         <div className="d-flex justify-content-evenly text-white pt-5">
-            {userData && <h2 className="me-2">{userData.username} : {player1SC}</h2>}
-            <h2 className="ms-2">GUEST : {player2SC}</h2>
+            {userData && <h2 className="me-2">{userData.username} : {player1}</h2>}
+            <h2 className="ms-2">GUEST : {player2}</h2>
         </div>
         <div className="d-flex justify-content-center" ref={mountRef} />;
     </>

@@ -1,43 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { UserDataContext } from './UserDataContext';
+import api from './api';
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const PlayerStats = ({name, wins, losses, draws, goals, matchHistory }) => {
+function PlayerStats(){
 	const [isVisible, setVisible] = useState(false);
-
+	const {userData} = useContext(UserDataContext);
+	const [userStats, setUserStats] = useState(null);
 	const toggleVisible = () => {
 		setVisible(!isVisible);
 	};
+	useEffect(() => {
+		if (userData)
+			{
+				try {
+					api.get('api/player-stats/')
+					.then(response => {
+						console.log(response.data)
+						setUserStats(response.data)
+					  })
+					.catch(error => {
+						console.log('Error:', error);
+					  });
+					// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+				} catch (error) {
+					alert(error);
+				}
+		}
+	}, [])
 	return (
-    <div className="player-stats card border-primary mb-3">
-      <div className="card-header bg-primary text-white">
-        <h2>{name}'s Stats</h2>
-      </div>
-      <ul className="list-group list-group-flush">
-        <li className="list-group-item">Wins: {wins}</li>
-        <li className="list-group-item">Losses: {losses}</li>
-        <li className="list-group-item">Draws: {draws}</li>
-        <li className="list-group-item">Goals: {goals}</li>
-      </ul>
-      <div className="card-header d-flex justify-content-between bg-primary text-white">
-        <h3>Match History</h3>
-		<button type="button" className="btn btn-light float-right" onClick={toggleVisible}>
-          {isVisible ? 'Hide' : 'Show'}
-    	</button>
-      </div>
-	{isVisible && (
-		matchHistory.length > 0 ? (
-			<ul className="match-history list-group">
-			  {matchHistory.map((match, index) => (
-				<li key={index} className="list-group-item">
-				  Opponent : {match.opponent} - Result : {match.result} - Final Score : {match.score}
-				</li>
-			  ))}
-			</ul>
-		  ) : (
-			<p className="card-text text-muted">No match history available.</p>
-		  )
-	)}
-      
-    </div>
+	<>
+			<div className="player-stats card mb-3 border-0" style={{color: '#6B3EB8'}}>
+      			<div className="card-header bg-dark">
+      			  {userData && <h2>{userData.username} Stats</h2>}
+      			</div>
+				{userStats && <div className="">
+					<ul className="list-group list-group-flush">
+      				  <li className="list-group-item">Wins: {userStats.wins}</li>
+      				  <li className="list-group-item">Losses: {userStats.losses}</li>
+      				  <li className="list-group-item">Draws: {userStats.draws}</li>
+      				  <li className="list-group-item">Goals: {userStats.goals}</li>
+      				</ul>
+				</div> }
+      			<div className="card-header d-flex flex-column justify-content-center bg-dark">
+      			  <h3 className="">Match History</h3>
+					<button type="button" className="btn btn-dark float-right" onClick={toggleVisible}>
+      			    {isVisible ? 'Hide' : 'Show'}
+    				</button>
+      			</div>
+				{isVisible &&
+						<ul className="card-footer match-history list-group">
+							<li className="list-group-item">
+							  Opponent : opponent - Result : result - Final Score : score
+							</li>
+						</ul>
+				} 		
+    		</div>
+	</>
+    
   );
 };
 

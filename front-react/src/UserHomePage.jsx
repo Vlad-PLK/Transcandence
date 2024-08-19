@@ -1,19 +1,20 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserDataContext } from "./UserDataContext";
 import SettingsModal from "./SettingsModal";
-import { useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import TranslationSelect from "./TranslationSelect";
 import { Link } from "react-router-dom";
 import './customFonts.css';
-import UserGameSetup from "./UserGameSetup";
-import UserSettings from "./UserSettings";
 import { useNavigate } from "react-router-dom";
+import api from "./api";
 
 function UserHomePage(){
 	const {userData} = useContext(UserDataContext);
 	const navigate = useNavigate();
 	const {t} = useTranslation();
+	const [playerStats, setPlayerStats] = useState(null);
+	const [username, setUsername] = useState('');
+	const [password, setPassword] = useState('');
 	const main_image = {
 		backgroundImage: `url('/cyber4.jpg')`,
 		backgroundSize: 'cover', // Adjust background size as needed
@@ -23,6 +24,9 @@ function UserHomePage(){
 		localStorage.clear();
 		navigate("/");
 	}
+	const stats_page = () => {
+		navigate('../userSettings');
+    }
 	return (
 		<>
 			<div className="d-flex flex-column vh-100" style={main_image}>
@@ -44,9 +48,9 @@ function UserHomePage(){
 								<hr className="dropdown-divider"/>
 								<button className="dropdown-item" onClick={disconnect}>Disconnect</button>
 							</ul>
-							{userData && <Link to={`../userSettings/`} type="button" className="btn btn-outline-light me-2">{userData.username}
+							{userData && <button type="button" className="btn btn-outline-light me-2" onClick={stats_page}>{userData.username}
 								<img className="ms-2 rounded" src="/robot.webp" alt="" height="40" widht="40"/>
-							</Link>}
+							</button>}
       			          </div>
       			      </div>
       			    </div>
