@@ -8,6 +8,7 @@ function PlayerStats(){
 	const [isVisible, setVisible] = useState(false);
 	const {userData} = useContext(UserDataContext);
 	const [userStats, setUserStats] = useState(null);
+	const [userMatch, setUserMatch] = useState([]);
 	const toggleVisible = () => {
 		setVisible(!isVisible);
 	};
@@ -19,6 +20,19 @@ function PlayerStats(){
 					.then(response => {
 						console.log(response.data)
 						setUserStats(response.data)
+					  })
+					.catch(error => {
+						console.log('Error:', error);
+					  });
+					// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+				} catch (error) {
+					alert(error);
+				}
+				try {
+					api.get('api/get-matches/')
+					.then(response => {
+						console.log(response.data)
+						setUserMatch(response.data)
 					  })
 					.catch(error => {
 						console.log('Error:', error);
@@ -49,13 +63,17 @@ function PlayerStats(){
       			    {isVisible ? 'Hide' : 'Show'}
     				</button>
       			</div>
-				{isVisible &&
-						<ul className="card-footer match-history list-group">
-							<li className="list-group-item">
-							  Opponent : opponent - Result : result - Final Score : score
-							</li>
-						</ul>
-				} 		
+				{isVisible && (userMatch.length > 0 ? (
+					<ul className="match-history list-group">
+			  		{userMatch.map((match, index) => (
+					<li key={index} className="list-group-item">
+				  		Opponent : {match.player2} | Winner : {match.match_winner} <br/> Final Score : {match.player1_score} - {match.player2_score}
+					</li>
+			  		))}
+					</ul>
+		  			) : (
+					<p className="card-text text-muted">No match history available.</p>
+				))} 		
     		</div>
 	</>
     
