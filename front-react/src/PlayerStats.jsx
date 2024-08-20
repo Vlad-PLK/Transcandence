@@ -47,16 +47,18 @@ function PlayerStats(){
 	<>
 			<div className="player-stats card mb-3 border-0" style={{color: '#6B3EB8'}}>
       			<div className="card-header bg-dark">
-      			  {userData && <h2>{userData.username} Stats</h2>}
+      			  <h2>Stats</h2>
       			</div>
-				{userStats && <div className="">
+				{userStats ? <div className="">
 					<ul className="list-group list-group-flush">
       				  <li className="list-group-item">Wins: {userStats.wins}</li>
       				  <li className="list-group-item">Losses: {userStats.losses}</li>
       				  <li className="list-group-item">Draws: {userStats.draws}</li>
       				  <li className="list-group-item">Goals: {userStats.goals}</li>
-      				</ul>
-				</div> }
+      				</ul> 
+				</div>
+					: 
+					<p className="card-text text-dark mt-3">No game stats yet !</p>}
       			<div className="card-header d-flex flex-column justify-content-center bg-dark">
       			  <h3 className="">Match History</h3>
 					<button type="button" className="btn btn-dark float-right" onClick={toggleVisible}>

@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import SettingsModal from "./SettingsModal";
 import api from "./api";
 import FriendRequestModal from "./FriendRequestModal";
+import DeleteFriendModal from "./DeleteFriendModal";
 
 function UserFriends()
 {
@@ -97,12 +98,13 @@ function UserFriends()
 						<button type="button" className="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#friendsRequest">Add Friend</button>
 					</div>
 					<div className="">
-						<button type="button" className="btn btn-lg btn-danger">Delete Friend</button>
+						<button type="button" className="btn btn-lg btn-danger" data-bs-toggle="modal" data-bs-target="#deleteFriendRequest">Delete Friend</button>
 					</div>
                 </div>
             </div>
 			<SettingsModal/>
 			<FriendRequestModal/>
+			<DeleteFriendModal/>
             </>
         </>
     ); 
