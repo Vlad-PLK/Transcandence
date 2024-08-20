@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import FriendRequest, Friendship
 from users.models import CustomUser
+from users.serializers import UserSerializer
 
 class FriendRequestSerializer(serializers.ModelSerializer):
     to_user_username = serializers.CharField(write_only=True)
@@ -20,6 +21,10 @@ class FriendRequestSerializer(serializers.ModelSerializer):
 
 
 class FriendshilSerializer(serializers.ModelSerializer):
+    user1 = UserSerializer(read_only=True)
+    user2 = UserSerializer(read_only=True)
+
     class Meta:
         model = Friendship
         fields = ['id', 'user1', 'user2', 'created_at']
+

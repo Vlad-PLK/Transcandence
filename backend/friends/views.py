@@ -31,3 +31,12 @@ class FriendRequestAcceptView(APIView):
             return Response({'status': 'Friend request accepted'}, status=status.HTTP_200_OK)
         except FriendRequest.DoesNotExist:
             return Response({'error': 'Friend request not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+
+class GetFriendList(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        friends = Friendship.objects.filter(user1=request.user)
+        serializer = FriendshilSerializer(friends, many=True)
+        return Response(serializer.data)
