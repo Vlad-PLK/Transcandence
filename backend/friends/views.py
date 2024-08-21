@@ -40,3 +40,12 @@ class GetFriendList(APIView):
         friends = Friendship.objects.filter(user1=request.user)
         serializer = FriendshilSerializer(friends, many=True)
         return Response(serializer.data)
+    
+
+class FriendRequestsListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        friend_requests = FriendRequest.objects.filter(to_user=request.user)
+        serializer = FriendRequestSerializer(friend_requests, many=True)
+        return Response(serializer.data)
