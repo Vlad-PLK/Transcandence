@@ -9,10 +9,11 @@ import { useNavigate } from "react-router-dom";
 import SettingsModal from "./SettingsModal";
 import api from "./api";
 import FriendRequestModal from "./FriendRequestModal";
+import DeleteFriendModal from "./DeleteFriendModal";
 
 function UserFriends()
 {
-    const {userData, setUserData} = useContext(UserDataContext);
+    const {userData} = useContext(UserDataContext);
     const {t} = useTranslation();
 	const navigate = useNavigate();
     const main_image = {
@@ -26,15 +27,15 @@ function UserFriends()
 		navigate("/");
 	}
 	const [isVisible, setVisible] = useState(false);
-	const [userFriends, setUserFriends] = useState();
+	const [userFriends, setUserFriends] = useState([]);
 	const toggleVisible = () => {
 		setVisible(!isVisible);
 	};
 	useEffect(() => {
-		if (userData)
+		if (userData && isVisible)
 			{
 				try {
-					api.get('api/player-stats/')
+					api.get('friends/friend-list/')
 					.then(response => {
 						console.log(response.data)
 						setUserFriends(response.data)
@@ -47,7 +48,7 @@ function UserFriends()
 					alert(error);
 				}
 		}
-	}, [])
+	}, [isVisible])
     return (
         <>
             <>
@@ -86,23 +87,29 @@ function UserFriends()
       			    		{isVisible ? 'Hide' : 'Show'}
     						</button>
       					</div>
-						{isVisible &&
-						<ul className="match-history list-group">
-						<li className="list-group-item">
-				  			Friend Username : 
+						{isVisible && (userFriends.length > 0 ? (
+						<ul className="friend-history list-group">
+			  			{userFriends.map((friends, index) => (
+						<li key={index} className="list-group-item">
+							{friends.user1.id == userData.id ? friends.user2.username : friends.user1.username}
 						</li>
-						</ul>}
+			  			))}
+						</ul>
+		  				) : (
+						<p className="card-text text-light mt-3">No friends yet !</p>
+						))} 
                     </div>
 					<div className="">
 						<button type="button" className="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#friendsRequest">Add Friend</button>
 					</div>
 					<div className="">
-						<button type="button" className="btn btn-lg btn-danger">Delete Friend</button>
+						<button type="button" className="btn btn-lg btn-danger" data-bs-toggle="modal" data-bs-target="#deleteFriendRequest">Delete Friend</button>
 					</div>
                 </div>
             </div>
 			<SettingsModal/>
 			<FriendRequestModal/>
+			<DeleteFriendModal/>
             </>
         </>
     ); 

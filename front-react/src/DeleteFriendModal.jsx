@@ -4,23 +4,21 @@ import { UserDataContext } from './UserDataContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import takeData from './takeData';
 
-function FriendRequestModal()
+function DeleteFriendModal()
 {
 	const [error, setError] = useState('');
 	const [friend, setFriend] = useState('');
 	const {userData} = useContext(UserDataContext);
 	const [user, setUser] = useState('');
-	const [toUserName] = useState('{to_user_username:')
 	const navigate = useNavigate();
 	const handleUser = () => {
-		setUser("leon");
+		setUser("vlad_plk");
 	}
     const sendInvite = async (e) => {
         e.preventDefault();
 
         try {
-			const to_user_username = friend;
-            const response = await api.post('friend-requests/', {to_user_username});
+            const response = await api.post('friend-requests/', {user, friend});
 			console.log(response.data);
 		} catch (error) {
             alert(error);
@@ -28,11 +26,11 @@ function FriendRequestModal()
     }
 	return (
 	<>
-      	<div className="modal fade" id="friendsRequest" tabIndex="-1" aria-labelledby="friendModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
+      	<div className="modal fade" id="deleteFriendRequest" tabIndex="-1" aria-labelledby="friendModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
         	<div className="modal-dialog modal-dialog-centered" role="document">
         		<div className="modal-content rounded-4 shadow">
         		  <div className="modal-header p-5 pb-4 border-bottom-0">
-        		    <h1 className="fw-bold mb-0 fs-4" id="loginModalLabel">Send a friend request now !</h1>
+        		    <h1 className="fw-bold mb-0 fs-4" id="loginModalLabel">Delete Friend</h1>
         		    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         		  </div>
         		  <div className="modal-body p-5 pt-0">
@@ -41,7 +39,7 @@ function FriendRequestModal()
         		        <input type="text" className="form-control rounded-3" id="username" placeholder='Username' autoComplete='username' value={friend} onChange={(e) => setFriend(e.target.value)}/>
         		        <label htmlFor="username">Username</label>
         		      </div>
-        		      <button className="w-90 mt-2 btn btn-lg rounded-3 btn-primary" type="submit" data-bs-dismiss="modal" onClick={handleUser}>Send</button>
+        		      <button className="w-90 mt-2 btn btn-lg rounded-3 btn-danger" type="submit" data-bs-dismiss="modal" onClick={handleUser}>Send</button>
         		      {error && <p className="text-danger">{error}</p>}
         		      </form>}
         		    </div>
@@ -52,4 +50,4 @@ function FriendRequestModal()
 	);
 };
 
-export default FriendRequestModal
+export default DeleteFriendModal
