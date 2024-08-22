@@ -9,12 +9,7 @@ function FriendRequestModal()
 	const [error, setError] = useState('');
 	const [friend, setFriend] = useState('');
 	const {userData} = useContext(UserDataContext);
-	const [user, setUser] = useState('');
-	const [toUserName] = useState('{to_user_username:')
 	const navigate = useNavigate();
-	const handleUser = () => {
-		setUser("leon");
-	}
     const sendInvite = async (e) => {
         e.preventDefault();
 
@@ -41,7 +36,7 @@ function FriendRequestModal()
         		        <input type="text" className="form-control rounded-3" id="username" placeholder='Username' autoComplete='username' value={friend} onChange={(e) => setFriend(e.target.value)}/>
         		        <label htmlFor="username">Username</label>
         		      </div>
-        		      <button className="w-90 mt-2 btn btn-lg rounded-3 btn-primary" type="submit" data-bs-dismiss="modal" onClick={handleUser}>Send</button>
+        		      <button className="w-90 mt-2 btn btn-lg rounded-3 btn-primary" type="submit" data-bs-dismiss="modal" onClick={sendInvite}>Send</button>
         		      {error && <p className="text-danger">{error}</p>}
         		      </form>}
         		    </div>

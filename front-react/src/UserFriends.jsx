@@ -27,9 +27,14 @@ function UserFriends()
 		navigate("/");
 	}
 	const [isVisible, setVisible] = useState(false);
+	const [isFr, setFr] = useState(false);
 	const [userFriends, setUserFriends] = useState([]);
+	const [userFriendRequest, setUserFriendRequest] = useState([]);
 	const toggleVisible = () => {
 		setVisible(!isVisible);
+	};
+	const toggleVisibleF = () => {
+		setFr(!isFr);
 	};
 	useEffect(() => {
 		if (userData && isVisible)
@@ -49,6 +54,39 @@ function UserFriends()
 				}
 		}
 	}, [isVisible])
+	useEffect(() => {
+		if (userData && isFr)
+			{
+				try {
+					api.get('friends-requests-list/')
+					.then(response => {
+						console.log(response.data)
+						setUserFriendRequest(response.data)
+					  })
+					.catch(error => {
+						console.log('Error:', error);
+					  });
+					// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+				} catch (error) {
+					alert(error);
+				}
+		}
+	}, [isFr])
+	const accept_friendship = (id) => {
+		try {
+			const path = 'friend-requests/' + id + '/accept/';
+			api.get(path)
+			.then(response => {
+				console.log(response.data)
+			  })
+			.catch(error => {
+				console.log('Error:', error);
+			  });
+			// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+		} catch (error) {
+			alert(error);
+		}
+	}
     return (
         <>
             <>
@@ -79,38 +117,64 @@ function UserFriends()
       			    </div>
       			  </div>
       			</header>
-				<div className="d-flex justify-content-evenly mt-5 pt-2 ms-2">
-                    <div className="col-sm-4 text-center">
-						<div className="card-header d-flex flex-column rounded-2  bg-dark">
-      			  			<h3 className="text-light">Friends List</h3>
-							<button type="button" className="btn btn-dark float-right" onClick={toggleVisible}>
-      			    		{isVisible ? 'Hide' : 'Show'}
-    						</button>
-      					</div>
-						{isVisible && (userFriends.length > 0 ? (
-						<ul className="friend-history list-group">
-			  			{userFriends.map((friends, index) => (
-						<li key={index} className="list-group-item">
-							{friends.user1.id == userData.id ? friends.user2.username : friends.user1.username}
-						</li>
-			  			))}
-						</ul>
-		  				) : (
-						<ul className="friend-history list-group">
-							<li className="list-group-item rounded-0 rounded-bottom">No friends yet...</li>
-						</ul>
-						))} 
-                    </div>
-					<div className="">
-						<button type="button" className="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#friendsRequest">Add Friend</button>
+				<div className=" d-flex justify-content-center">
+					<div className="d-flex align-items-center flex-column mt-5" style={{width:"60%"}}>
+						<div className="text-center container">
+							<div className="card-header rounded-2 bg-dark pt-2 pb-2 ps-5 pe-5">
+								<h3 className="text-light">Friends List</h3>
+								<button type="button" className="btn btn-dark float-right" onClick={toggleVisible}>
+								{isVisible ? 'Hide' : 'Show'}
+								</button>
+							</div>
+							{isVisible && (userFriends.length > 0 ? (
+							<ul className="friend-history list-group">
+							{userFriends.map((friends, index) => (
+							<li key={index} className="list-group-item">
+								{friends.user1.id == userData.id ? friends.user2.username : friends.user1.username}
+							</li>
+							))}
+							</ul>
+							) : (
+							<ul className="friend-history list-group">
+								<li className="list-group-item rounded-0 rounded-bottom">No friends yet...</li>
+							</ul>
+							))} 
+						</div>
+						<div className="text-center container mt-5 ">
+							<div className="card-header rounded-2 bg-dark pt-2 pb-2 ps-5 pe-5">
+								<h3 className="text-light">Friends Requests</h3>
+								<button type="button" className="btn btn-dark float-right" onClick={toggleVisibleF}>
+								{isFr ? 'Hide' : 'Show'}
+								</button>
+							</div>
+							{isFr && (userFriendRequest.length > 0 ? (
+							<ul className="friend-request-history list-group">
+							{userFriendRequest.map((friendsRequest, index) => (
+							<li key={index} className="list-group-item">
+								{friendsRequest.to_user.id == userData.id ? 
+									<div>
+										<p className="rounded-0 rounded-bottom">Request from {friendsRequest.from_user.username}</p> 
+										<button type="button" className="btn btn-success" onClick={() => accept_friendship(friendsRequest.id)}>ACCEPT</button>
+									</div>
+									:
+									<p className="rounded-0 rounded-bottom">Request sent to {friendsRequest.to_user.username}</p>}
+							</li>
+							))}
+							</ul>
+							) : (
+							<ul className="friend-history list-group">
+								<li className="list-group-item rounded-0 rounded-bottom">No request made yet...</li>
+							</ul>
+							))} 
+						</div>
+						<div className="mt-5">
+							<button type="button" className="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#friendsRequest">Add Friend</button>
+						</div>
+						<div className="mt-5">
+							<button type="button" className="btn btn-lg btn-danger" data-bs-toggle="modal" data-bs-target="#deleteFriendRequest">Delete Friend</button>
+						</div>
 					</div>
-					<div className="">
-						<button type="button" className="btn btn-lg btn-danger" data-bs-toggle="modal" data-bs-target="#deleteFriendRequest">Delete Friend</button>
-					</div>
-					<div className="">
-						<button type="button" className="btn btn-lg btn-info" data-bs-toggle="modal" data-bs-target="#deleteFriendRequest">	Friend Requests</button>
-					</div>
-                </div>
+				</div>
             </div>
 			<SettingsModal/>
 			<FriendRequestModal/>
