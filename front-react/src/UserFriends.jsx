@@ -96,7 +96,9 @@ function UserFriends()
 			  			))}
 						</ul>
 		  				) : (
-						<p className="card-text text-light mt-3">No friends yet !</p>
+						<ul className="friend-history list-group">
+							<li className="list-group-item rounded-0 rounded-bottom">No friends yet...</li>
+						</ul>
 						))} 
                     </div>
 					<div className="">
@@ -104,6 +106,9 @@ function UserFriends()
 					</div>
 					<div className="">
 						<button type="button" className="btn btn-lg btn-danger" data-bs-toggle="modal" data-bs-target="#deleteFriendRequest">Delete Friend</button>
+					</div>
+					<div className="">
+						<button type="button" className="btn btn-lg btn-info" data-bs-toggle="modal" data-bs-target="#deleteFriendRequest">	Friend Requests</button>
 					</div>
                 </div>
             </div>
