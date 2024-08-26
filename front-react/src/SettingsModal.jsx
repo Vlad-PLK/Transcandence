@@ -2,12 +2,34 @@ import {useContext} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useNavigate} from 'react-router-dom';
 import {UserDataContext} from './UserDataContext';
+import {useState} from 'react';
+import api from './api';
 
 function SettingsModal()
 {
 	const {userData} = useContext(UserDataContext);
+	const [userAvatar, setUserAvatar] = useState(null);
 	const {t} = useTranslation();
 	const navigate = useNavigate();
+
+	const AvatarState = async (event) => {
+		if (event.target.files && event.target.files[0]) {
+			setUserAvatar(URL.createObjectURL(event.target.files[0]));
+		}
+	}
+	const changeAvatar = async (e) => {
+		e.preventDefault();
+		try {
+			const response = await api.post('users/avatar_upload/', {userAvatar}, {
+				headers: {
+				  'Content-Type': 'multipart/form-data',
+				},
+			  });
+			console.log(response.data);
+		} catch (error) {
+			alert(error);
+		}
+	}
 	return (
 		<>
 			<div className="modal fade" id="settingsModal" tabIndex="-1" style={{fontFamily:'cyber4'}}>
@@ -21,12 +43,18 @@ function SettingsModal()
 							<p>Change Avatar</p>
 							<div className="d-flex mb-4">
 								{userData.avatar == null ?
-									<img className="rounded bg-warning" src="/robot.webp" alt="" height="100" widht="100"/>
+									<div>
+										<input type="file" className="filetype" onChange={AvatarState}/>
+										<img className="rounded bg-warning" src="/robot.webp" alt="" height="100" widht="100"/>
+									</div>
 									:
-									<img className="rounded bg-warning" src="/guychill.jpg" alt="" height="100" widht="100"/>
+									<div>
+										<input type="file" className="filetype" onChange={AvatarState}/>
+										{userAvatar && <img className="rounded bg-warning" src={userData.avatar} alt="" height="100" widht="100"/>}
+									</div>
 								}
 								<div className="d-flex flex-column justify-content-center ms-3 mt-2">
-								<button className="btn btn-success btn-sm mb-2">SAVE</button>
+								<button className="btn btn-success btn-sm mb-2" onClick={changeAvatar}>SAVE</button>
 								<button className="btn btn-danger btn-sm">CANCEL</button>
 								</div>
 							</div>
@@ -37,13 +65,13 @@ function SettingsModal()
 								<button className="btn btn-success btn-sm mt-2 me-2">SAVE</button>
 								<button className="btn btn-danger btn-sm mt-2">CANCEL</button>
 							</div>
-							<p className="m-0">Current Email : {userData.email}</p>
+							{/* <p className="m-0">Current Email : {userData.email}</p>
 							<div className="form-floating mb-4">
 								<input type="email" className="form-control rounded-3" id="paramEmail-change" placeholder="Email"/>
 								<label htmlFor="paramEmail-change">Change Email</label>
 								<button className="btn btn-success btn-sm mt-2 me-2">SAVE</button>
 								<button className="btn btn-danger btn-sm mt-2">CANCEL</button>
-							</div>
+							</div> */}
 							<p className="m-0">Change Password</p>
 							<div className="form-floating mb-2">
                                 <input type="password" className="form-control rounded-3" id="paramPassword" placeholder="Password" autoComplete='new-password'/>
