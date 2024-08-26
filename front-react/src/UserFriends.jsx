@@ -72,20 +72,23 @@ function UserFriends()
 				}
 		}
 	}, [isFr])
-	const accept_friendship = (id) => {
+	const accept_friendship = async (id) => {
+		const url = `friend-requests/${id}/accept/`;
 		try {
-			const path = 'friend-requests/' + id + '/accept/';
-			api.get(path)
-			.then(response => {
-				console.log(response.data)
-			  })
-			.catch(error => {
+			const response = await api.put(url);
+			console.log(response.data)
+		}catch(error) {
 				console.log('Error:', error);
-			  });
-			// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
-		} catch (error) {
-			alert(error);
-		}
+			  };
+	}
+	const reject_friendship = async (id) => {
+		const url = `friend-requests/${id}/accept/`;
+		try {
+			const response = await api.put(url);
+			console.log(response.data)
+		}catch(error) {
+				console.log('Error:', error);
+			  };
 	}
     return (
         <>
@@ -93,27 +96,31 @@ function UserFriends()
             <div className="d-flex flex-column vh-100" style={main_image}>
                 <header className="p-4 opacity-75">
       			  <div className="container">
-      			    <div className="d-flex flex-wrap align-items-center justify-content-lg-start">
+      			    <div className="d-flex flex-wrap align-items-center">
       			      <TranslationSelect/>
-      			      <a href="/userPage/" className="d-flex align-items-center ms-3 mb-3 mb-md-0 me-md-auto text-decoration-none text-white">
+      			      <a href="/userPage/" className="d-flex align-items-center ms-3 me-3 text-decoration-none text-white">
       			        <span className="fs-4">{t('main.title')}</span>
       			      </a>
-                    <div className="text-end">
-      			          <div className="btn-group dropstart">
-							<button type="button" className="btn btn-outline-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-								<span className="visually-hidden">Toggle Dropstart</span>
-							</button>
-							<ul className="dropdown-menu opacity-50" style={{fontSize:"12px",textAlign:"center", minWidth:"5rem"}}>
-								<a className="dropdown-item" href="" data-bs-toggle="modal" data-bs-target="#settingsModal">Settings</a>
-								<Link to={`../userFriends`} className="dropdown-item">Friends</Link>
-								<hr className="dropdown-divider"/>
-								<button className="dropdown-item" onClick={disconnect}>Disconnect</button>
-							</ul>
-							{userData && <Link to={`.`} type="button" className="btn btn-outline-light me-2">{userData.username}
+					  <button type="button" className=" btn btn-lg btn-primary ms-md-auto mb-md-0 me-md-auto" data-bs-toggle="modal" data-bs-target="#friendsRequest">Add Friend</button>
+					  <button type="button" className="btn btn-lg btn-danger mb-md-0 me-md-auto" data-bs-toggle="modal" data-bs-target="#deleteFriendRequest">Delete Friend</button>
+      			        <div className="btn-group dropstart">
+						<button type="button" className="btn btn-outline-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+							<span className="visually-hidden">Toggle Dropstart</span>
+						</button>
+						<ul className="dropdown-menu opacity-50" style={{fontSize:"12px",textAlign:"center", minWidth:"5rem"}}>
+							<a className="dropdown-item" href="" data-bs-toggle="modal" data-bs-target="#settingsModal">Settings</a>
+							<Link to={`../userFriends`} className="dropdown-item">Friends</Link>
+							<hr className="dropdown-divider"/>
+							<button className="dropdown-item" onClick={disconnect}>Disconnect</button>
+						</ul>
+						{userData && <Link to={`../userSettings`} type="button" className="btn btn-outline-light me-2">{userData.username}
+							{userData.avatar == null ? 
 								<img className="ms-2 rounded" src="/robot.webp" alt="" height="40" widht="40"/>
-							</Link>}
-      			          </div>
-      			    </div>
+								:
+								<img className="ms-2 rounded" src="/guychill.jpg" alt="" height="40" widht="40"/>
+							}
+						</Link>}
+      			        </div>
       			    </div>
       			  </div>
       			</header>
@@ -154,7 +161,10 @@ function UserFriends()
 								{friendsRequest.to_user.id == userData.id ? 
 									<div>
 										<p className="rounded-0 rounded-bottom">Request from {friendsRequest.from_user.username}</p> 
-										<button type="button" className="btn btn-success" onClick={() => accept_friendship(friendsRequest.id)}>ACCEPT</button>
+										<div className="d-flex justify-content-center">
+											<button type="button" className="btn btn-sm btn-success me-3" onClick={() => accept_friendship(friendsRequest.id)}>ACCEPT</button>
+											<button type="button" className="btn btn-sm btn-danger" onClick={() => reject_friendship(friendsRequest.id)}>REJECT</button>
+										</div>
 									</div>
 									:
 									<p className="rounded-0 rounded-bottom">Request sent to {friendsRequest.to_user.username}</p>}
@@ -166,12 +176,6 @@ function UserFriends()
 								<li className="list-group-item rounded-0 rounded-bottom">No request made yet...</li>
 							</ul>
 							))} 
-						</div>
-						<div className="mt-5">
-							<button type="button" className="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#friendsRequest">Add Friend</button>
-						</div>
-						<div className="mt-5">
-							<button type="button" className="btn btn-lg btn-danger" data-bs-toggle="modal" data-bs-target="#deleteFriendRequest">Delete Friend</button>
 						</div>
 					</div>
 				</div>
