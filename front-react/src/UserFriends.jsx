@@ -17,7 +17,7 @@ function UserFriends()
     const {t} = useTranslation();
 	const navigate = useNavigate();
     const main_image = {
-		backgroundImage: `url('/cyber4.jpg')`,
+		backgroundImage: `url('/friends2.jpg')`,
 		backgroundSize: 'cover', // Adjust background size as needed
 		backgroundPosition: 'center', // Adjust background position as needed
 		fontFamily: 'cyber4'
@@ -30,6 +30,7 @@ function UserFriends()
 	const [isFr, setFr] = useState(false);
 	const [userFriends, setUserFriends] = useState([]);
 	const [userFriendRequest, setUserFriendRequest] = useState([]);
+	const [userFriendRequestSent, setUserFriendRequestSent] = useState([]);
 	const toggleVisible = () => {
 		setVisible(!isVisible);
 	};
@@ -70,6 +71,19 @@ function UserFriends()
 				} catch (error) {
 					alert(error);
 				}
+				try {
+					api.get('friends/from-user-request-list')
+					.then(response => {
+						console.log(response.data)
+						setUserFriendRequestSent(response.data)
+					  })
+					.catch(error => {
+						console.log('Error:', error);
+					  });
+					// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+				} catch (error) {
+					alert(error);
+				}
 		}
 	}, [isFr])
 	const accept_friendship = async (id) => {
@@ -94,14 +108,14 @@ function UserFriends()
         <>
             <>
             <div className="d-flex flex-column vh-100" style={main_image}>
-                <header className="p-4 opacity-75">
+                <header className="p-4">
       			  <div className="container">
       			    <div className="d-flex flex-wrap align-items-center">
       			      <TranslationSelect/>
       			      <a href="/userPage/" className="d-flex align-items-center ms-3 me-3 text-decoration-none text-white">
       			        <span className="fs-4">{t('main.title')}</span>
       			      </a>
-					  <button type="button" className=" btn btn-lg btn-primary ms-md-auto mb-md-0 me-md-auto" data-bs-toggle="modal" data-bs-target="#friendsRequest">Add Friend</button>
+					  <button type="button" className="btn btn-lg btn-primary ms-md-auto mb-md-0 me-5" data-bs-toggle="modal" data-bs-target="#friendsRequest">Add Friend</button>
 					  <button type="button" className="btn btn-lg btn-danger mb-md-0 me-md-auto" data-bs-toggle="modal" data-bs-target="#deleteFriendRequest">Delete Friend</button>
       			        <div className="btn-group dropstart">
 						<button type="button" className="btn btn-outline-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
@@ -124,7 +138,7 @@ function UserFriends()
       			    </div>
       			  </div>
       			</header>
-				<div className=" d-flex justify-content-center">
+				<div className="d-flex justify-content-center opacity-75">
 					<div className="d-flex align-items-center flex-column mt-5" style={{width:"60%"}}>
 						<div className="text-center container">
 							<div className="card-header rounded-2 bg-dark pt-2 pb-2 ps-5 pe-5">
@@ -154,11 +168,10 @@ function UserFriends()
 								{isFr ? 'Hide' : 'Show'}
 								</button>
 							</div>
-							{isFr && (userFriendRequest.length > 0 ? (
+							{isFr && ((userFriendRequest.length > 0 || userFriendRequestSent.length > 0) ? (
 							<ul className="friend-request-history list-group">
 							{userFriendRequest.map((friendsRequest, index) => (
 							<li key={index} className="list-group-item">
-								{friendsRequest.to_user.id == userData.id ? 
 									<div>
 										<p className="rounded-0 rounded-bottom">Request from {friendsRequest.from_user.username}</p> 
 										<div className="d-flex justify-content-center">
@@ -166,10 +179,15 @@ function UserFriends()
 											<button type="button" className="btn btn-sm btn-danger" onClick={() => reject_friendship(friendsRequest.id)}>REJECT</button>
 										</div>
 									</div>
-									:
-									<p className="rounded-0 rounded-bottom">Request sent to {friendsRequest.to_user.username}</p>}
 							</li>
 							))}
+							{userFriendRequestSent.map((friendsRequestSent, index) => (
+								<li key={index} className="list-group-item">
+										<div>
+											<p className="rounded-0 rounded-bottom">Request sent to {friendsRequestSent.to_user.username}</p>
+										</div>
+								</li>
+								))}
 							</ul>
 							) : (
 							<ul className="friend-history list-group">
