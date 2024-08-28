@@ -15,7 +15,19 @@ class PlayerInfoSerializer(serializers.ModelSerializer):
 
 
 class MatchSerializer(serializers.ModelSerializer):
+    player1_name = serializers.SerializerMethodField()
+    player2_name = serializers.SerializerMethodField()
+    match_winner_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Match
-        fields = ['player1', 'player2', 'player1_score', 'player2_score', 'match_winner']
-        
+        fields = ['player1_name', 'player2_name', 'player1_score', 'player2_score', 'match_winner_name']
+
+    def get_player1_name(self, obj):
+        return obj.player1.username
+
+    def get_player2_name(self, obj):
+        return obj.player2.username
+
+    def get_match_winner_name(self, obj):
+        return obj.match_winner.username
