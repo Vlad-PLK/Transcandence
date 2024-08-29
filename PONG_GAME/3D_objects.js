@@ -4,7 +4,7 @@ function setPlane(scene, textureLoader)
 {
     // Create a plane on the X and Y axis
     const planeGeometry = new THREE.PlaneGeometry(75, 100); // Width, height
-    const planeMaterial = new THREE.MeshStandardMaterial({map: textureLoader.load("./planetexture.png"), side: THREE.DoubleSide}); // Green color, double-sided
+    const planeMaterial = new THREE.MeshStandardMaterial({color: 0xFF0000});// map: textureLoader.load("./planetexture.png"), side: THREE.DoubleSide}); // Green color, double-sided
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.rotation.x = -Math.PI / 2; // Rotate the plane to lie flat on the X and Y axis
     plane.receiveShadow = true;

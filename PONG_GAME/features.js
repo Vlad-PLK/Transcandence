@@ -10,13 +10,12 @@ export function setBoosts(scene)
     const speedBoost1 = new THREE.Mesh(speedBoostGeometry, speedBoostMaterial);
     speedBoost1.position.set(15, 0.05, 20);
     speedBoost1.receiveShadow = true;
-    speedBoost1.castShadow = true;
+
     scene.add(speedBoost1);
 
     const speedBoost2 = new THREE.Mesh(speedBoostGeometry, speedBoostMaterial);
     speedBoost2.position.set(-15, 0.05, -20);
     speedBoost1.receiveShadow = true;
-    speedBoost1.castShadow = true;
     scene.add(speedBoost2);
 
     return {speedBoostGeometry, speedBoost1, speedBoost2};
