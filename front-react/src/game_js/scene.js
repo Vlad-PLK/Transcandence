@@ -1,8 +1,6 @@
-import * as THREE from './node_modules/three/src/Three.js';
-// import { Lensflare, LensflareElement } from './node_modules/three/examples/jsm/objects/Lensflare.js';
+import * as THREE from 'three';
 import { Vector, vectorize, normalizeVector, vecAdd, vecSubtract, dot, crossProduct, scalarProduct, reflectVector } from './vector_utils.js';
 import { getFresnelMat } from "./getFresnelMat.js";
-
 
 export function checkSun(camera, sunMesh, stars)
 {
@@ -14,7 +12,7 @@ export function checkSun(camera, sunMesh, stars)
     const angle = cameraDirection.angleTo(sunDirection);
 
     // Adjust stars opacity based on the angle
-    const maxAngle = Math.PI / 4; // 45 degrees
+    const maxAngle = Math.PI / 2;
     const opacity = THREE.MathUtils.clamp(angle / maxAngle, 0, 1);
 
     stars.material.opacity = opacity;
@@ -91,7 +89,7 @@ function setRenderer()
 function setAmbient(scene)
 {
     // Add ambient light (provides a base level of light to the scene)
-    const ambientLight = new THREE.AmbientLight(0x404040, 3.5); // Color, intensity
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2.5); // Color, intensity
     scene.add(ambientLight);
 
     return (ambientLight);
@@ -126,7 +124,7 @@ function setSolarySystem(scene, textureLoader)
         transparent: true,
         opacity: 0.8,
         blending: THREE.AdditiveBlending,
-        alphaMap: textureLoader.load("./earthcloudmaptrans.jpg")
+        alphaMap: textureLoader.load('./earthcloudmaptrans.jpg')
       });
     const cloudssMesh = new THREE.Mesh(earthGeometry, cloudMaterial);
     earthGroup.add(cloudssMesh);
@@ -146,35 +144,26 @@ function setSolarySystem(scene, textureLoader)
 
     // Create the sun geometry
     const sunGeometry = new THREE.IcosahedronGeometry(600, 12); // Radius, detail
-    const sunMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load("sunmap.jpg") });
+    const sunMaterial = new THREE.MeshBasicMaterial({ emissive: new THREE.Color(0xFFFF00),
+    emissiveIntensity: 1.5, map: textureLoader.load("sunmap.jpg") });
     const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
     sunMesh.position.set(-600, 200, -5000);
 
     // Create a point light to simulate the sun's light
-    const sunLight = new THREE.DirectionalLight(0xFFFFFF, 4); // Color, intensity
+    const sunLight = new THREE.DirectionalLight(0xFFFFFF, 3); // Color, intensity
     sunLight.castShadow = true;
-    sunLight.position.set(-200, 1000, -500);
+    sunLight.position.set(-400, 500, -2000);
 
-    sunLight.shadow.mapSize.width = 10000;
-    sunLight.shadow.mapSize.height = 10000;
+    // sunLight.shadow.mapSize.width = 10000;
+    // sunLight.shadow.mapSize.height = 10000;
 
-    // Set up shadow properties for the light
-    sunLight.shadow.camera.near = 0.5;
-    sunLight.shadow.camera.far = 10000;
-    sunLight.shadow.camera.left = -100;
-    sunLight.shadow.camera.right = 100;
-    sunLight.shadow.camera.top = 100;
-    sunLight.shadow.camera.bottom = -100;
-
-    // // Create the lens flare effect
-    // const lensflareTexture = textureLoader.load("./sunmapshiny.png");
-    // const lensflare = new Lensflare();
-    // lensflare.addElement(new LensflareElement(lensflareTexture, 700, 0, sunLight.color));
-    // lensflare.addElement(new LensflareElement(lensflareTexture, 60, 0.6));
-    // lensflare.addElement(new LensflareElement(lensflareTexture, 70, 0.7));
-    // lensflare.addElement(new LensflareElement(lensflareTexture, 120, 0.9));
-    // lensflare.addElement(new LensflareElement(lensflareTexture, 70, 1.0));
-    // sunLight.add(lensflare);
+    // // Set up shadow properties for the light
+    // sunLight.shadow.camera.near = 0.5;
+    // sunLight.shadow.camera.far = 10000;
+    // sunLight.shadow.camera.left = -100;
+    // sunLight.shadow.camera.right = 100;
+    // sunLight.shadow.camera.top = 100;
+    // sunLight.shadow.camera.bottom = -100;
 
     // Optional: create an object to hold the sun and light together
     const sunGroup = new THREE.Group();
@@ -193,6 +182,7 @@ export function setAll()
     const { scene, textureLoader } = setScene();
     const camera = setCamera();
     const renderer = setRenderer();
+    // new OrbitControls(camera, renderer.domElement);
     const ambientLight = setAmbient(scene);
     const { earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars } = setSolarySystem(scene, textureLoader);
     

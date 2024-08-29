@@ -1,10 +1,10 @@
-import * as THREE from "./node_modules/three/src/Three.js";
+import * as THREE from 'three';
 
 function setPlane(scene, textureLoader)
 {
     // Create a plane on the X and Y axis
     const planeGeometry = new THREE.PlaneGeometry(75, 100); // Width, height
-    const planeMaterial = new THREE.MeshStandardMaterial({color: 0xFF0000});// map: textureLoader.load("./planetexture.png"), side: THREE.DoubleSide}); // Green color, double-sided
+    const planeMaterial = new THREE.MeshStandardMaterial({map: textureLoader.load("./planetexture.png"), side: THREE.DoubleSide}); // Green color, double-sided
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.rotation.x = -Math.PI / 2; // Rotate the plane to lie flat on the X and Y axis
     plane.receiveShadow = true;
@@ -82,7 +82,7 @@ function setPaddles(scene, planeGeometry)
     const bottomPaddle = new THREE.Mesh(bottomPaddleGeometry, bottomPaddleMaterial);
     bottomPaddle.position.z = -planeGeometry.parameters.height / 2 + paddleDepth / 2; // Position along the Z axis
     bottomPaddle.position.y = paddleHeight / 2; // Center of the paddle on the Y axis
-    bottomPaddle.castShadow = true;
+    //bottomPaddle.castShadow = true;
     scene.add(bottomPaddle);
 
     // Top paddle
@@ -91,7 +91,7 @@ function setPaddles(scene, planeGeometry)
     const topPaddle = new THREE.Mesh(topPaddleGeometry, topPaddleMaterial);
     topPaddle.position.z = planeGeometry.parameters.height / 2 - paddleDepth / 2; // Position along the Z axis
     topPaddle.position.y = paddleHeight / 2; // Center of the paddle on the Y axis
-    topPaddle.castShadow = true;
+    //topPaddle.castShadow = true;
     scene.add(topPaddle);
 
     return { bottomPaddle, topPaddle, bottomPaddleGeometry, topPaddleGeometry};

@@ -1,21 +1,21 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
-import * as THREE from 'three';
-import { TTFLoader } from 'three/examples/jsm/loaders/TTFLoader.js';
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
-import setRenderer from './setRenderer';
-import setWalls from './setWalls';
-import setPaddles from './setPaddles';
-import setBoosts from './setBoosts';
-import setSolarySystem from './setSolarySystem';
-import checkSun from './checkSun';
-import isBallOverBoostSurface from './isBall';
-import setCamera from './setCamera';
-import setPlane from './setPlane';
-import updateKey from './updateKey';
-import shockWave from './shockWave';
-import * as vec from './vectors_functions'
-import { UserDataContext } from '../UserDataContext';
+import * as THREE from '../../node_modules/three/src/Three.js';
+import { TTFLoader } from '../../node_modules/three/examples/jsm/loaders/TTFLoader.js';
+import { Font, FontLoader } from '../../node_modules/three/examples/jsm/loaders/FontLoader.js';
+import { TextGeometry } from '../../node_modules/three/examples/jsm/geometries/TextGeometry.js';
+import Ponderosa_Regular from './Ponderosa_Regular.json'
+import setRenderer from './setRenderer.jsx';
+import setWalls from './setWalls.jsx';
+import setPaddles from './setPaddles.jsx';
+import setBoosts from './setBoosts.jsx';
+import setSolarySystem from './setSolarySystem.jsx';
+import isBallOverBoostSurface from './isBall.jsx';
+import setCamera from './setCamera.jsx';
+import setPlane from './setPlane.jsx';
+import updateKey from './updateKey.jsx';
+import shockWave from './shockWave.jsx';
+import * as vec from './vectors_functions.jsx'
+import { UserDataContext } from '../UserDataContext.jsx';
 
 let cameraKeyIsPressed = false;
 let paddle1Right = false;
@@ -24,9 +24,12 @@ let paddle2Right = false;
 let paddle2Left = false;
 let cameraPosition = 1;
 
+let player1Score = 0;
+let player2Score = 0;
+
 let boostMultiplier = 1;
-let boost1Flag = 1; // Initial direction (1 for right, -1 for left)
-let boost2Flag = -1; // Initial direction (1 for right, -1 for left)
+let boost1Flag = 0.5; // Initial direction (1 for right, -1 for left)
+let boost2Flag = -0.5; // Initial direction (1 for right, -1 for left)
 
 // Define the orbit parameters
 const semiMajorAxis = 500; // Semi-major axis in km
@@ -120,65 +123,151 @@ function resetSphere(sphere, sphereGeometry)
     
 }
 
+function resetPaddles(topPaddle, bottomPaddle, planeGeometry)
+{
+    topPaddle.position.set(0, 1, planeGeometry.parameters.height / 2 - 1 / 2)
+    bottomPaddle.position.set(0, 1, -planeGeometry.parameters.height / 2 + 1 / 2);
+}
+
+
+// Function to create text geometry and add it to the scene
+function createScoreText(player1Score, player2Score, font, userData) {
+    // Define properties for the text geometry
+    const properties = {
+        font: font,
+        size: 8,
+        depth: 1, // Use 'height' for TextGeometry
+        curveSegments: 10,
+        bevelEnabled: true,
+        bevelOffset: 0,
+        bevelSegments: 2,
+        bevelSize: 0.3,
+        bevelThickness: 1
+    };
+
+    // Create text geometry for the score display
+    const scoreText = `GUEST ${player1Score} : ${player2Score} GUEST`;
+    const textGeometry = new TextGeometry(scoreText, properties);
+
+    // Center the geometry by computing its bounding box and setting its center
+    textGeometry.computeBoundingBox();
+    const boundingBox = textGeometry.boundingBox;
+    const centerX = -0.5 * (boundingBox.max.x - boundingBox.min.x);
+    const centerY = -0.5 * (boundingBox.max.y - boundingBox.min.y);
+    const centerZ = -0.5 * (boundingBox.max.z - boundingBox.min.z);
+    textGeometry.translate(centerX, centerY, centerZ);
+
+    // Set the material for the text mesh
+    const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+
+    // Create the mesh for the text
+    const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+
+    // Position the text at a visible position
+    textMesh.position.set(0, 10, 0);
+    return textMesh;
+}
+
+// Function to update the score text
+function updateScoreText(scoreTextMesh, player1Score, player2Score, scene, userData, font) {
+    if (scoreTextMesh)
+    {
+        scene.remove(scoreTextMesh); // Remove the old text mesh from the scene
+        scoreTextMesh.geometry.dispose(); // Dispose of geometry to free up memory
+        scoreTextMesh.material.dispose(); // Dispose of material to free up memory
+    }
+
+    // Create a new text mesh with the updated score
+    scoreTextMesh = createScoreText(player1Score, player2Score, font, userData);
+    scene.add(scoreTextMesh);
+
+    // Start the rotation animation
+    //animateText(scoreTextMesh);
+}
+
+// Function to animate the rotation of the text
+function animateText(scoreTextMesh) {
+    const startTime = Date.now();
+    const duration = 5000; // Animation duration in milliseconds
+    const elapsed = Date.now() - startTime;
+
+    while (elapsed < duration)
+        scoreTextMesh.rotation.y += 0.02; // Adjust the rotation speed as needed
+    // scene.remove(scoreTextMesh);
+}
+
+
+
 function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
-    topPaddle, bottomPaddle, bottomWall, topWall, player1, setPlayer1, player2, setPlayer2)
+    topPaddle, bottomPaddle, bottomWall, topWall, player1Score, player2Score, scoreTextMesh, userData, font)
 {
     const { normal, flag } = calculateCollisionNormal(sphere, sphereGeometry, 
         topPaddle, bottomPaddle, planeGeometry);
 
-    if (normal != null && flag > 0)
-    {
-        if (paddle1Left && flag == 3)
+        if (normal != null && flag > 0)
         {
-            velocity.x += 0.2;
-            // velocity.z += 0.1;
+            if (paddle1Left == true && flag == 3)
+            {
+                // console.log("1 left = ", paddle1Left, " | flag = ", flag)
+                velocity.x += 0.5;
+                // velocity.z += 0.1;
+            }
+            else if (paddle1Right == true && flag == 3)
+            {
+                // console.log("1 right = ", paddle1Right, " | flag = ", flag)
+                velocity.x -= 0.5;
+                // velocity.z += 0.1
+            }
+            else if (paddle2Left == true && flag == 4)
+            {
+                // console.log("2 left = ", paddle2Left, " | flag = ", flag)
+                velocity.x += 0.5;
+                // velocity.z += 0.1
+            }
+            else if (paddle2Right == true && flag == 4)
+            {
+                // console.log("2 right = ", paddle2Right, " | flag = ", flag)
+                velocity.x -= 0.5;
+                // velocity.z += 0.1
+            }
+            velocity = vec.reflectVector(velocity, normal);
         }
-        else if (paddle1Right && flag == 3)
-        {
-            velocity.x -= 0.2;
-            // velocity.z += 0.1
-        }
-        else if (paddle2Left && flag == 4)
-        {
-            velocity.x += 0.2;
-            // velocity.z += 0.1
-        }
-        else if (paddle2Right && flag == 4)
-        {
-            velocity.x -= 0.2;
-            // velocity.z += 0.1
-        }
-        velocity = vec.reflectVector(velocity, normal);
-    }
 
     // Check if the sphere goes out of the vertical bounds for scoring
     if (sphere.position.z + sphereGeometry.parameters.radius >= planeGeometry.parameters.height / 2 + 0.01)
     {
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
-        shockWave(scene, contactPoint);
-        setPlayer1(player1 + 1);
-        //player1ScoreElement.innerHTML = `Player 1: ${player1Score}`;
+        shockWave(scene, contactPoint, planeGeometry);
+        //player1Score += 1;
+        //updateScoreText(scoreTextMesh, player1Score, player2Score, scene, userData, font);
+        //animateText(scoreTextMesh);
         resetSphere(sphere, sphereGeometry);
+        resetPaddles(topPaddle, bottomPaddle, planeGeometry);
+        return (1);
     }
     else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2 - 0.01)
     {
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
-        shockWave(scene, contactPoint);
-        setPlayer2(player2 + 1);
-        //player2ScoreElement.innerHTML = `Player 2: ${player2Score}`;
+        shockWave(scene, contactPoint, planeGeometry);
+        // player2Score += 1;
+        // updateScoreText(scoreTextMesh, player1Score, player2Score, scene, userData, font);
+        // animateText(scoreTextMesh);
         resetSphere(sphere, sphereGeometry);
+        resetPaddles(topPaddle, bottomPaddle, planeGeometry);
+        return (1);
     }
+    return (0);
 }
 
-function UserGame(){
+function UserGame()
+{
     const {userData} = useContext(UserDataContext);
     const animationFrameId = useRef(null);
     const mountRef = useRef(null);
     const sceneRef = useRef(null);
     const cameraRef = useRef(null);
     const rendererRef = useRef(null);
-    const [player1, setPlayer1] = useState(0);
-    const [player2, setPlayer2] = useState(0);
+
     useEffect(() => {
 
     // scene, lights, textures  //
@@ -202,7 +291,8 @@ function UserGame(){
     );
     const cameraDirection = new THREE.Vector3();
     setCamera(cameraRef.current, cameraDirection);
-    // sceneRef.current, lights, textures //
+    const loader = new FontLoader();
+    const font = loader.parse(Ponderosa_Regular);
 
     // ... Add geometry, materials, lights, etc.
     const planeGeometry = setPlane(sceneRef.current);
@@ -211,11 +301,16 @@ function UserGame(){
     const { sphere, sphereGeometry } = setSphere(sceneRef.current);
     const { speedBoostGeometry, speedBoost1, speedBoost2 } = setBoosts(sceneRef.current);
     const { earthMesh, lightsMesh, sunMesh, moonMesh, orbitRadius, stars } = setSolarySystem(sceneRef.current, textureLoader);
+    const scoreTextMesh = createScoreText(player1Score, player2Score, font, userData);
+    let textScoreFlag = 0;
+    sceneRef.current.add(scoreTextMesh);
+    //updateScoreText();
 
     // animatin
     const animate = () => {
         animationFrameId.current = requestAnimationFrame(animate);
 
+        animateText(scoreTextMesh);
         const updatedValues = updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry, 
             topPaddleGeometry, planeGeometry, cameraKeyIsPressed,
             paddle1Left, paddle1Right, paddle2Left, paddle2Right,
@@ -223,6 +318,10 @@ function UserGame(){
 
         ({ cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition } = updatedValues);
 
+        textScoreFlag = checkCollision(sceneRef.current, sphere, sphereGeometry, 
+            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, player1Score, player2Score, scoreTextMesh, userData, font);
+        if (textScoreFlag)
+            animateText(scoreTextMesh);
         if (isBallOverBoostSurface(speedBoost1, sphere, sphereGeometry) || isBallOverBoostSurface(speedBoost2, sphere, sphereGeometry))
             boostMultiplier = 2; // Double the ball's speed while over boost surface
         else
@@ -237,7 +336,6 @@ function UserGame(){
 
         if ((speedBoost2.position.x + speedBoostGeometry.parameters.width / 2 >= planeGeometry.parameters.width / 2) || (speedBoost2.position.x - speedBoostGeometry.parameters.width / 2 <= -planeGeometry.parameters.width / 2))
             boost2Flag *= -1; // Reverse direction for speedBoost2
-
         sphere.position.x += velocity.x * boostMultiplier;
         sphere.position.z += velocity.z * boostMultiplier;
         //   rotateSphere(sphere, sphereGeometry, velocity);
@@ -251,11 +349,6 @@ function UserGame(){
         moonMesh.position.y = earthMesh.position.y + (a * Math.sin(angle)) * Math.sin(inclination);
         moonMesh.position.z = earthMesh.position.z + b * Math.sin(angle);
         moonMesh.rotation.y = -angle;
-
-        
-        checkCollision(sceneRef.current, sphere, sphereGeometry, 
-            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, 
-            player1, setPlayer1, player2, setPlayer2);
 
         ////////////////////////////RESET SPHERE MAKES PONG WORK - COMMENT TO START A GAME ////////////////////////////
         //resetSphere(sphere, sphereGeometry);
@@ -339,10 +432,6 @@ function UserGame(){
 
   return (
     <>
-        <div className="d-flex justify-content-evenly text-white pt-5">
-            {userData && <h2 className="me-2">{userData.username} : {player1}</h2>}
-            <h2 className="ms-2">GUEST : {player2}</h2>
-        </div>
         <div className="d-flex justify-content-center" ref={mountRef} />;
     </>
   )
