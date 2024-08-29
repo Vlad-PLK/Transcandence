@@ -5,15 +5,17 @@ import { useTranslation } from "react-i18next";
 import Title from "./Title";
 import TranslationSelect from "./TranslationSelect";
 import './customFonts.css';
+import { UserDataContext } from "./UserDataContext";
+import { useNavigate } from "react-router-dom";
+import UserHomePage from "./UserHomePage";
+import { ACCESS_TOKEN } from "./constants";
 
 function WelcomePage()
 {
-  // fix login, signup pour tout afficher correctement //
-  // refaire stats //
-  // finir le modal settings //
-  // traduction complete //
-
   const { t } = useTranslation();
+  const {userData} = useContext(UserDataContext);
+  const {navigate} = useNavigate();
+
   const main_image = {
 		backgroundImage: `url('/cyberpunk1.jpg')`,
 		backgroundSize: 'cover', // Adjust background size as needed
@@ -22,7 +24,9 @@ function WelcomePage()
   
 	return (
     <>
-		<div className="d-flex flex-column vh-100" style={main_image}>
+    {localStorage.getItem(ACCESS_TOKEN) == null ?	
+    <>
+      <div className="d-flex flex-column vh-100" style={main_image}>
       <header className="p-4 opacity-75" style={{fontFamily: 'cyber4'}}>
         <div className="container">
           <div className="d-flex flex-wrap align-items-center justify-content-lg-start">
@@ -44,12 +48,10 @@ function WelcomePage()
       </div>
     </div>
     <LoginModal/>
-    <RegisterModal/>
-    {/* <SettingsModal/> */}
-    {/* <footer className=""> */}
-        {/* <p>this is the footer</p> */}
-    {/* </footer> */}
-    {/* <!-- Modal --> */}
+    <RegisterModal/> 
+    </>
+    :  
+    <UserHomePage/>}
     </>
   );
 }

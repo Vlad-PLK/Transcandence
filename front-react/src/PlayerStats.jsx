@@ -13,7 +13,7 @@ function PlayerStats(){
 		setVisible(!isVisible);
 	};
 	useEffect(() => {
-		if (userData)
+		if (userData && isVisible)
 			{
 				try {
 					api.get('api/player-stats/')
@@ -42,7 +42,7 @@ function PlayerStats(){
 					alert(error);
 				}
 		}
-	}, [])
+	}, [isVisible])
 	return (
 	<>
 			<div className="player-stats card mb-3 border-0" style={{color: '#6B3EB8'}}>
@@ -51,10 +51,8 @@ function PlayerStats(){
       			</div>
 				{userStats ? <div className="">
 					<ul className="list-group list-group-flush">
-      				  <li className="list-group-item">Wins: {userStats.wins}</li>
-      				  <li className="list-group-item">Losses: {userStats.losses}</li>
-      				  <li className="list-group-item">Draws: {userStats.draws}</li>
-      				  <li className="list-group-item">Goals: {userStats.goals}</li>
+      				  <li className="list-group-item">Wins : {userStats.wins} | Losses : {userStats.losses} | Draws : {userStats.draws}</li>
+      				  <li className="list-group-item">Total Goals : {userStats.goals}</li>
       				</ul> 
 				</div>
 					: 
@@ -68,9 +66,14 @@ function PlayerStats(){
 				{isVisible && (userMatch.length > 0 ? (
 					<ul className="match-history list-group">
 			  		{userMatch.map((match, index) => (
-					<li key={index} className="list-group-item">
-				  		Opponent : {match.player2} | Winner : {match.match_winner} <br/> Final Score : {match.player1_score} - {match.player2_score}
-					</li>
+						(userData.username == match.player1_name) ?
+						<li key={index} className="list-group-item">
+				  			Opponent : {match.player2_name} | Winner : {match.match_winner_name} <br/> Final Score : {match.player1_score} - {match.player2_score}
+						</li>
+						:
+						<li key={index} className="list-group-item">
+				  			Opponent : {match.player1_name} | Winner : {match.match_winner_name} <br/> Final Score : {match.player1_score} - {match.player2_score}
+						</li>
 			  		))}
 					</ul>
 		  			) : (

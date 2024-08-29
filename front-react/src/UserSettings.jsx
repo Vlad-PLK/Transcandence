@@ -14,7 +14,7 @@ function UserSettings()
     const {t} = useTranslation();
 	const navigate = useNavigate();
     const main_image = {
-		backgroundImage: `url('/cyber4.jpg')`,
+		backgroundImage: `url('/game_stats.jpg')`,
 		backgroundSize: 'cover', // Adjust background size as needed
 		backgroundPosition: 'center', // Adjust background position as needed
 		fontFamily: 'cyber4'

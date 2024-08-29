@@ -1,4 +1,4 @@
-import {useContext} from 'react';
+import {useContext, useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useNavigate} from 'react-router-dom';
 import {UserDataContext} from './UserDataContext';
@@ -9,25 +9,48 @@ function SettingsModal()
 {
 	const {userData} = useContext(UserDataContext);
 	const [userAvatar, setUserAvatar] = useState(null);
+	const [message, setMessage] = useState('');
 	const {t} = useTranslation();
 	const navigate = useNavigate();
 
-	const AvatarState = async (event) => {
+	const AvatarState = (event) => {
 		if (event.target.files && event.target.files[0]) {
+			console.log(event.target.files[0]);
 			setUserAvatar(URL.createObjectURL(event.target.files[0]));
 		}
 	}
 	const changeAvatar = async (e) => {
 		e.preventDefault();
 		try {
-			const response = await api.post('users/avatar_upload/', {userAvatar}, {
+			const formData = new FormData();
+			formData.append('avatar', userAvatar);
+			const response = await api.post('users/avatar_upload/', formData, {
 				headers: {
 				  'Content-Type': 'multipart/form-data',
 				},
 			  });
 			console.log(response.data);
+			setMessage('Avatar uploaded successfully');
 		} catch (error) {
+			setMessage('Avatar upload failed');
 			alert(error);
+		}
+	}
+	// clear form after submit //
+	// rerender the page after submit //
+	const changeUsername = () => {
+		const newUsername = document.getElementById('paramUsername-change').value;
+		if (newUsername.length > 0) {
+			api.patch('users/user/update-username/', {
+				username: newUsername
+			}).then(response => {
+				console.log(response.data);
+				document.getElementById('paramUsername-change').value = '';
+				setMessage('Username updated successfully');
+			}).catch(error => {
+				setMessage('Username update failed');
+				alert(error);
+			});
 		}
 	}
 	return (
@@ -50,28 +73,23 @@ function SettingsModal()
 									:
 									<div>
 										<input type="file" className="filetype" onChange={AvatarState}/>
-										{userAvatar && <img className="rounded bg-warning" src={userData.avatar} alt="" height="100" widht="100"/>}
+										<img className="rounded bg-warning" src={userData.avatar} alt="" height="100" widht="100"/>
 									</div>
 								}
 								<div className="d-flex flex-column justify-content-center ms-3 mt-2">
 								<button className="btn btn-success btn-sm mb-2" onClick={changeAvatar}>SAVE</button>
 								<button className="btn btn-danger btn-sm">CANCEL</button>
+								{message && <p className="text-success">{message}</p>}
 								</div>
 							</div>
 							<p className="m-0">Current Nickname : {userData.username}</p>
 							<div className="form-floating mb-4">
 								<input type="username" className="form-control rounded-3" id="paramUsername-change" placeholder="Username"/>
 								<label htmlFor="paramUsername-change">Change Nickname</label>
-								<button className="btn btn-success btn-sm mt-2 me-2">SAVE</button>
+								<button className="btn btn-success btn-sm mt-2 me-2" onClick={changeUsername}>SAVE</button>
 								<button className="btn btn-danger btn-sm mt-2">CANCEL</button>
+								{message && <p className="mt-2 text-success">{message}</p>}
 							</div>
-							{/* <p className="m-0">Current Email : {userData.email}</p>
-							<div className="form-floating mb-4">
-								<input type="email" className="form-control rounded-3" id="paramEmail-change" placeholder="Email"/>
-								<label htmlFor="paramEmail-change">Change Email</label>
-								<button className="btn btn-success btn-sm mt-2 me-2">SAVE</button>
-								<button className="btn btn-danger btn-sm mt-2">CANCEL</button>
-							</div> */}
 							<p className="m-0">Change Password</p>
 							<div className="form-floating mb-2">
                                 <input type="password" className="form-control rounded-3" id="paramPassword" placeholder="Password" autoComplete='new-password'/>
