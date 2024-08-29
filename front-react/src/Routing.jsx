@@ -8,10 +8,15 @@ import {
   Outlet
 } from "react-router-dom";
 import Root from "./Root";
-import Menu from "./Menu";
-import Settings from "./Settings";
+import WelcomePage from "./WelcomePage";
+import UserSettings from "./UserSettings";
 import Error404 from "./Error404";
-import HomePage from "./HomePage";
+import UserGame from "./game_jsx/UserGame";
+import UserGameWindow from "./game_jsx/UserGameWindow";
+import ProtectedRoute from "./ProtectedRoute";
+import UserHomePage from "./UserHomePage";
+import UserFriends from "./UserFriends";
+import UserGameSetup from "./UserGameSetup";
 
 const router = createBrowserRouter([
     {
@@ -21,15 +26,55 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "",
-                element: <HomePage/>
+                element: <WelcomePage/>
             },
             {
-                path: "user:id",
-                element: <Settings/>
+                path: "userPage/",
+                element: (
+                    <ProtectedRoute>
+                        <UserHomePage/>
+                    </ProtectedRoute>
+                )
             },
             {
-                path: "game",
-                element: <div>Game Page</div>
+                path: "userSettings/",
+                element: (
+                    <ProtectedRoute>
+                        <UserSettings/>
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: "userGame/",
+                element: (
+                    <ProtectedRoute>
+                        <UserGame/>
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: "userGameWindow/",
+                element: (
+                    <ProtectedRoute>
+                        <UserGameWindow/>
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: "userGameSetup/",
+                element: (
+                    <ProtectedRoute>
+                        <UserGameSetup/>
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: "userFriends/",
+                element: (
+                    <ProtectedRoute>
+                        <UserFriends/>
+                    </ProtectedRoute>
+                )
             }
         ]
     }
