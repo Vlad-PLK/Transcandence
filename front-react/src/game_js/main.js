@@ -1,6 +1,10 @@
 // Import Three.js
-import * as THREE from 'three';
-import Stats from "./node_modules/stats.js/src/Stats.js";
+import * as THREE from "./node_modules/three/src/Three.js";
+import { TTFLoader } from "./node_modules/three/examples/jsm/loaders/TTFLoader.js";
+import { Font } from "./node_modules/three/examples/jsm/loaders/FontLoader.js";
+import { TextGeometry } from "./node_modules/three/examples/jsm/geometries/TextGeometry.js";
+import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
+
 import { Vector, vectorize, normalizeVector, vecAdd, vecSubtract, dot, crossProduct, scalarProduct, reflectVector } from './vector_utils.js';
 import { setObjects, rotateSphere } from './3D_objects.js';
 import { checkSun, setAll } from './scene.js';
@@ -96,9 +100,94 @@ function resetSphere(sphere, sphereGeometry)
         let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
         velocity.x = Math.cos(randomAngle);
         velocity.z = Math.sin(randomAngle);
-    }, 3000);
+    }, 6000);
     
 }
+
+const loader = new TTFLoader();
+let scoreTextMesh;    // To store the text mesh so we can update it later
+let font;             // To store the loaded font so it can be reused
+
+// Function to create text geometry and add it to the scene
+function createScoreText(player1Score, player2Score) {
+    // Define properties for the text geometry
+    const properties = {
+        font: font,
+        size: 8,
+        depth: 1, // Use 'height' for TextGeometry
+        curveSegments: 10,
+        bevelEnabled: true,
+        bevelOffset: 0,
+        bevelSegments: 2,
+        bevelSize: 0.3,
+        bevelThickness: 1
+    };
+
+    // Create text geometry for the score display
+    const scoreText = `Player_1 ${player1Score} : ${player2Score} Player_2`;
+    const textGeometry = new TextGeometry(scoreText, properties);
+
+    // Center the geometry by computing its bounding box and setting its center
+    textGeometry.computeBoundingBox();
+    const boundingBox = textGeometry.boundingBox;
+    const centerX = -0.5 * (boundingBox.max.x - boundingBox.min.x);
+    const centerY = -0.5 * (boundingBox.max.y - boundingBox.min.y);
+    const centerZ = -0.5 * (boundingBox.max.z - boundingBox.min.z);
+    textGeometry.translate(centerX, centerY, centerZ);
+
+    // Set the material for the text mesh
+    const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+
+    // Create the mesh for the text
+    const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+
+    // Position the text at a visible position
+    textMesh.position.set(0, 10, 0);
+    return textMesh;
+}
+
+// Function to update the score text
+function updateScoreText() {
+    if (scoreTextMesh) {
+        scene.remove(scoreTextMesh); // Remove the old text mesh from the scene
+        scoreTextMesh.geometry.dispose(); // Dispose of geometry to free up memory
+        scoreTextMesh.material.dispose(); // Dispose of material to free up memory
+    }
+
+    // Create a new text mesh with the updated score
+    scoreTextMesh = createScoreText(player1Score, player2Score);
+    scene.add(scoreTextMesh);
+
+    // Start the rotation animation
+    animateText();
+}
+
+// Function to animate the rotation of the text
+function animateText() {
+    const startTime = Date.now();
+    const duration = 5000; // Animation duration in milliseconds
+
+    function animateWave()
+    {
+        const elapsed = Date.now() - startTime;
+        if (elapsed < duration) {
+            scoreTextMesh.rotation.y += 0.02; // Adjust the rotation speed as needed
+            requestAnimationFrame(animateWave);
+        }
+        else {
+            // Remove the text mesh after the animation completes
+            scene.remove(scoreTextMesh);
+        }
+    }
+    animateWave();
+}
+
+// Load the font and initialize the score text
+loader.load('./brilliant-dreams.regular.ttf', (res) =>
+{
+    font = new Font(res);  // Store the font in a global variable
+    updateScoreText();     // Initialize the score display at the start
+});
 
 function checkCollision()
 {
@@ -135,7 +224,7 @@ function checkCollision()
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
         shockWave(scene, contactPoint);
         player1Score += 1;
-        player1ScoreElement.innerHTML = `Player 1: ${player1Score}`;
+        updateScoreText();
         resetSphere(sphere, sphereGeometry);
     }
     else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2)
@@ -143,7 +232,7 @@ function checkCollision()
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
         shockWave(scene, contactPoint);
         player2Score += 1;
-        player2ScoreElement.innerHTML = `Player 2: ${player2Score}`;
+        updateScoreText();
         resetSphere(sphere, sphereGeometry);
     }
 }
@@ -276,8 +365,8 @@ const a = semiMajorAxis;
 const inclination = 5.145 * Math.PI / 180;
 const b = semiMinorAxis
 
-let earthRotationSpeed = 0.1;
-let moonOrbitSpeed = earthRotationSpeed / 27
+let earthRotationSpeed = 0.005;
+let moonOrbitSpeed = earthRotationSpeed / 2
 let angle = 0;
 
 let frameCounter = 0;
@@ -292,6 +381,97 @@ function checkFPS(frameCount)
     frameCounter = 0; // Reset frame counter
     lastTime = currentTime; // Update the lastTime
 }
+
+
+// const loader = new TTFLoader();
+
+// let scoreTextMesh;
+// loader.load('./brilliant-dreams.regular.ttf', (res) =>
+// {
+//     // Create a font instance
+//         const font = new Font(res);
+//         const createScoreText = (player1Score, player2Score) =>
+//         {
+//         // Define properties for the text geometry
+//         const properties = {
+//             font: font,
+//             size: 8,
+//             depth: 1, // Use 'height' for TextGeometry
+//             curveSegments: 10,
+//             bevelEnabled: true,
+//             bevelOffset: 0,
+//             bevelSegments: 2,
+//             bevelSize: 0.3,
+//             bevelThickness: 1
+//         };
+
+//         // Create text geometry for the score display
+//         const scoreText = `Player_1 ${player1Score} : ${player2Score} Player_2`;
+//         const textGeometry = new TextGeometry(scoreText, properties);
+
+
+//         // Center the geometry by computing its bounding box and setting its center
+//         textGeometry.computeBoundingBox();
+//         const boundingBox = textGeometry.boundingBox;
+//         const centerX = -0.5 * (boundingBox.max.x - boundingBox.min.x);
+//         const centerY = -0.5 * (boundingBox.max.y - boundingBox.min.y);
+//         const centerZ = -0.5 * (boundingBox.max.z - boundingBox.min.z);
+//         textGeometry.translate(centerX, centerY, centerZ);
+
+//         // Set the material for the text mesh
+//         const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+
+//         // Create the mesh for the text
+//         const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+
+//         // Position the text at a visible position
+//         textMesh.position.set(0, 10, 0);
+//         return textMesh;
+//     }
+
+//     function animateText()
+//     {
+//         const startTime = Date.now();
+//         const duration = 5000; // Animation duration in milliseconds
+
+//         function animation()
+//         {
+//             const elapsed = Date.now() - startTime;
+//             if (elapsed < duration)
+//             {
+//                 textMesh.rotation.y += 0.02; // Adjust the rotation speed as needed
+//                 requestAnimationFrame(animateWave);
+//             } 
+//             else
+//             {
+//                 // Remove the text mesh after the animation completes
+//                 scene.remove(textMesh);
+//             }
+//         }
+//         animation();
+//     }
+
+//     const updateScoreText = () =>
+//     {
+//         if (scoreTextMesh)
+//         {
+//             scene.remove(scoreTextMesh); // Remove the old text mesh from the scene
+//             scoreTextMesh.geometry.dispose(); // Dispose of geometry to free up memory
+//             scoreTextMesh.material.dispose(); // Dispose of material to free up memory
+//         }
+
+//         // Create a new text mesh with the updated score
+//         scoreTextMesh = createScoreText(player1Score, player2Score);
+//         scene.add(scoreTextMesh);
+
+//         // Start the rotation animation
+//         animateText();
+//     };
+
+//     updateScoreText();
+// });
+
+
 
 function animate()
 {
@@ -331,6 +511,7 @@ setInterval(() =>
 }, 1000);
 
 animate();
+
 
 // Handle window resizing
 window.addEventListener('resize', () =>
