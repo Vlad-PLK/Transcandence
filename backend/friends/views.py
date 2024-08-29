@@ -60,3 +60,16 @@ class FromUserFriendRequestView(APIView):
         serializer = FriendRequestSerializer(friend_requests, many=True)
         return Response(serializer.data)
     
+class FriendRequestRejectView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk, format=None):
+        try:
+            instance = FriendRequest.objects.get(pk=pk)
+            if instance.to_user != request.user:
+                return Response({'error': 'You cannot reject this friend request.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            instance.delete()
+            return Response({'status': 'Friend request rejected'}, status=status.HTTP_200_OK)
+        except FriendRequest.DoesNotExist:
+            return Response({'error': 'Friend request not found.'}, status=status.HTTP_404_NOT_FOUND)
