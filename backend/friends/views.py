@@ -73,3 +73,15 @@ class FriendRequestRejectView(APIView):
             return Response({'status': 'Friend request rejected'}, status=status.HTTP_200_OK)
         except FriendRequest.DoesNotExist:
             return Response({'error': 'Friend request not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+
+class DeleteFriendshipView(APIView):
+    def delete(self, request, pk, format=None):
+        try:
+            instance = Friendship.objects.get(pk=pk)
+            
+            instance.delete()
+            return Response({'status': 'Friendship deleted'}, status=status.HTTP_200_OK)
+        
+        except Friendship.DoesNotExist:
+            return Response({'error': 'Friend request not found'}, status=status.HTTP_404_NOT_FOUND)
