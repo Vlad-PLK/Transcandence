@@ -28,7 +28,7 @@ function setWalls(scene, planeGeometry)
     ({
         color: 0xFF0000,
         transparent: true,
-        opacity: 0.8
+        opacity: 0.4
     });
     const bottomWallGeometry = new THREE.BoxGeometry(planeGeometry.parameters.width, 5, 1);
     const bottomWall = new THREE.Mesh(bottomWallGeometry, topWallMaterial);
@@ -43,7 +43,7 @@ function setWalls(scene, planeGeometry)
     ({
         color: 0xFF0000,
         transparent: true,
-        opacity: 0.8
+        opacity: 0.4
     });
     const topWallGeometry = new THREE.BoxGeometry(planeGeometry.parameters.width, 5, 1);
     const topWall = new THREE.Mesh(topWallGeometry, bottomWallMaterial);

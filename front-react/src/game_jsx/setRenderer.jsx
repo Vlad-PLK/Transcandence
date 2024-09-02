@@ -9,6 +9,7 @@ function setRenderer(renderer)
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+    document.body.appendChild(renderer.domElement);
 }
 
 export default setRenderer
