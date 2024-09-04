@@ -17,6 +17,7 @@ import shockWave from './shockWave.jsx';
 import checkSun from './checkSun';
 import * as vec from './vectors_functions.jsx'
 import { UserDataContext } from '../UserDataContext.jsx';
+import { GuestDataContext } from '../GuestDataContext.jsx';
 
 let cameraKeyIsPressed = false;
 let paddle1Right = false;
@@ -132,7 +133,7 @@ function resetPaddles(topPaddle, bottomPaddle, planeGeometry)
     bottomPaddle.position.set(0, 1, -planeGeometry.parameters.height / 2 + 1 / 2);
 }
 
-function createScoreText(player1Score, player2Score, font, scoreTextMesh)
+function createScoreText(player1ID, player2ID, player1Score, player2Score, font, scoreTextMesh)
 {
     const properties =
     {
@@ -147,7 +148,7 @@ function createScoreText(player1Score, player2Score, font, scoreTextMesh)
         bevelThickness: 1
     };
 
-    const scoreText = `Player ${player1Score} : ${player2Score} GUEST`;
+    const scoreText = `${player1ID} ${player1Score} : ${player2Score} ${player2ID}`;
     const textGeometry = new TextGeometry(scoreText, properties);
     textGeometry.computeBoundingBox();
     const boundingBox = textGeometry.boundingBox;
@@ -163,7 +164,7 @@ function createScoreText(player1Score, player2Score, font, scoreTextMesh)
     return textMesh;
 }
 
-function updateScoreText(scene, font, player1Score, player2Score, scoreTextMesh)
+function updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh)
 {
     // Remove the old text mesh if it exists
     if (scoreTextMesh != null)
@@ -174,7 +175,7 @@ function updateScoreText(scene, font, player1Score, player2Score, scoreTextMesh)
         scoreTextMesh = null; // Clear the reference
     }
     // Create a new text mesh for the updated score
-    scoreTextMesh = createScoreText(player1Score, player2Score, font, scoreTextMesh);
+    scoreTextMesh = createScoreText(player1ID, player2ID, player1Score, player2Score, font, scoreTextMesh);
     scene.add(scoreTextMesh);
 
     // Initialize animation start time
@@ -206,7 +207,7 @@ function updateScoreText(scene, font, player1Score, player2Score, scoreTextMesh)
 
 
 function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
-    topPaddle, bottomPaddle, bottomWall, topWall, player1Score, player2Score, scoreTextMesh, userData, font)
+    topPaddle, bottomPaddle, bottomWall, topWall, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, userData, font)
 {
     const { normal, flag } = calculateCollisionNormal(sphere, sphereGeometry, 
         topPaddle, bottomPaddle, planeGeometry);
@@ -243,7 +244,7 @@ function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
         shockWave(scene, contactPoint, planeGeometry);
         player1Score += 1;
-        updateScoreText(scene, font, player1Score, player2Score, scoreTextMesh);
+        updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh);
         resetSphere(sphere, sphereGeometry);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry);
     }
@@ -252,7 +253,7 @@ function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
         shockWave(scene, contactPoint, planeGeometry);
         player2Score += 1;
-        updateScoreText(scene, font, player1Score, player2Score, scoreTextMesh);
+        updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh);
         resetSphere(sphere, sphereGeometry);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry);
     }
@@ -262,6 +263,7 @@ function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
 function UserGame()
 {
     const {userData} = useContext(UserDataContext);
+    const {guestData} = useContext(GuestDataContext);
     const animationFrameId = useRef(null);
     const mountRef = useRef(null);
     const sceneRef = useRef(null);
@@ -295,7 +297,8 @@ function UserGame()
     const font = loader.parse(Ponderosa_Regular);
 
     // Start score
-    updateScoreText(sceneRef.current, font, player1Score, player2Score, scoreTextMesh);
+    if (userData && guestData)
+        updateScoreText(sceneRef.current, font, userData.username, guestData, player1Score, player2Score, scoreTextMesh);
 
 
     // ... Add geometry, materials, lights, etc.
@@ -325,7 +328,7 @@ function UserGame()
         // checkSun(cameraRef, sunMesh, stars);
 
         ({player1Score, player2Score} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
-            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, player1Score, player2Score, scoreTextMesh, userData, font));
+            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData, player1Score, player2Score, scoreTextMesh, userData, font));
         if (isBallOverBoostSurface(speedBoost1, sphere, sphereGeometry) || isBallOverBoostSurface(speedBoost2, sphere, sphereGeometry))
             boostMultiplier = 2; // Double the ball's speed while over boost surface
         else

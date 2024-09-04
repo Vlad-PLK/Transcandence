@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserDataContext } from "./UserDataContext";
 import SettingsModal from "./SettingsModal";
 import { useParams } from "react-router";
@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom";
 import GameSettingsModal from "./GameSettingsModal";
 import LocalGameModal from "./LocalGameModal";
 import MultiplayerModal from "./MultiplayerModal";
+import { GuestDataContext } from "./GuestDataContext";
+import { createContext } from "react";
 
 function UserGameSetup()
 {

@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { UserDataContext } from "../UserDataContext";
 import UserGame from "./UserGame";
+import { GuestDataContext } from "../GuestDataContext";
 
 function UserGameWindow()
 {
@@ -15,7 +16,6 @@ function UserGameWindow()
 			<div className="d-flex flex-column vh-100" style={main_image}>
 				<UserGame/>
 			</div>
-			
 		</>
 	)
 }

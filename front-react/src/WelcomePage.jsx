@@ -8,7 +8,7 @@ import './customFonts.css';
 import { UserDataContext } from "./UserDataContext";
 import { useNavigate } from "react-router-dom";
 import UserHomePage from "./UserHomePage";
-import { ACCESS_TOKEN } from "./constants";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "./constants";
 
 function WelcomePage()
 {
@@ -24,7 +24,7 @@ function WelcomePage()
   
 	return (
     <>
-    {localStorage.getItem(ACCESS_TOKEN) == null ?	
+    {(localStorage.getItem(ACCESS_TOKEN) == null || localStorage.getItem(REFRESH_TOKEN) == null) ?	
     <>
       <div className="d-flex flex-column vh-100" style={main_image}>
       <header className="p-4 opacity-75" style={{fontFamily: 'cyber4'}}>

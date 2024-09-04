@@ -1,11 +1,21 @@
-import { useContext } from "react"
+import { useContext, useRef } from "react"
 import { UserDataContext } from "./UserDataContext"
 import { useNavigate } from "react-router-dom";
+import { GuestDataContext } from "./GuestDataContext";
 
 function LocalGameModal() {
+    const inputRef = useRef();
     const {userData} = useContext(UserDataContext);
+    const {guestData, setGuestData} = useContext(GuestDataContext);
     const navigate = useNavigate();
+    const clearInput=(inputRef)=>{
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
+    }
     const startGame=()=>{
+        setGuestData(inputRef.current.value);
+        clearInput(inputRef);
         navigate("/userGameWindow/")
     }
     return (
@@ -20,9 +30,16 @@ function LocalGameModal() {
         		  <div className="modal-body mt-3 p-5 pt-0">
                     <div className="">
                         {userData && <p className="" style={{color:'blue'}}>Player 1 : {userData.username}</p>}
-                        <p className="" style={{color:'red'}}>Player 2 : GUEST</p>
+                        <div className="row g-3 align-items-center" style={{color:'red'}}>
+                            <div className="col-auto">
+                              <label className="col-form-label">Player 2 :</label>
+                            </div>
+                            <div className="col-auto">
+                              <input type="text" className="form-control" ref={inputRef}/>
+                            </div>
+                        </div>
                     </div>
-                    <div className="d-flex justify-content-center">
+                    <div className="d-flex justify-content-center mt-3">
         		        <button className="btn btn-sm rounded-3 btn-dark" type="submit" data-bs-dismiss="modal" onClick={startGame}>START THE GAME</button>
                     </div>
                   </div>
