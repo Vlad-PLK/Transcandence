@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import  { OrbitControls } from "../../node_modules/three/examples/jsm/controls/OrbitControls.js"
 // import fresnelShader from './fresnelEffect.jsx';
-import vertexEarthShader from './vertexEarth.js';
-import fragmentEarthShader from './fragmentEarth.js';
-import { getFresnelMat } from "../game_js/getFresnelMat.js";
-import vertexSunShader from './vertexSun.js';
-import fragmentSunShader from './fragmentSun.js';
+import vertexEarthShader from '../shaders/vertexEarth.js';
+import fragmentEarthShader from '../shaders/fragmentEarth.js';
+import { getFresnelMat } from "../shaders/getFresnelMat.js";
+import vertexSunShader from '../shaders/vertexSun.js';
+import fragmentSunShader from '../shaders/fragmentSun.js';
 
 
 function setStarfield(scene) {
