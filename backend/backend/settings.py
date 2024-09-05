@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'users',
     'gameinfo',
     'friends',
+    'chat'
 ]
 
 MIDDLEWARE = [
