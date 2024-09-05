@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserDataContext } from './UserDataContext';
+import { UserStatsContext } from './UserStatsContext';
 import api from './api';
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 function PlayerStats(){
 	const [isVisible, setVisible] = useState(false);
 	const {userData} = useContext(UserDataContext);
-	const [userStats, setUserStats] = useState(null);
+	const {userStats, setUserStats} = useContext(UserStatsContext);
 	const [userMatch, setUserMatch] = useState([]);
 	const toggleVisible = () => {
 		setVisible(!isVisible);

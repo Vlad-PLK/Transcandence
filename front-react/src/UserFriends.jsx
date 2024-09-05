@@ -96,7 +96,7 @@ function UserFriends()
 			  };
 	}
 	const reject_friendship = async (id) => {
-		const url = `friend-requests/${id}/accept/`;
+		const url = `friend-requests/${id}/reject/`;
 		try {
 			const response = await api.put(url);
 			console.log(response.data)
@@ -200,7 +200,7 @@ function UserFriends()
             </div>
 			<SettingsModal/>
 			<FriendRequestModal/>
-			<DeleteFriendModal/>
+			{/* <DeleteFriendModal/> */}
             </>
         </>
     ); 

@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { UserDataContext } from "./UserDataContext";
+import { UserStatsContext } from "./UserStatsContext";
 import SettingsModal from "./SettingsModal";
 import { useTranslation } from "react-i18next";
 import TranslationSelect from "./TranslationSelect";
@@ -10,11 +11,9 @@ import api from "./api";
 
 function UserHomePage(){
 	const {userData} = useContext(UserDataContext);
+	const {userStats, setUserStats} = useContext(UserStatsContext);
 	const navigate = useNavigate();
 	const {t} = useTranslation();
-	const [playerStats, setPlayerStats] = useState(null);
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
 	const main_image = {
 		backgroundImage: `url('/cyber4.jpg')`,
 		backgroundSize: 'cover', // Adjust background size as needed
@@ -25,6 +24,22 @@ function UserHomePage(){
 		navigate("/");
 	}
 	const stats_page = () => {
+		if (userData)
+		{
+			try {
+				api.get('api/player-stats/')
+				.then(response => {
+					console.log(response.data)
+					setUserStats(response.data)
+				  })
+				.catch(error => {
+					console.log('Error:', error);
+				  });
+				// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+			} catch (error) {
+				alert(error);
+			}
+		}
 		navigate('../userSettings');
     }
 	return (
