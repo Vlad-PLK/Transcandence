@@ -43,6 +43,7 @@ const inclination = 5.145 * Math.PI / 180;
 const b = semiMinorAxis
 
 let earthRotationSpeed = 0.005;
+let sunRotationSpeed = 0.0002;
 let moonOrbitSpeed = earthRotationSpeed / 2
 let angle = 0;
 
@@ -76,8 +77,17 @@ function setSphere(scene)
     sphere.position.set(0, sphereGeometry.parameters.radius, 0);
     //sphere.receiveShadow = true;
     //sphere.castShadow = true; 
-    resetSphere(sphere, sphereGeometry);
+    // resetSphere(sphere, sphereGeometry);
     scene.add(sphere);
+
+    velocity = vec.vectorize(0, 0, 0);
+    setTimeout(() =>
+    {
+        // Generate a random angle between π/4 and 3π/4, or between 5π/4 and 7π/4
+        let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
+        velocity.x = Math.cos(randomAngle);
+        velocity.z = Math.sin(randomAngle);
+    }, 6000);
     
     return { sphere, sphereGeometry };
 }
@@ -110,7 +120,7 @@ const calculateCollisionNormal = (sphere, sphereGeometry, topPaddle, bottomPaddl
     return { normal: null, flag: 0 };
 };
 
-function resetSphere(sphere, sphereGeometry)
+function resetSphere(scene, sphere, sphereGeometry)
 {
     // Reset ball position to the center of the plane with no speed
     velocity = vec.vectorize(0, 0, 0);
@@ -205,7 +215,6 @@ function updateScoreText(scene, font, player1ID, player2ID, player1Score, player
 
 
 
-
 function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
     topPaddle, bottomPaddle, bottomWall, topWall, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, userData, font)
 {
@@ -245,7 +254,7 @@ function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
         shockWave(scene, contactPoint, planeGeometry);
         player1Score += 1;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh);
-        resetSphere(sphere, sphereGeometry);
+        resetSphere(scene, sphere, sphereGeometry);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry);
     }
     else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2 - 0.01)
@@ -254,7 +263,7 @@ function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
         shockWave(scene, contactPoint, planeGeometry);
         player2Score += 1;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh);
-        resetSphere(sphere, sphereGeometry);
+        resetSphere(scene, sphere, sphereGeometry);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry);
     }
     return {player1Score, player2Score};
@@ -305,9 +314,9 @@ function UserGame()
     const planeGeometry = setPlane(sceneRef.current);
     const { leftWall, rightWall, bottomWall, topWall} = setWalls(sceneRef.current, planeGeometry);
     const { bottomPaddle, topPaddle, bottomPaddleGeometry, topPaddleGeometry } = setPaddles(sceneRef.current, planeGeometry); 
-    const { sphere, sphereGeometry } = setSphere(sceneRef.current);
     const { speedBoostGeometry, speedBoost1, speedBoost2 } = setBoosts(sceneRef.current);
-    const { earthMesh, lightsMesh, cloudsMesh, sunMesh, moonMesh, orbitRadius, stars } = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader);
+    const { earthMesh, lightsMesh, cloudsMesh, fresnelMesh, sunMesh, sunShadyMaterial, sunShadyMesh, moonMesh, orbitRadius, stars } = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader);
+    const { sphere, sphereGeometry } = setSphere(sceneRef.current);
     // const scoreTextMesh = createScoreText(player1Score, player2Score, font, userData);
     // sceneRef.current.add(scoreTextMesh);
     //updateScoreText();
@@ -349,8 +358,11 @@ function UserGame()
 
         earthMesh.rotation.y += earthRotationSpeed;
         lightsMesh.rotation.y += earthRotationSpeed;
-        cloudsMesh.rotation.y += earthRotationSpeed + 0.0015;
-        sunMesh.rotation.y += 0.001;
+        cloudsMesh.rotation.y += earthRotationSpeed + 0.001;
+        fresnelMesh.rotation.y += earthRotationSpeed;
+        sunMesh.rotation.y += sunRotationSpeed;
+        sunShadyMesh.rotation.y += sunRotationSpeed;
+        sunShadyMaterial.uniforms.time.value += 0.01;
 
         angle += moonOrbitSpeed;
         moonMesh.position.x = earthMesh.position.x + a * Math.cos(angle);
