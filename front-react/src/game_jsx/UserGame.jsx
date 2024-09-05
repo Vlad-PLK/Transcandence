@@ -18,6 +18,7 @@ import checkSun from './checkSun';
 import * as vec from './vectors_functions.jsx'
 import { UserDataContext } from '../UserDataContext.jsx';
 import { GuestDataContext } from '../GuestDataContext.jsx';
+import CustomTimer from './CustomTimer.jsx';
 
 let cameraKeyIsPressed = false;
 let paddle1Right = false;
@@ -306,7 +307,7 @@ function UserGame()
     const font = loader.parse(Ponderosa_Regular);
 
     // Start score
-    if (userData && guestData)
+    if (userData)
         updateScoreText(sceneRef.current, font, userData.username, guestData, player1Score, player2Score, scoreTextMesh);
 
 
@@ -458,7 +459,11 @@ function UserGame()
 
   return (
     <>
-        <div className="d-flex justify-content-center" ref={mountRef} />;
+        {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
+        <div className="d-flex justify-content-center" style={{color:'red', fontSize:'50px'}}>
+            <CustomTimer seconds={10}/>
+        </div>
+        <div className="d-flex justify-content-center" ref={mountRef}/>;
     </>
   )
 };
