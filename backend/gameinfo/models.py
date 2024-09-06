@@ -8,7 +8,7 @@ class Match(models.Model):
     match_date = models.DateField(auto_now_add=True)
     player1_score = models.IntegerField(default=0)
     player2_score = models.IntegerField(default=0)
-    match_winner = models.ForeignKey(CustomUser, related_name='winner_player', on_delete=models.CASCADE)
+    match_winner = models.ForeignKey(CustomUser, related_name='winner_player', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f'Match between {self.player1.username} and {self.player2.username} on {self.match_date}'
