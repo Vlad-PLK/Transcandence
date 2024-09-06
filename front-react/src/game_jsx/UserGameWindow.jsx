@@ -15,9 +15,7 @@ function UserGameWindow()
 	return (
 		<>
 			<div className="d-flex flex-column vh-100" style={main_image}>
-				<div className="mt-5">
-					<UserGame/>
-				</div>
+				<UserGame/>
 			</div>
 		</>
 	)

@@ -394,6 +394,8 @@ function UserGame()
     return () => {
         //if (sceneRef.current) sceneRef.current.dispose();
         cancelAnimationFrame(animationFrameId.current);
+        player1Score = 0;
+        player2Score = 0;
         if (sceneRef.current){
             sceneRef.current.remove(planeGeometry);
             sceneRef.current.remove(bottomPaddle);
@@ -461,7 +463,7 @@ function UserGame()
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
         <div className="d-flex justify-content-center" style={{color:'red', fontSize:'50px'}}>
-            <CustomTimer seconds={10}/>
+            <CustomTimer seconds={10} Player1={userData.username} Player2={guestData} ScorePlayer1={player1Score} ScorePlayer2={player2Score}/>
         </div>
         <div className="d-flex justify-content-center" ref={mountRef}/>;
     </>
