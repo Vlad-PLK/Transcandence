@@ -21,10 +21,10 @@ function WelcomePage()
 		backgroundSize: 'cover', // Adjust background size as needed
 		backgroundPosition: 'center', // Adjust background position as needed
 	};
-  
+
 	return (
     <>
-    {(localStorage.getItem(ACCESS_TOKEN) == null && localStorage.getItem(REFRESH_TOKEN) == null) ?	
+    {localStorage.getItem(ACCESS_TOKEN).length > 0 ?	
     <>
       <div className="d-flex flex-column vh-100" style={main_image}>
       <header className="p-4 opacity-75" style={{fontFamily: 'cyber4'}}>

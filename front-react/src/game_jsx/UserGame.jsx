@@ -75,7 +75,7 @@ function setSphere(scene, sphere, sphereGeometry, setFlag)
     // console.log("SETFLAG = ", setFlag);
     if (setFlag == 0)
     {
-        console.log("SETSPHERE 0");
+        // console.log("SETSPHERE 0");
         // Create a sphere
         sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32); // Radius, width segments, height segments
         // const textureLoaderSphere = new THREE.TextureLoader().load('./texture1.jpg');
