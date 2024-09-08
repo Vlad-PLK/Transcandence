@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { UserDataContext } from "../UserDataContext";
 import UserGame from "./UserGame";
 import { GuestDataContext } from "../GuestDataContext";
-import CustomTimer from "./CustomTimer";
 
 function UserGameWindow()
 {

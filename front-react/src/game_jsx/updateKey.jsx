@@ -6,77 +6,155 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
     paddle2Left, paddle2Right, camera, cameraPosition, sunMesh, stars)
 {
 
-    if (keyboardState['d'] || keyboardState['a'] || keyboardState['4'] || keyboardState['6'] || keyboardState['c'])
+    if (keyboardState['d'] || keyboardState['a'] || keyboardState['4'] || keyboardState['6'] || keyboardState['8'] || keyboardState['5'] || keyboardState['w'] || keyboardState['s'] || keyboardState['c'])
     {
-        if (keyboardState['d'])
+        if (cameraPosition == 1 || cameraPosition == 2)
         {
-            // Move left paddle right
-            if (bottomPaddle.position.x > -planeGeometry.parameters.width / 2 + bottomPaddleGeometry.parameters.width / 2)
+            if (keyboardState['6'])
             {
-                bottomPaddle.position.x -= 1;
-                paddle1Right = true;
+                // Move white paddle right
+                if (bottomPaddle.position.x > -planeGeometry.parameters.width / 2 + bottomPaddleGeometry.parameters.width / 2)
+                {
+                    bottomPaddle.position.x -= 1;
+                    paddle1Right = true;
+                }
+            }
+            else if (keyboardState['4'])
+            {
+                // Move white paddle left
+                if (bottomPaddle.position.x < planeGeometry.parameters.width / 2 - bottomPaddleGeometry.parameters.width / 2)
+                {
+                    bottomPaddle.position.x += 1;
+                    paddle1Left = true
+                }
+            }
+            if (keyboardState['d'])
+            {
+                // Move black paddle right
+                if (topPaddle.position.x > -planeGeometry.parameters.width / 2 + topPaddleGeometry.parameters.width / 2)
+                {
+                    topPaddle.position.x -= 1;
+                    paddle2Right = true;
+                }
+            }
+            else if (keyboardState['a'])
+            {
+                // Move black paddle left
+                if (topPaddle.position.x < planeGeometry.parameters.width / 2 - topPaddleGeometry.parameters.width / 2)
+                {
+                    topPaddle.position.x += 1;
+                    paddle2Left = true
+                }    
             }
         }
-        else if (keyboardState['a'])
+        else if (cameraPosition == 3 || cameraPosition == 4)
         {
-            // Move left paddle right
-            if (bottomPaddle.position.x < planeGeometry.parameters.width / 2 - bottomPaddleGeometry.parameters.width / 2)
+            if (keyboardState['4'])
             {
-                bottomPaddle.position.x += 1;
-                paddle1Left = true
+                // Move white paddle left
+                if (bottomPaddle.position.x > -planeGeometry.parameters.width / 2 + bottomPaddleGeometry.parameters.width / 2)
+                {
+                    bottomPaddle.position.x -= 1;
+                    paddle1Right = true;
+                }
+            }
+            else if (keyboardState['6'])
+            {
+                // Move white paddle right
+                if (bottomPaddle.position.x < planeGeometry.parameters.width / 2 - bottomPaddleGeometry.parameters.width / 2)
+                {
+                    bottomPaddle.position.x += 1;
+                    paddle1Left = true
+                }
+            }
+            if (keyboardState['a'])
+            {
+                // Move black paddle left
+                if (topPaddle.position.x > -planeGeometry.parameters.width / 2 + topPaddleGeometry.parameters.width / 2)
+                {
+                    topPaddle.position.x -= 1;
+                    paddle2Right = true;
+                }
+            }
+            else if (keyboardState['d'])
+            {
+                // Move black paddle right
+                if (topPaddle.position.x < planeGeometry.parameters.width / 2 - topPaddleGeometry.parameters.width / 2)
+                {
+                    topPaddle.position.x += 1;
+                    paddle2Left = true
+                }    
             }
         }
-        if (keyboardState['6'])
+        else if (cameraPosition == 0 || cameraPosition == 5)
         {
-            // Move right paddle left
-            if (topPaddle.position.x > -planeGeometry.parameters.width / 2 + topPaddleGeometry.parameters.width / 2)
+            if (keyboardState['8'])
             {
-                topPaddle.position.x -= 1;
-                paddle2Right = true;
+                // Move white paddle up
+                if (bottomPaddle.position.x > -planeGeometry.parameters.width / 2 + bottomPaddleGeometry.parameters.width / 2)
+                {
+                    bottomPaddle.position.x -= 1;
+                    paddle1Right = true;
+                }
             }
-        }
-        else if (keyboardState['4'])
-        {
-            // Move right paddle right
-            if (topPaddle.position.x < planeGeometry.parameters.width / 2 - topPaddleGeometry.parameters.width / 2)
+            else if (keyboardState['5'])
             {
-                topPaddle.position.x += 1;
-                paddle2Left = true
-            }    
+                // Move white paddle down
+                if (bottomPaddle.position.x < planeGeometry.parameters.width / 2 - bottomPaddleGeometry.parameters.width / 2)
+                {
+                    bottomPaddle.position.x += 1;
+                    paddle1Left = true
+                }
+            }
+            if (keyboardState['w'])
+            {
+                // Move black paddle up
+                if (topPaddle.position.x > -planeGeometry.parameters.width / 2 + topPaddleGeometry.parameters.width / 2)
+                {
+                    topPaddle.position.x -= 1;
+                    paddle2Right = true;
+                }
+            }
+            else if (keyboardState['s'])
+            {
+                // Move black paddle down
+                if (topPaddle.position.x < planeGeometry.parameters.width / 2 - topPaddleGeometry.parameters.width / 2)
+                {
+                    topPaddle.position.x += 1;
+                    paddle2Left = true
+                }    
+            }
         }
         if (keyboardState['c'])
         {
-            // Check if 'c' key is pressed and wasn't already handled
             if (!cameraKeyIsPressed)
             {
                 console.log(cameraPosition);
                 if (cameraPosition > 4)
                     cameraPosition = 0;
-                // Toggle camera position based on cameraPosition flag
                 if (cameraPosition == 0)
                 {
-                    camera.position.set(0, 20, -80);
+                    camera.position.set(0, 35, -100);
                     camera.lookAt(0, 0, 0);
                 }
                 else if (cameraPosition == 1)
                 {
-                    camera.position.set(0, 40, -130);
+                    camera.position.set(0, 50, -150);
                 }
                 else if (cameraPosition == 2)
                 {
-                    camera.position.set(0, 20, 80);
+                    camera.position.set(0, 35, 100);
                     camera.lookAt(0, 0, 0);
                 }
                 else if (cameraPosition == 3)
                 {
-                    camera.position.set(0, 40, 130);
+                    camera.position.set(0, 50, 150);
                 }
                 else if (cameraPosition == 4)
                 {
                     camera.position.set(0, 120, 0); // Place the camera above the scene
                     camera.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
                 }
-                checkSun(camera, sunMesh, stars);
                 cameraPosition += 1;  
                 // Set flag to true to prevent multiple toggles in rapid succession
                 cameraKeyIsPressed = true;

@@ -1,33 +1,54 @@
 import * as THREE from 'three';
 import  { OrbitControls } from "../../node_modules/three/examples/jsm/controls/OrbitControls.js"
-// import fresnelShader from './fresnelEffect.jsx';
 import vertexEarthShader from '../shaders/vertexEarth.js';
 import fragmentEarthShader from '../shaders/fragmentEarth.js';
-import { getFresnelMat } from "../shaders/getFresnelMat.js";
+import { getFresnelEarthMat } from "../shaders/getFresnelEarthMat.js";
+import { getFresnelSunMat } from "../shaders/getFresnelSunMat.js";
 import vertexSunShader from '../shaders/vertexSun.js';
 import fragmentSunShader from '../shaders/fragmentSun.js';
+import fragmentSunShading from '../shaders/fragmentSunShader.js';
+import fragmentSunHalo from '../shaders/fragmentSunHalo.js';
 
-
-function setStarfield(scene) {
+function setStarfield(scene)
+{
   // Create a star field
   const starGeometry = new THREE.BufferGeometry();
   const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 });
 
-  // Generate random star positions
+  // Parameters
   const starCount = 10000;
   const spread = 20000;
+  const exclusionRadius = 10000; // Stars won't spawn within this distance from the origin
+
   const starVertices = [];
+  
   for (let i = 0; i < starCount; i++) {
-      const x = THREE.MathUtils.randFloatSpread(spread);
-      const y = THREE.MathUtils.randFloatSpread(spread);
-      const z = THREE.MathUtils.randFloatSpread(spread);
-      starVertices.push(x, y, z);
+    let x, y, z, distance;
+    
+    // Repeat until the star is outside the exclusion radius
+    do {
+      x = THREE.MathUtils.randFloatSpread(spread);
+      y = THREE.MathUtils.randFloatSpread(spread);
+      z = THREE.MathUtils.randFloatSpread(spread);
+      
+      // Calculate the distance from the origin
+      distance = Math.sqrt(x * x + y * y + z * z);
+      
+    } 
+    while (distance < exclusionRadius);
+
+    // Add the valid star position to the array
+    starVertices.push(x, y, z);
   }
+
+  // Set the star positions as attributes in the geometry
   starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
 
+  // Create the star Points object
   const stars = new THREE.Points(starGeometry, starMaterial);
   scene.add(stars);
-  return (stars);
+
+  return stars;
 }
 
 function setSolarySystem(scene, camera, renderer, textureLoader)
@@ -40,7 +61,6 @@ function setSolarySystem(scene, camera, renderer, textureLoader)
     new OrbitControls(camera, renderer.domElement);
     const earthGeometry = new THREE.IcosahedronGeometry(300, 12);
     const bumpMapEarth = textureLoader.load("../../public/earthbump1k.jpg");
-    // const roughnessMapEarth = "../../public/Ocean.png";
     const earthMaterial = new THREE.MeshPhongMaterial({
         map: textureLoader.load("../../public/earthmap1k.jpg"),
         bumpMap: bumpMapEarth,
@@ -54,7 +74,6 @@ function setSolarySystem(scene, camera, renderer, textureLoader)
       transparent: true,
       opacity: 0.4,
       map: textureLoader.load("../../public/earthByNight.jpg"),
-      // map: textureLoader.load("../../public/night_lights_modified.png"),
       blending: THREE.AdditiveBlending,
       });
     const lightsMesh = new THREE.Mesh(earthGeometry, lightMaterial);
@@ -67,20 +86,17 @@ function setSolarySystem(scene, camera, renderer, textureLoader)
         transparent: true,
         opacity: 0.8,
         blending: THREE.AdditiveBlending,
-        // alphaMap: textureLoader.load('../../public/earthcloudmaptrans.jpg')
       });
     const cloudsMesh = new THREE.Mesh(earthGeometry, cloudMaterial);
     cloudsMesh.position.set(200, 0, 1400);
     cloudsMesh.scale.setScalar(1.008);
     earthGroup.add(cloudsMesh);
 
-    const fresnelMaterial = getFresnelMat();
-    const fresnelMesh = new THREE.Mesh(earthGeometry, fresnelMaterial);
-    fresnelMesh.position.set(200, 0, 1400);
-    fresnelMesh.scale.setScalar(1.015);
-    earthGroup.add(fresnelMesh);
-
-    // fresnelShader.uniforms.earthPosition.value = earthMesh.position.clone();  // Set Earth position in shader
+    const fresnelEarthMaterial = getFresnelEarthMat();
+    const fresnelEarthMesh = new THREE.Mesh(earthGeometry, fresnelEarthMaterial);
+    fresnelEarthMesh.position.set(200, 0, 1400);
+    fresnelEarthMesh.scale.setScalar(1.015);
+    earthGroup.add(fresnelEarthMesh);
 
     const atmoMaterial = new THREE.ShaderMaterial(
     {
@@ -88,7 +104,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader)
       fragmentShader: fragmentEarthShader,
       transparent: true,
       blending: THREE.AdditiveBlending,
-      side: THREE.BackSide // such that it does not overlays on top of the earth; this points the normal in opposite direction in vertex shader
+      side: THREE.BackSide
     })
     const atmoMesh = new THREE.Mesh(earthGeometry, atmoMaterial)
     atmoMesh.position.set(200, 0, 1400);
@@ -114,10 +130,10 @@ function setSolarySystem(scene, camera, renderer, textureLoader)
     const sunGroup = new THREE.Group();
     
     // Create the sun geometry
-    const sunGeometry = new THREE.IcosahedronGeometry(600, 12); // Radius, detail
+    const sunGeometry = new THREE.IcosahedronGeometry(1000, 12); // Radius, detail
     const sunMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
     const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
-    sunMesh.position.set(-600, 200, -5000);
+    sunMesh.position.set(-600, 0, -5000);
 
     const sunShadyMaterial = new THREE.ShaderMaterial(
     {
@@ -132,11 +148,52 @@ function setSolarySystem(scene, camera, renderer, textureLoader)
         fragmentShader: fragmentSunShader,
     });
     const sunShadyMesh = new THREE.Mesh(sunGeometry, sunShadyMaterial);
-    sunShadyMesh.position.set(-600, 200, -5000);
+    sunShadyMesh.position.set(-600, 0, -5000);
     sunGroup.add(sunShadyMesh);
+
+    const fresnelSunMaterial = getFresnelSunMat();
+    const fresnelSunMesh = new THREE.Mesh(sunGeometry, fresnelSunMaterial);
+    fresnelSunMesh.position.set(-600, 0, -5000);
+    sunGroup.add(fresnelSunMesh);
+
+    const sunShadingMaterial = new THREE.ShaderMaterial(
+      {
+          side: THREE.DoubleSide,
+          blending: THREE.AdditiveBlending,
+          uniforms: 
+          {
+            time: {value: 0},
+            resolution: { value: new THREE.Vector4() },
+          },
+          vertexShader: vertexSunShader,
+          fragmentShader: fragmentSunShading,
+      });
+      const sunShadingMesh = new THREE.Mesh(sunGeometry, sunShadingMaterial);
+      sunShadingMesh.position.set(-600, 0, -5000);
+      sunGroup.add(sunShadingMesh);
+
+      const sunHaloMaterial = new THREE.ShaderMaterial(
+        {
+            side: THREE.BackSide,
+            blending: THREE.AdditiveBlending,
+            uniforms: 
+            {
+                time: {value: 0},
+                resolution: { value: new THREE.Vector4() },
+            },
+            transparent: true,
+            vertexShader: vertexSunShader,
+            fragmentShader: fragmentSunHalo,
+        }
+    );
+    
+    const sunHaloMesh = new THREE.Mesh(sunGeometry, sunHaloMaterial);
+    sunHaloMesh.position.set(-600, 0, -5000);
+    sunHaloMesh.scale.setScalar(1.25);
+    sunGroup.add(sunHaloMesh);
     
 
-    const sunLight = new THREE.DirectionalLight(0xFFFFFF, 2); // Lower intensity
+    const sunLight = new THREE.DirectionalLight(0xFFFFFF, 2.5); // Lower intensity
     sunLight.position.set(-100, 200, -300);
 
     // sunLight.shadow.mapSize.width = 10000;
@@ -161,7 +218,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader)
     // Position the sunGroup in the scene
     scene.add(mainGroup);
 
-    return {earthMesh, lightsMesh, cloudsMesh, fresnelMesh, sunMesh, sunShadyMaterial, sunShadyMesh, moonMesh, orbitRadius, stars};
+    return {earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, sunMesh, sunShadyMaterial, sunShadyMesh, sunShadingMaterial, sunShadingMesh, fresnelSunMesh, sunLight, moonMesh, orbitRadius, stars};
 }
 
 export default setSolarySystem
