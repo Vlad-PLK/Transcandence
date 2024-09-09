@@ -1,14 +1,25 @@
 import * as THREE from 'three';
 import  { OrbitControls } from "../../node_modules/three/examples/jsm/controls/OrbitControls.js"
+
 import vertexEarthShader from '../shaders/vertexEarth.js';
-import fragmentEarthShader from '../shaders/fragmentEarth.js';
 import { getFresnelEarthMat } from "../shaders/getFresnelEarthMat.js";
-import { getFresnelSunMat } from "../shaders/getFresnelSunMat.js";
+import fragmentEarthShader from '../shaders/fragmentEarth.js';
+
 import vertexSunShader from '../shaders/vertexSun.js';
+import { getFresnelSunMat } from "../shaders/getFresnelSunMat.js";
 import fragmentSunShader from '../shaders/fragmentSun.js';
 import fragmentSunShading from '../shaders/fragmentSunShader.js';
 import fragmentSunHalo from '../shaders/fragmentSunHalo.js';
 
+import { getFresnelWhiteDwarfMat } from "../shaders/getFresnelWhiteDwarfMat.js";
+import fragmentWhiteDwarfShader from '../shaders/fragmentWhiteDwarf.js';
+import fragmentWhiteDwarfShading from '../shaders/fragmentWhiteDwarfShader.js'
+import fragmentWhiteDwarfHalo from '../shaders/fragmentWhiteDwarfHalo.js';
+
+// import { getFresnelRedGiantMat } from "../shaders/getFresnelRedGiantMat.js";
+import fragmentRedGiantShader from '../shaders/fragmentRedGiant.js';
+import fragmentRedGiantShading from '../shaders/fragmentRedGiantShader.js'
+import fragmentRedGiantHalo from '../shaders/fragmentRedGiantHalo.js';
 function setStarfield(scene)
 {
   // Create a star field
@@ -130,7 +141,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader)
     const sunGroup = new THREE.Group();
     
     // Create the sun geometry
-    const sunGeometry = new THREE.IcosahedronGeometry(1000, 12); // Radius, detail
+    const sunGeometry = new THREE.IcosahedronGeometry(850, 12); // Radius, detail
     const sunMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
     const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
     sunMesh.position.set(-600, 0, -5000);
@@ -189,12 +200,164 @@ function setSolarySystem(scene, camera, renderer, textureLoader)
     
     const sunHaloMesh = new THREE.Mesh(sunGeometry, sunHaloMaterial);
     sunHaloMesh.position.set(-600, 0, -5000);
-    sunHaloMesh.scale.setScalar(1.25);
+    sunHaloMesh.scale.setScalar(1.5);
     sunGroup.add(sunHaloMesh);
-    
+
+    sunGroup.add(sunMesh);
 
     const sunLight = new THREE.DirectionalLight(0xFFFFFF, 2.5); // Lower intensity
     sunLight.position.set(-100, 200, -300);
+    mainGroup.add(sunLight);
+    // mainGroup.add(sunGroup);
+    
+
+
+
+
+
+
+    const whiteDwarfGroup = new THREE.Group();
+    
+    // Create the whiteDwarf geometry
+    const whiteDwarfGeometry = new THREE.IcosahedronGeometry(150, 12); // Radius, detail
+    const whiteDwarfMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+    const whiteDwarfMesh = new THREE.Mesh(whiteDwarfGeometry, whiteDwarfMaterial);
+    whiteDwarfMesh.position.set(-600, 0, -5000);
+    whiteDwarfGroup.add(whiteDwarfMesh);
+
+    const whiteDwarfShadyMaterial = new THREE.ShaderMaterial(
+    {
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+        uniforms: 
+        {
+          time: {value: 0},
+          resolution: { value: new THREE.Vector4() },
+        },
+        vertexShader: vertexSunShader,
+        fragmentShader: fragmentWhiteDwarfShader,
+    });
+    const whiteDwarfShadyMesh = new THREE.Mesh(whiteDwarfGeometry, whiteDwarfShadyMaterial);
+    whiteDwarfShadyMesh.position.set(-600, 0, -5000);
+    whiteDwarfGroup.add(whiteDwarfShadyMesh);
+
+    const fresnelwhiteDwarfMaterial = getFresnelEarthMat();
+    const fresnelwhiteDwarfMesh = new THREE.Mesh(whiteDwarfGeometry, fresnelwhiteDwarfMaterial);
+    fresnelwhiteDwarfMesh.position.set(-600, 0, -5000);
+    whiteDwarfGroup.add(fresnelwhiteDwarfMesh);
+
+    const whiteDwarfShadingMaterial = new THREE.ShaderMaterial(
+      {
+          side: THREE.DoubleSide,
+          blending: THREE.AdditiveBlending,
+          uniforms: 
+          {
+            time: {value: 0},
+            resolution: { value: new THREE.Vector4() },
+          },
+          vertexShader: vertexSunShader,
+          fragmentShader: fragmentWhiteDwarfShading,
+      });
+      const whiteDwarfShadingMesh = new THREE.Mesh(whiteDwarfGeometry, whiteDwarfShadingMaterial);
+      whiteDwarfShadingMesh.position.set(-600, 0, -5000);
+      whiteDwarfGroup.add(whiteDwarfShadingMesh);
+
+      const whiteDwarfHaloMaterial = new THREE.ShaderMaterial(
+        {
+            side: THREE.BackSide,
+            blending: THREE.AdditiveBlending,
+            uniforms: 
+            {
+                time: {value: 0},
+                resolution: { value: new THREE.Vector4() },
+            },
+            transparent: true,
+            vertexShader: vertexSunShader,
+            fragmentShader: fragmentWhiteDwarfHalo,
+        }
+    );
+    
+    const whiteDwarfHaloMesh = new THREE.Mesh(whiteDwarfGeometry, whiteDwarfHaloMaterial);
+    whiteDwarfHaloMesh.position.set(-600, 0, -5000);
+    whiteDwarfHaloMesh.scale.setScalar(5);
+    whiteDwarfGroup.add(whiteDwarfHaloMesh);
+
+    mainGroup.add(whiteDwarfGroup);
+
+
+
+
+
+
+
+
+    const redGiantGroup = new THREE.Group();
+    
+    // Create the redGiant geometry
+    const redGiantGeometry = new THREE.IcosahedronGeometry(5000, 12); // Radius, detail
+    const redGiantMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    const redGiantMesh = new THREE.Mesh(redGiantGeometry, redGiantMaterial);
+    redGiantMesh.position.set(0, 0, -10000);
+    redGiantGroup.add(redGiantMesh);
+
+    const redGiantShadyMaterial = new THREE.ShaderMaterial(
+    {
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+        uniforms: 
+        {
+          time: {value: 0},
+          resolution: { value: new THREE.Vector4() },
+        },
+        vertexShader: vertexSunShader,
+        fragmentShader: fragmentRedGiantShader,
+    });
+    const redGiantShadyMesh = new THREE.Mesh(redGiantGeometry, redGiantShadyMaterial);
+    redGiantShadyMesh.position.set(0, 0, -10000);
+    redGiantGroup.add(redGiantShadyMesh);
+
+    const fresnelRedGiantMaterial = getFresnelEarthMat();
+    const fresnelRedGiantMesh = new THREE.Mesh(redGiantGeometry, fresnelRedGiantMaterial);
+    fresnelRedGiantMesh.position.set(0, 0, -10000);
+    // redGiantGroup.add(fresnelRedGiantMesh);
+
+    const redGiantShadingMaterial = new THREE.ShaderMaterial(
+      {
+          side: THREE.DoubleSide,
+          blending: THREE.AdditiveBlending,
+          uniforms: 
+          {
+            time: {value: 0},
+            resolution: { value: new THREE.Vector4() },
+          },
+          vertexShader: vertexSunShader,
+          fragmentShader: fragmentRedGiantShading,
+      });
+      const redGiantShadingMesh = new THREE.Mesh(redGiantGeometry, redGiantShadingMaterial);
+      redGiantShadingMesh.position.set(0, 0, -10000);
+      redGiantGroup.add(redGiantShadingMesh);
+
+      const redGiantHaloMaterial = new THREE.ShaderMaterial(
+        {
+            side: THREE.BackSide,
+            blending: THREE.AdditiveBlending,
+            uniforms: 
+            {
+                time: {value: 0},
+                resolution: { value: new THREE.Vector4() },
+            },
+            transparent: true,
+            vertexShader: vertexSunShader,
+            fragmentShader: fragmentRedGiantHalo,
+        }
+    );
+    
+    const redGiantHaloMesh = new THREE.Mesh(redGiantGeometry, redGiantHaloMaterial);
+    redGiantHaloMesh.position.set(0, 0, -10000);
+    redGiantHaloMesh.scale.setScalar(1.5);
+    redGiantGroup.add(redGiantHaloMesh);
+
+    // mainGroup.add(redGiantGroup);  
 
     // sunLight.shadow.mapSize.width = 10000;
     // sunLight.shadow.mapSize.height = 10000;
@@ -207,18 +370,12 @@ function setSolarySystem(scene, camera, renderer, textureLoader)
     // sunLight.shadow.camera.top = 100;
     // sunLight.shadow.camera.bottom = -100;
 
-    // Optional: create an object to hold the sun and light together
-
-    sunGroup.add(sunMesh);
-    
-    sunGroup.add(sunLight);
     // scene.add(sunGroup);
-    mainGroup.add(sunGroup);
 
     // Position the sunGroup in the scene
     scene.add(mainGroup);
 
-    return {earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, sunMesh, sunShadyMaterial, sunShadyMesh, sunShadingMaterial, sunShadingMesh, fresnelSunMesh, sunLight, moonMesh, orbitRadius, stars};
+    return {earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, sunMesh, sunShadyMaterial, sunShadyMesh, sunShadingMaterial, sunShadingMesh, fresnelSunMesh, whiteDwarfMesh, whiteDwarfShadyMaterial, whiteDwarfShadyMesh, whiteDwarfShadingMaterial, whiteDwarfShadingMesh, fresnelwhiteDwarfMesh, redGiantMesh, redGiantShadyMaterial, redGiantShadyMesh, redGiantShadingMaterial, redGiantShadingMesh, fresnelRedGiantMesh, sunLight, moonMesh, orbitRadius, stars};
 }
 
 export default setSolarySystem

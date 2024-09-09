@@ -1,4 +1,4 @@
-const fragmentSunShading = `
+const fragmentRedGiantShading = `
     uniform float time;
     uniform float progress;
     varying vec3 vNormal;
@@ -130,46 +130,47 @@ const fragmentSunShading = `
     }
 
     float fbm(vec4 p)
+{
+    float sum = 0.0;
+    float amp = 1.0;
+    float scale = 1.0;
+    for(int i=0; i<8; i++)
     {
-        float sum = 0.0;
-        float amp = 1.0;
-        float scale = 1.0;
-        for(int i=0;i<8;i++)
-        {
-            sum += snoise(p*scale)*amp;
-            p.w += 100.0;
-            amp *=0.95;
-            scale *=2.0;
-        }
-        return sum;
+        sum += snoise(p * scale) * amp;
+        p.w += 100.0;
+        amp *= 0.95;
+        scale *= 2.0;
     }
+    return sum;
+}
 
-    vec3 brightness2Color(float n)
-    {
-        //IMPORTANT
-        //add sunLight intensity to interact
-        
-        n *= 0.25;
-        return (vec3(n, n*n, n*n*n*n)/0.25)*0.7;
-    }
+vec3 brightness2Color(float n)
+{
+    // Adjust for dark red colors
+    n *= 0.25;
+    return (vec3(n * 1.0, n * 1.0, n * 1.0) / 0.25) * 2.0;  // Very dark red shades
+}
 
-    void main() {
-        // Calculate 4D noise
-        vec4 p = vec4(vPosition * 0.0012, time * 0.01);
-        float noise4d = fbm(p);
+void main()
+{
+    // Calculate 4D noise
+    vec4 p = vec4(vPosition * 0.0010, time * 0.012);
+    float noise4d = fbm(p);
 
-        // Calculate spots based on 4D noise
-        vec4 p1 = vec4(vPosition * 0.01, time * 0.05);
-        float spots = max(snoise(p1), 0.0);
+    // Calculate spots based on 4D noise
+    vec4 p1 = vec4(vPosition * 0.0001, time * 0.25);
+    float spots = max(snoise(p1), 0.0);
 
-        // Convert the noise value to a color
-        vec3 sunColor = brightness2Color(noise4d);
-        sunColor = sunColor * 1.6 * vec3(2.5, 0.8, 0.5) + vec3(0.5, 0.05, 0.0);
+    // Convert the noise value to a dark red color
+    vec3 darkRedColor = brightness2Color(noise4d);
 
-        // Mix the sun color with the spots and set the final color
-        gl_FragColor = vec4(sunColor, 1.0);
+    // Apply a darkening factor and some slight tint
+    darkRedColor = darkRedColor * 1.6 * vec3(1.0, 0.1, 0.1) + vec3(0.0, 0.0, 0.0);
 
-    }
+    // Set the final color of the fragment
+    gl_FragColor = vec4(darkRedColor, 1.0);  // Alpha set to 1.0 for opaque
+}
+
 `;
 
-export default fragmentSunShading;
+export default fragmentRedGiantShading;

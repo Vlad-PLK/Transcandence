@@ -1,4 +1,4 @@
-const fragmentSunShading = `
+const fragmentWhiteDwarfShading = `
     uniform float time;
     uniform float progress;
     varying vec3 vNormal;
@@ -155,7 +155,7 @@ const fragmentSunShading = `
 
     void main() {
         // Calculate 4D noise
-        vec4 p = vec4(vPosition * 0.0012, time * 0.01);
+        vec4 p = vec4(vPosition * 0.01, time * 0.01);
         float noise4d = fbm(p);
 
         // Calculate spots based on 4D noise
@@ -170,6 +170,7 @@ const fragmentSunShading = `
         gl_FragColor = vec4(sunColor, 1.0);
 
     }
+
 `;
 
-export default fragmentSunShading;
+export default fragmentWhiteDwarfShading;

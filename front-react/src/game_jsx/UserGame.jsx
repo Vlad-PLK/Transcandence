@@ -10,7 +10,8 @@ import setPaddles from './setPaddles.jsx';
 import setBoosts from './setBoosts.jsx';
 import setSolarySystem from './setSolarySystem.jsx';
 import isBallOverBoostSurface from './isBall.jsx';
-import setPlane  from './setPlane.jsx';
+import setCamera from './setCamera.jsx';
+import setPlane from './setPlane.jsx';
 import updateKey from './updateKey.jsx';
 import shockWave from './shockWave.jsx';
 import checkSun from './checkSun';
@@ -19,7 +20,6 @@ import { UserDataContext } from '../UserDataContext.jsx';
 import { GuestDataContext } from '../GuestDataContext.jsx';
 import CustomTimer from './CustomTimer.jsx';
 import setCamera from './setCamera.jsx';
-
 let cameraKeyIsPressed = false;
 let paddle1Right = false;
 let paddle1Left = false;
@@ -75,7 +75,7 @@ function setSphere(scene, sphere, sphereGeometry, setFlag)
     // console.log("SETFLAG = ", setFlag);
     if (setFlag == 0)
     {
-        // console.log("SETSPHERE 0");
+        console.log("SETSPHERE 0");
         // Create a sphere
         sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32); // Radius, width segments, height segments
         // const textureLoaderSphere = new THREE.TextureLoader().load('./texture1.jpg');
@@ -109,42 +109,42 @@ function setSphere(scene, sphere, sphereGeometry, setFlag)
 }
 
 const calculateCollisionNormal = (sphere, sphereGeometry, topPaddle, bottomPaddle, planeGeometry) =>
-    {
-        const radius = sphereGeometry.parameters.radius;
-    
-        if (sphere.position.x - radius <= -planeGeometry.parameters.width / 2) 
-            return { normal: new THREE.Vector3(1, 0, 0).normalize(), flag: 1 };
-    
-        if (sphere.position.x + radius >= planeGeometry.parameters.width / 2)
-            return { normal: new THREE.Vector3(-1, 0, 0).normalize(), flag: 2 };
-    
-        if (sphere.position.z - radius <= bottomPaddle.position.z + bottomPaddle.geometry.parameters.depth / 2 &&
-            sphere.position.x >= bottomPaddle.position.x - (bottomPaddle.geometry.parameters.width / 2) - 2 &&
-            sphere.position.x <= bottomPaddle.position.x + (bottomPaddle.geometry.parameters.width / 2) + 2)
-            return { normal: new THREE.Vector3(0, 0, 1).normalize(), flag: 3 };
-    
-        if (sphere.position.z + radius >= topPaddle.position.z - topPaddle.geometry.parameters.depth / 2 &&
-            sphere.position.x >= topPaddle.position.x - (topPaddle.geometry.parameters.width / 2) - 2 &&
-            sphere.position.x <= topPaddle.position.x + (topPaddle.geometry.parameters.width / 2) + 2)
-            return { normal: new THREE.Vector3(0, 0, -1).normalize(), flag: 4 };
-    
-        // Default normal (no collision)
-        return { normal: null, flag: 0 };
-    };
+{
+    const radius = sphereGeometry.parameters.radius;
+
+    if (sphere.position.x - radius <= -planeGeometry.parameters.width / 2) 
+        return { normal: new THREE.Vector3(1, 0, 0).normalize(), flag: 1 };
+
+    if (sphere.position.x + radius >= planeGeometry.parameters.width / 2)
+        return { normal: new THREE.Vector3(-1, 0, 0).normalize(), flag: 2 };
+
+    if (sphere.position.z - radius <= bottomPaddle.position.z + bottomPaddle.geometry.parameters.depth / 2 &&
+        sphere.position.x >= bottomPaddle.position.x - (bottomPaddle.geometry.parameters.width / 2) - 2 &&
+        sphere.position.x <= bottomPaddle.position.x + (bottomPaddle.geometry.parameters.width / 2) + 2)
+        return { normal: new THREE.Vector3(0, 0, 1).normalize(), flag: 3 };
+
+    if (sphere.position.z + radius >= topPaddle.position.z - topPaddle.geometry.parameters.depth / 2 &&
+        sphere.position.x >= topPaddle.position.x - (topPaddle.geometry.parameters.width / 2) - 2 &&
+        sphere.position.x <= topPaddle.position.x + (topPaddle.geometry.parameters.width / 2) + 2)
+        return { normal: new THREE.Vector3(0, 0, -1).normalize(), flag: 4 };
+
+    // Default normal (no collision)
+    return { normal: null, flag: 0 };
+};
 
 function resetSphere(scene, sphere, sphereGeometry)
+{
+    velocity = vec.vectorize(0, 0, 0);
+    sphere.position.set(0, sphereGeometry.parameters.radius, 0);
+
+    setTimeout(() =>
     {
-        velocity = vec.vectorize(0, 0, 0);
-        sphere.position.set(0, sphereGeometry.parameters.radius, 0);
+        let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
+        velocity.x = Math.cos(randomAngle);
+        velocity.z = Math.sin(randomAngle);
+    }, 6000);
     
-        setTimeout(() =>
-        {
-            let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
-            velocity.x = Math.cos(randomAngle);
-            velocity.z = Math.sin(randomAngle);
-        }, 6000);
-        
-    }
+}
 
 function resetPaddles(topPaddle, bottomPaddle, planeGeometry)
 {
@@ -228,9 +228,6 @@ function updateScoreText(scene, font, player1ID, player2ID, player1Score, player
     // Start the animation
     animateScoreText();
 }
-
-
-
 function checkCollision(scene, sphere, sphereGeometry, planeGeometry,
     topPaddle, bottomPaddle, bottomWall, topWall, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, userData, font)
 {
@@ -307,21 +304,20 @@ function UserGame()
     );
     const cameraDirection = new THREE.Vector3();
     setCamera(cameraRef.current, cameraDirection);
-    cameraRef.current.position.set(Math.PI / 2, 100, Math.PI / 10000); // Place the camera above the scene
-
-
+    // cameraRef.current.position.set(Math.PI / 2, 100, Math.PI / 10000); // Place the camera above the scene
     const loader = new FontLoader();
     const font = loader.parse(Ponderosa_Regular);
 
     // Start score
     if (userData)
         updateScoreText(sceneRef.current, font, userData.username, guestData, player1Score, player2Score, scoreTextMesh, cameraPosition);
+
     // ... Add geometry, materials, lights, etc.
     const planeGeometry = setPlane(sceneRef.current);
     const { leftWall, rightWall, bottomWall, topWall} = setWalls(sceneRef.current, planeGeometry);
     const { bottomPaddle, topPaddle, bottomPaddleGeometry, topPaddleGeometry } = setPaddles(sceneRef.current, planeGeometry); 
     const { speedBoostGeometry, speedBoost1, speedBoost2 } = setBoosts(sceneRef.current);
-    const { earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, sunMesh, sunShadyMaterial, sunShadyMesh, sunShadingMaterial, sunShadingMesh, fresnelSunMesh, sunLight, moonMesh, orbitRadius, stars } = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader);
+    const { earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, sunMesh, sunShadyMaterial, sunShadyMesh, sunShadingMaterial, sunShadingMesh, fresnelSunMesh, whiteDwarfMesh, whiteDwarfShadyMaterial, whiteDwarfShadyMesh, whiteDwarfShadingMaterial, whiteDwarfShadingMesh, fresnelwhiteDwarfMesh, redGiantMesh, redGiantShadyMaterial, redGiantShadyMesh, redGiantShadingMaterial, redGiantShadingMesh, fresnelRedGiantMesh, sunLight, moonMesh, orbitRadius, stars } = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader);
     let sphere = null; 
     let sphereGeometry = null;
     ({ sphere, sphereGeometry, setFlag} = setSphere(sceneRef.current, sphere, sphereGeometry, setFlag));
@@ -367,12 +363,27 @@ function UserGame()
         lightsMesh.rotation.y += earthRotationSpeed;
         cloudsMesh.rotation.y += earthRotationSpeed + 0.001;
         fresnelEarthMesh.rotation.y += earthRotationSpeed;
-        sunMesh.rotation.y -= sunRotationSpeed;
-        sunShadyMesh.rotation.y -= sunRotationSpeed;
-        sunShadyMaterial.uniforms.time.value += 0.01;
-        sunShadingMesh.rotation.y -= sunRotationSpeed;
-        sunShadingMaterial.uniforms.time.value += 0.01;
-        fresnelSunMesh.rotation.y -= sunRotationSpeed;
+
+        // sunMesh.rotation.y -= sunRotationSpeed;
+        // sunShadyMesh.rotation.y -= sunRotationSpeed;
+        // sunShadyMaterial.uniforms.time.value += 0.01;
+        // sunShadingMesh.rotation.y -= sunRotationSpeed;
+        // sunShadingMaterial.uniforms.time.value += 0.01;
+        // fresnelSunMesh.rotation.y -= sunRotationSpeed;
+
+        whiteDwarfMesh.rotation.y -= sunRotationSpeed * 1000;
+        whiteDwarfShadyMesh.rotation.y -= sunRotationSpeed * 1000;
+        whiteDwarfShadyMaterial.uniforms.time.value += 0.01;
+        whiteDwarfShadingMesh.rotation.y -= sunRotationSpeed * 1000;
+        whiteDwarfShadingMaterial.uniforms.time.value += 0.01;
+        fresnelwhiteDwarfMesh.rotation.y -= sunRotationSpeed * 1000;
+
+        // redGiantMesh.rotation.y -= sunRotationSpeed * 0.15;
+        // redGiantShadyMesh.rotation.y -= sunRotationSpeed * 0.15;
+        // redGiantShadyMaterial.uniforms.time.value += 0.01;
+        // redGiantShadingMesh.rotation.y -= sunRotationSpeed * 0.15;
+        // redGiantShadingMaterial.uniforms.time.value += 0.01;
+        // fresnelRedGiantMesh.rotation.y -= sunRotationSpeed * 0.15;
         
 
         angle += moonOrbitSpeed;
@@ -422,12 +433,6 @@ function UserGame()
             sceneRef.current.remove(moonMesh);
             sceneRef.current.remove(sunMesh);
             sceneRef.current.remove(lightsMesh);
-            if (scoreTextMesh != null)
-            {
-                sceneRef.current.remove(scoreTextMesh);
-                scoreTextMesh.geometry.dispose();
-                scoreTextMesh.material.dispose();
-            }
             planeGeometry.dispose();
             speedBoostGeometry.dispose();
             bottomPaddle.geometry.dispose();
@@ -455,6 +460,12 @@ function UserGame()
             sunMesh.material.dispose();
             lightsMesh.geometry.dispose();
             lightsMesh.material.dispose();
+            if (scoreTextMesh)
+            {
+                sceneRef.current.remove(scoreTextMesh);
+                scoreTextMesh.geometry.dispose();
+                scoreTextMesh.material.dispose();
+            }
         }
         window.removeEventListener('resize', onWindowResize);
         //document.removeEventListener('keydown', handleKeyDown);
