@@ -19,7 +19,8 @@ import * as vec from './vectors_functions.jsx'
 import { UserDataContext } from '../UserDataContext.jsx';
 import { GuestDataContext } from '../GuestDataContext.jsx';
 import CustomTimer from './CustomTimer.jsx';
-import setCamera from './setCamera.jsx';
+import { use } from 'i18next';
+import { GameContext } from '../GameContext.jsx';
 let cameraKeyIsPressed = false;
 let paddle1Right = false;
 let paddle1Left = false;
@@ -273,6 +274,7 @@ function UserGame()
 {
     const {userData} = useContext(UserDataContext);
     const {guestData} = useContext(GuestDataContext);
+    const {gameData} = useContext(GameContext);
     const [scoreP1, setScoreP1] = useState(0);
     const [scoreP2, setScoreP2] = useState(0);
     const animationFrameId = useRef(null);
@@ -308,6 +310,8 @@ function UserGame()
     const loader = new FontLoader();
     const font = loader.parse(Ponderosa_Regular);
 
+    if (gameData)
+        console.log("Current Star FLAG", gameData.starFlag)
     // Start score
     if (userData)
         updateScoreText(sceneRef.current, font, userData.username, guestData, player1Score, player2Score, scoreTextMesh, cameraPosition);
@@ -417,6 +421,8 @@ function UserGame()
     return () => {
         //if (sceneRef.current) sceneRef.current.dispose();
         cancelAnimationFrame(animationFrameId.current);
+        player1Score = 0;
+        player2Score = 0;
         if (sceneRef.current){
             sceneRef.current.remove(planeGeometry);
             sceneRef.current.remove(bottomPaddle);

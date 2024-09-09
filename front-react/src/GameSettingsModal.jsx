@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import { useContext } from "react"
+import { GameContext } from "./GameContext"
 
-function GameSettingsModal({ onStarTypeChange }) {
-    const [starType, setstarType] = useState(0);  // Default size is 1.5
-
-    const handleStarTypeChange = (event) => {
-        console.log(event.target.value);
-        setstarType(event.target.value);
-    };
-
-    return (
+function GameSettingsModal() {
+	const {gameData, setGameData} = useContext(GameContext);
+	console.log("GameData STARFLAG", gameData.starFlag);
+	const handleChange = (event) => {
+		setGameData(prevState => ({
+				...prevState,
+				starFlag:event.target.value,
+		}))
+		console.log("GameData STARFLAG", gameData.starFlag);
+	}
+	return (
         <>
             <div className="modal fade" id="gameSettings" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -18,7 +21,34 @@ function GameSettingsModal({ onStarTypeChange }) {
                         </div>
                         <div className="modal-body p-5 pt-0">
                             <h4>What type of star</h4>
-                            <select className="form-select" value={starType} onChange={handleStarTypeChange}>
+                            <select className="form-select" onChange={handleChange}>
+                                <option value="0">The Sun</option>
+                                <option value="1">White Dwarf</option>
+                                <option value="2">Red Giant</option>
+                                <option value="3">Else</option>
+                            </select>
+                        </div>
+						<div className="modal-body p-5 pt-0">
+                            <h4>What type of star</h4>
+                            <select className="form-select" onChange={handleChange}>
+                                <option value="0">The Sun</option>
+                                <option value="1">White Dwarf</option>
+                                <option value="2">Red Giant</option>
+                                <option value="3">Else</option>
+                            </select>
+                        </div>
+						<div className="modal-body p-5 pt-0">
+                            <h4>What type of star</h4>
+                            <select className="form-select" onChange={handleChange}>
+                                <option value="0">The Sun</option>
+                                <option value="1">White Dwarf</option>
+                                <option value="2">Red Giant</option>
+                                <option value="3">Else</option>
+                            </select>
+                        </div>
+						<div className="modal-body p-5 pt-0">
+                            <h4>What type of star</h4>
+                            <select className="form-select" onChange={handleChange}>
                                 <option value="0">The Sun</option>
                                 <option value="1">White Dwarf</option>
                                 <option value="2">Red Giant</option>
@@ -29,7 +59,7 @@ function GameSettingsModal({ onStarTypeChange }) {
                 </div>
             </div>
         </>
-    );
+    )
 }
 
-export default GameSettingsModal;
+export default GameSettingsModal

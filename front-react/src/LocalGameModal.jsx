@@ -2,10 +2,12 @@ import { useContext, useRef } from "react"
 import { UserDataContext } from "./UserDataContext"
 import { useNavigate } from "react-router-dom";
 import { GuestDataContext } from "./GuestDataContext";
+import { GameContext } from "./GameContext";
 
 function LocalGameModal() {
     const {userData} = useContext(UserDataContext);
     const {guestData, setGuestData} = useContext(GuestDataContext);
+    const {gameData, setGameData} = useContext(GameContext);
     const navigate = useNavigate();
     const clearInput=(inputRef)=>{
       if (inputRef.current) {
@@ -13,13 +15,13 @@ function LocalGameModal() {
       }
     }
     const playAsGuest=()=>{
-        setGuestData("guest");
         navigate("/userGameWindow/")
     }
     const playAsUser=()=>{
         navigate("/userGameWindow/")
     }
     const startGame=()=>{
+      setGuestData("guest");
       navigate("/userGameWindow/")
   }
     return (
