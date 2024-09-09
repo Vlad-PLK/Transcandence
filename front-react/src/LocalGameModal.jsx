@@ -13,6 +13,7 @@ function LocalGameModal() {
       }
     }
     const playAsGuest=()=>{
+        setGuestData("guest");
         navigate("/userGameWindow/")
     }
     const playAsUser=()=>{
