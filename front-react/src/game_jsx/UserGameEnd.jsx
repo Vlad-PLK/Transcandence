@@ -1,6 +1,6 @@
 import React from 'react';
 
-const UserGameEnd = () => {
+function UserGameEnd(){
 	return (
 		<div>
 			<h1>Game Over</h1>

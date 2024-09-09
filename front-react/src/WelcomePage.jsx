@@ -24,7 +24,7 @@ function WelcomePage()
 
 	return (
     <>
-    {localStorage.getItem(ACCESS_TOKEN).length > 0 ?	
+    {localStorage.getItem(ACCESS_TOKEN) == null ?	
     <>
       <div className="d-flex flex-column vh-100" style={main_image}>
       <header className="p-4 opacity-75" style={{fontFamily: 'cyber4'}}>

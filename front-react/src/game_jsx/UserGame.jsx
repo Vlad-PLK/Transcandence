@@ -276,6 +276,8 @@ function UserGame()
 {
     const {userData} = useContext(UserDataContext);
     const {guestData} = useContext(GuestDataContext);
+    const [scoreP1, setScoreP1] = useState(0);
+    const [scoreP2, setScoreP2] = useState(0);
     const animationFrameId = useRef(null);
     const mountRef = useRef(null);
     const sceneRef = useRef(null);
@@ -314,8 +316,6 @@ function UserGame()
     // Start score
     if (userData)
         updateScoreText(sceneRef.current, font, userData.username, guestData, player1Score, player2Score, scoreTextMesh, cameraPosition);
-
-
     // ... Add geometry, materials, lights, etc.
     const planeGeometry = setPlane(sceneRef.current);
     const { leftWall, rightWall, bottomWall, topWall} = setWalls(sceneRef.current, planeGeometry);
@@ -334,7 +334,8 @@ function UserGame()
     const animate = () =>
     {
         animationFrameId.current = requestAnimationFrame(animate);
-
+        setScoreP1(player1Score);
+        setScoreP2(player2Score);
         const updatedValues = updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry, 
             topPaddleGeometry, planeGeometry, cameraKeyIsPressed,
             paddle1Left, paddle1Right, paddle2Left, paddle2Right,
@@ -405,8 +406,6 @@ function UserGame()
     return () => {
         //if (sceneRef.current) sceneRef.current.dispose();
         cancelAnimationFrame(animationFrameId.current);
-        player1Score = 0;
-        player2Score = 0;
         if (sceneRef.current){
             sceneRef.current.remove(planeGeometry);
             sceneRef.current.remove(bottomPaddle);
@@ -468,13 +467,13 @@ function UserGame()
         }
       // Cleanup Three.js objects and event listeners
     };
-    }, []); // Empty dependency array to run effect only once
+    }, [setScoreP1, setScoreP2]); // Empty dependency array to run effect only once
 
   return (
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
-        <div className="d-flex justify-content-center" style={{color:'red', fontSize:'50px'}}>
-            <CustomTimer seconds={120} Player1={userData.username} Player2={guestData} ScorePlayer1={player1Score} ScorePlayer2={player2Score}/>
+        <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
+            <CustomTimer seconds={20} player1={userData.id} player2={3} player1_score={scoreP1} player2_score={scoreP2} match_winner={1}/>
         </div>
         <div className="d-flex justify-content-center" ref={mountRef}/>;
     </>

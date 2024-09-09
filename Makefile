@@ -5,12 +5,12 @@ all: ${NAME}
 #uncomment your own path and comment others in Makefile and docker-compose.yml
 ${NAME}:
 	@printf "Creating directories for Frontend Volume ! !\n"
-	mkdir -p /Users/macbook/volumes/
-#mkdir -p /home/vpolojie/volumes/
+#mkdir -p /Users/macbook/volumes/
+	mkdir -p /home/vpolojie/volumes/
 #mkdir -p /home/tvincile/volumes
 #mkdir -p /home/l1mpoln/app/volumes
-	chmod -f 777 /Users/macbook/volumes/
-#chmod -f 777 /home/vpolojie/volumes/
+#chmod -f 777 /Users/macbook/volumes/
+	chmod -f 777 /home/vpolojie/volumes/
 #chmod -f 777 /home/tvincile/volumes
 #chmod -p /home/l1mpoln/app/volumes
 	@printf "\n"
@@ -26,9 +26,9 @@ clean:
 fclean: clean
 	docker-compose down
 	docker system prune -a -f
-#rm -rf /home/vpolojie/volumes
+	rm -rf /home/vpolojie/volumes
 #rm -rf /home/tvincile/volumes
-	sudo rm -rf /Users/macbook/volumes/
+#sudo rm -rf /Users/macbook/volumes/
 #sudo rm -rf /home/l1mpoln/app/volumes/
 
 re:	fclean all
