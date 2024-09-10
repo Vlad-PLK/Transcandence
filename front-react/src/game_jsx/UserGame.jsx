@@ -306,15 +306,13 @@ function UserGame()
     );
     const cameraDirection = new THREE.Vector3();
     setCamera(cameraRef.current, cameraDirection);
-    // cameraRef.current.position.set(Math.PI / 2, 100, Math.PI / 10000); // Place the camera above the scene
+    cameraRef.current.position.set(Math.PI / 2, 100, Math.PI / 10000); // Place the camera above the scene
     const loader = new FontLoader();
     const font = loader.parse(Ponderosa_Regular);
 
-    if (gameData)
-        console.log("Current Star FLAG", gameData.starFlag)
-    // Start score
-    if (userData)
-        updateScoreText(sceneRef.current, font, userData.username, guestData, player1Score, player2Score, scoreTextMesh, cameraPosition);
+
+    if (userData && guestData)
+        updateScoreText(sceneRef.current, font, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, cameraPosition);
 
     // ... Add geometry, materials, lights, etc.
     const planeGeometry = setPlane(sceneRef.current);
@@ -344,7 +342,7 @@ function UserGame()
         ({ cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition } = updatedValues);
 
         ({player1Score, player2Score} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
-            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData, player1Score, player2Score, scoreTextMesh, userData, font));
+            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, userData, font));
         if (isBallOverBoostSurface(speedBoost1, sphere, sphereGeometry) || isBallOverBoostSurface(speedBoost2, sphere, sphereGeometry))
             boostMultiplier = 2; // Double the ball's speed while over boost surface
         else
@@ -375,19 +373,19 @@ function UserGame()
         // sunShadingMaterial.uniforms.time.value += 0.01;
         // fresnelSunMesh.rotation.y -= sunRotationSpeed;
 
-        whiteDwarfMesh.rotation.y -= sunRotationSpeed * 1000;
-        whiteDwarfShadyMesh.rotation.y -= sunRotationSpeed * 1000;
-        whiteDwarfShadyMaterial.uniforms.time.value += 0.01;
-        whiteDwarfShadingMesh.rotation.y -= sunRotationSpeed * 1000;
-        whiteDwarfShadingMaterial.uniforms.time.value += 0.01;
-        fresnelwhiteDwarfMesh.rotation.y -= sunRotationSpeed * 1000;
+        // whiteDwarfMesh.rotation.y -= sunRotationSpeed * 1000;
+        // whiteDwarfShadyMesh.rotation.y -= sunRotationSpeed * 1000;
+        // whiteDwarfShadyMaterial.uniforms.time.value += 0.01;
+        // whiteDwarfShadingMesh.rotation.y -= sunRotationSpeed * 1000;
+        // whiteDwarfShadingMaterial.uniforms.time.value += 0.01;
+        // fresnelwhiteDwarfMesh.rotation.y -= sunRotationSpeed * 1000;
 
-        // redGiantMesh.rotation.y -= sunRotationSpeed * 0.15;
-        // redGiantShadyMesh.rotation.y -= sunRotationSpeed * 0.15;
-        // redGiantShadyMaterial.uniforms.time.value += 0.01;
-        // redGiantShadingMesh.rotation.y -= sunRotationSpeed * 0.15;
-        // redGiantShadingMaterial.uniforms.time.value += 0.01;
-        // fresnelRedGiantMesh.rotation.y -= sunRotationSpeed * 0.15;
+        redGiantMesh.rotation.y -= sunRotationSpeed * 0.15;
+        redGiantShadyMesh.rotation.y -= sunRotationSpeed * 0.15;
+        redGiantShadyMaterial.uniforms.time.value += 0.01;
+        redGiantShadingMesh.rotation.y -= sunRotationSpeed * 0.15;
+        redGiantShadingMaterial.uniforms.time.value += 0.01;
+        fresnelRedGiantMesh.rotation.y -= sunRotationSpeed * 0.15;
         
 
         angle += moonOrbitSpeed;
@@ -490,7 +488,7 @@ function UserGame()
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
         <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
-            <CustomTimer seconds={20} player1={userData.id} player2={3} player1_score={scoreP1} player2_score={scoreP2} match_winner={1}/>
+            <CustomTimer seconds={10} player1={userData.id} player2={guestData.id} player1_score={scoreP1} player2_score={scoreP2}/>
         </div>
         <div className="d-flex justify-content-center" ref={mountRef}/>;
     </>
