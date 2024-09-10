@@ -2,22 +2,28 @@ import { useContext, useRef } from "react"
 import { UserDataContext } from "./UserDataContext"
 import { useNavigate } from "react-router-dom";
 import { GuestDataContext } from "./GuestDataContext";
+import { GameContext } from "./GameContext";
 
 function LocalGameModal() {
-    const inputRef = useRef();
     const {userData} = useContext(UserDataContext);
     const {guestData, setGuestData} = useContext(GuestDataContext);
+    const {gameData, setGameData} = useContext(GameContext);
     const navigate = useNavigate();
     const clearInput=(inputRef)=>{
       if (inputRef.current) {
         inputRef.current.value = "";
       }
     }
-    const startGame=()=>{
-        setGuestData(inputRef.current.value);
-        clearInput(inputRef);
+    const playAsGuest=()=>{
         navigate("/userGameWindow/")
     }
+    const playAsUser=()=>{
+        navigate("/userGameWindow/")
+    }
+    const startGame=()=>{
+      setGuestData("guest");
+      navigate("/userGameWindow/")
+  }
     return (
         <>
             <div className="modal fade" id="localGame" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
@@ -34,8 +40,10 @@ function LocalGameModal() {
                             <div className="col-auto">
                               <label className="col-form-label">Player 2 :</label>
                             </div>
-                            <div className="col-auto">
-                              <input type="text" className="form-control" ref={inputRef}/>
+                            <div className="col-auto d-flex flex-row">
+                              <button className="btn btn-sm btn-warning" onClick={playAsGuest}>Play as a guest</button>
+                              <p className="m-2" style={{color:"#000"}}>or</p>
+                              <button className="ms-2 btn btn-sm btn-danger" style={{color:"#000"}} onClick={playAsUser}>Login</button>
                             </div>
                         </div>
                     </div>

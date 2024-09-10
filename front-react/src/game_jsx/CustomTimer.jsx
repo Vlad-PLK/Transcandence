@@ -1,5 +1,6 @@
 import React, {useRef, useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../api';
 
 const ConvertTime = (time) =>
 	{
@@ -14,12 +15,20 @@ const ConvertTime = (time) =>
 		return (minutes + ':' + secondes);
 	}
 
-function CustomTimer({seconds, Player1, Player2, ScorePlayer1, ScorePlayer2})
+function CustomTimer({seconds, player1, player2, player1_score, player2_score, match_winner})
 {
 	const [count, setCount] = useState(seconds);
 	const timerId = useRef();
 	const navigate = useNavigate();
 
+	const gameData = async () => {
+			try {
+				const response = await api.post('api/match-create/', {player1, player2, player1_score, player2_score, match_winner});
+				console.log(response.data);
+			} catch (error) {
+				alert(error);
+			}
+		}
 	useEffect(() => {
 		timerId.current = setInterval(() => {
 			setCount(prev => prev - 1);
@@ -29,7 +38,8 @@ function CustomTimer({seconds, Player1, Player2, ScorePlayer1, ScorePlayer2})
 	useEffect(() => {
 		if (count === 0)
 		{
-			console.log(Player1, Player2, ScorePlayer1, ScorePlayer2);
+			console.log(player1, player2, player1_score, player2_score, match_winner);
+			gameData();
 			// need to make an api request for the game result
 			clearInterval(timerId.current);
 			navigate("../userGameEnd");
