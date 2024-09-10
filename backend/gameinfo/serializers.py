@@ -30,4 +30,7 @@ class MatchSerializer(serializers.ModelSerializer):
         return obj.player2.username
 
     def get_match_winner_name(self, obj):
-        return obj.match_winner.username
+        # Проверяем, есть ли победитель
+        if obj.match_winner is not None:
+            return obj.match_winner.username
+        return "Ничья"

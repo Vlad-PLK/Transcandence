@@ -35,7 +35,30 @@ class MatchCreateView(APIView):
     def post(self, request):
         serializer = MatchSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            match = serializer.save()
+
+            player1_stats = PlayerStats.objects.get(player=match.player1)
+            player2_stats = PlayerStats.objects.get(player=match.player2)
+
+            if match.player1_score > match.player2_score:
+                match.match_winner = match.player1
+                player1_stats.wins += 1
+                player2_stats.losses += 1
+            elif match.player1_score < match.player2_score:
+                match.match_winner = match.player2
+                player1_stats.wins += 1
+                player2_stats.losses += 1
+            else:
+                player1_stats.draws += 1
+                player2_stats.draws += 1
+
+            player1_stats.goals += match.player1_score
+            player2_stats.goals += match.player2_score
+
+            player1_stats.save()
+            player2_stats.save()
+            match.save()
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
