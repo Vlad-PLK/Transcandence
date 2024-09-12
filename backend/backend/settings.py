@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'users',
     'gameinfo',
     'friends',
-    'channels'
+    'channels',
 ]
 
 ASGI_APPLICATION = 'backend.asgi.application'

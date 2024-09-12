@@ -4,7 +4,7 @@ from users.views import CreateUserView, UsernameUpdateView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.conf import settings
 from django.conf.urls.static import static
-from backend import consumers
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -17,5 +17,4 @@ urlpatterns = [
     path("", include("gameinfo.urls")),
     path("", include("users.urls")),
     path("", include("friends.urls")),
-    # path("", include("chat.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
