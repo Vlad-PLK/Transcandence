@@ -46,7 +46,7 @@ function SettingsModal()
 	const AvatarState = (event) => {
 		if (event.target.files && event.target.files[0]) {
 			console.log(event.target.files[0]);
-			setUserAvatar(URL.createObjectURL(event.target.files[0]));
+			setUserAvatar("/home/vpolojie/Pictures/42.jpg");
 		}
 	}
 	const changeAvatar = async (e) => {

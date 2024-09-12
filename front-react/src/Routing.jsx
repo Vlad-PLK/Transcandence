@@ -32,57 +32,57 @@ const router = createBrowserRouter([
             {
                 path: "userPage/",
                 element: (
-                    // <ProtectedRoute>
+                    <ProtectedRoute>
                         <UserHomePage/>
-                    // </ProtectedRoute>
+                    </ProtectedRoute>
                 )
             },
             {
                 path: "userSettings/",
                 element: (
-                    // <ProtectedRoute>
+                    <ProtectedRoute>
                         <UserSettings/>
-                    // </ProtectedRoute>
+                    </ProtectedRoute>
                 )
             },
             {
                 path: "userGame/",
                 element: (
-                    // <ProtectedRoute>
+                    <ProtectedRoute>
                         <UserGame/>
-                    // </ProtectedRoute>
+                    </ProtectedRoute>
                 )
             },
             {
                 path: "userGameEnd/",
                 element: (
-                    // <ProtectedRoute>
+                    <ProtectedRoute>
                         <UserGameEnd/>
-                    // </ProtectedRoute>
+                    </ProtectedRoute>
                 )
             },
             {
                 path: "userGameWindow/",
                 element: (
-                    // <ProtectedRoute>
+                    <ProtectedRoute>
                         <UserGameWindow/>
-                    // </ProtectedRoute>
+                    </ProtectedRoute>
                 )
             },
             {
                 path: "userGameSetup/",
                 element: (
-                    // <ProtectedRoute>
+                    <ProtectedRoute>
                         <UserGameSetup/>
-                    // </ProtectedRoute>
+                    </ProtectedRoute>
                 )
             },
             {
                 path: "userFriends/",
                 element: (
-                    // <ProtectedRoute>
+                    <ProtectedRoute>
                         <UserFriends/>
-                    // </ProtectedRoute>
+                    </ProtectedRoute>
                 )
             }
         ]

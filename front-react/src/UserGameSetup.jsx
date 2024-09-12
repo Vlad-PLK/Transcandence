@@ -13,6 +13,7 @@ import LocalGameModal from "./LocalGameModal";
 import MultiplayerModal from "./MultiplayerModal";
 import { GuestDataContext } from "./GuestDataContext";
 import { createContext } from "react";
+import { color } from "three/examples/jsm/nodes/Nodes.js";
 
 function UserGameSetup()
 {
@@ -27,6 +28,17 @@ function UserGameSetup()
 	const disconnect=() => {
 		localStorage.clear();
 		navigate("/");
+	}
+	const buttons_style = {
+		position: 'absolute', 
+		top: '50%', 
+		left: '51%', 
+		transform: 'translate(-50%, -50%)', 
+		fontFamily: 'cyber4',
+	};
+	const settings_button = {
+    	color: 'black',
+    	backgroundImage: 'linear-gradient(to right, #AC16A5,  #1F054C)',
 	}
 	return (
 		<>
@@ -58,12 +70,16 @@ function UserGameSetup()
       			  </div>
       			</header>
     		</div>
-            <div className="" style={{position: 'absolute', top: '50%', left: '51%', transform: 'translate(-50%, -50%)', fontFamily: 'cyber4'}}>
-                <button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#localGame" style={{color: '#6B3EB8'}}>{t('local')}</button>
-                <button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#multiplayer" style={{color: '#5961D0'}}>{t('multiplayer')}</button>
+            <div className="d-flex flex-column mt-4" style={buttons_style}>
+				<button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#localGame" style={{color: '#6B3EB8'}}>{t('local')}</button>
+				<button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#localGame" style={{color: '#A337C7'}}>{t('join_tournament')}</button>
+                <button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#localGame" style={{color: '#FF29DF'}}>{t('create_tournament')}</button>
             </div>
-            <div className="" style={{position: 'absolute', top: '57%', left: '51%', transform: 'translate(-50%, -50%)',fontFamily: 'cyber4'}}>
-                <button type="button" className="btn btn-danger btn-lg rounded-3 me-4 text-dark" data-bs-toggle="modal" data-bs-target="#gameSettings">{t('game_settings')}</button>
+            <div className="" style={{position: 'absolute', top: '20%', left: '51%', transform: 'translate(-50%, -50%)',fontFamily: 'cyber4'}}>
+                <button type="button" className="btn btn-lg rounded-3 me-4 border-0" style={settings_button} data-bs-toggle="modal" data-bs-target="#gameSettings">{t('game_settings')}</button>
+            </div>
+			<div className="" style={{position: 'absolute', top: '80%', left: '51%', transform: 'translate(-50%, -50%)',fontFamily: 'cyber4'}}>
+                <button type="button" className="btn btn-dark btn-lg rounded-3 me-4 border-0" data-bs-toggle="modal" data-bs-target="#multiplayerModal" style={{color: '#6B3EB8'}}>{t('multiplayer')}</button>
             </div>
             <LocalGameModal/>
             <MultiplayerModal/>

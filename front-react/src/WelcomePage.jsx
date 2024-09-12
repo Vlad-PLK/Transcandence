@@ -13,7 +13,6 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "./constants";
 function WelcomePage()
 {
   const { t } = useTranslation();
-  const {userData} = useContext(UserDataContext);
   const {navigate} = useNavigate();
 
   const main_image = {
@@ -25,7 +24,7 @@ function WelcomePage()
 	return (
     <>
     {localStorage.getItem(ACCESS_TOKEN) == null ?	
-    <>
+      <>
       <div className="d-flex flex-column vh-100" style={main_image}>
       <header className="p-4 opacity-75" style={{fontFamily: 'cyber4'}}>
         <div className="container">

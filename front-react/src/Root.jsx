@@ -13,14 +13,14 @@ function Root({children}){
   const [gameData, setGameData] = useState({starFlag:0, gameDuration:10, ballSpeed:5, paddleLength:50});
   const [isUserReady, setIsUserReady] = useState(false);
 
-  useEffect(() => {
-    if (isUserReady == false){
-      const token = localStorage.getItem(ACCESS_TOKEN);
-      if (!token)
-          setIsUserReady(true);
-      takeData(setUserData, setIsUserReady);
-    }
-  }, [isUserReady])
+  // useEffect(() => {
+    // if (isUserReady == false){
+      // const token = localStorage.getItem(ACCESS_TOKEN);
+      // if (!token)
+          // setIsUserReady(true);
+      // takeData(setUserData, setIsUserReady);
+    // }
+  // }, [isUserReady])
 
   return (
   <>
