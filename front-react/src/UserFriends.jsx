@@ -41,7 +41,7 @@ function UserFriends()
 		if (userData && isVisible)
 			{
 				try {
-					api.get('friends/friend-list/')
+					api.get('api/friends/friend-list/')
 					.then(response => {
 						console.log(response.data)
 						setUserFriends(response.data)
@@ -59,7 +59,7 @@ function UserFriends()
 		if (userData && isFr)
 			{
 				try {
-					api.get('friends-requests-list/')
+					api.get('api/friends/friends-requests-list/')
 					.then(response => {
 						console.log(response.data)
 						setUserFriendRequest(response.data)
@@ -72,7 +72,7 @@ function UserFriends()
 					alert(error);
 				}
 				try {
-					api.get('friends/from-user-request-list')
+					api.get('api/friends/from-user-request-list')
 					.then(response => {
 						console.log(response.data)
 						setUserFriendRequestSent(response.data)
@@ -87,7 +87,7 @@ function UserFriends()
 		}
 	}, [isFr])
 	const accept_friendship = async (id) => {
-		const url = `friend-requests/${id}/accept/`;
+		const url = `api/friends/friend-request/${id}/accept/`;
 		try {
 			const response = await api.put(url);
 			console.log(response.data)
@@ -96,7 +96,7 @@ function UserFriends()
 			  };
 	}
 	const reject_friendship = async (id) => {
-		const url = `friend-requests/${id}/reject/`;
+		const url = `api/friends/friend-requests/${id}/reject/`;
 		try {
 			const response = await api.put(url);
 			console.log(response.data)

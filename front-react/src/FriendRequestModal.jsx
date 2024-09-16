@@ -15,7 +15,7 @@ function FriendRequestModal()
 
         try {
 			const to_user_username = friend;
-            const response = await api.post('friend-requests/', {to_user_username});
+            const response = await api.post('api/friends/create-friend-request/', {to_user_username});
 			console.log(response.data);
 		} catch (error) {
             alert(error);

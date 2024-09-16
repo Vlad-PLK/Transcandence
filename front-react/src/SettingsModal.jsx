@@ -54,7 +54,7 @@ function SettingsModal()
 		try {
 			const formData = new FormData();
 			formData.append('avatar', userAvatar);
-			const response = await api.post('users/avatar_upload/', formData, {
+			const response = await api.post('api/users/user/avatar_upload/', formData, {
 				headers: {
 				  'Content-Type': 'multipart/form-data',
 				},
@@ -70,7 +70,7 @@ function SettingsModal()
 	const changeUsername = () => {
 		const newUsername = document.getElementById('paramUsername-change').value;
 		if (newUsername.length > 0) {
-			api.patch('users/user/update-username/', {
+			api.patch('api/users/user/update-username/', {
 				username: newUsername
 			}).then(response => {
 				console.log(response.data);
@@ -92,7 +92,7 @@ function SettingsModal()
 				setErrorPass("New Passwords are different");
 			else
 			{
-				api.post('change-password/', {
+				api.post('api/users/user/change-password/', {
 					old_password: oldPass,
 					new_password: newPass,
 					confirm_new_password: newConfirmPass

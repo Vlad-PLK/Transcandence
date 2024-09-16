@@ -22,7 +22,7 @@ function LoginModal()
         e.preventDefault();
 		cleanForm();
         try {
-            const response = await api.post('users/token/', { username, password });
+            const response = await api.post('api/users/user/token/', { username, password });
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
 			console.log(response.data);

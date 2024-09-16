@@ -13,7 +13,7 @@ function DeleteFriendModal()
 	if (userData)
 	{
 		try {
-			api.get('friends/friend-list/')
+			api.get('api/friends/friend-list/')
 			.then(response => {
 				console.log(response.data)
 				setUserFriends(response.data)
@@ -27,7 +27,7 @@ function DeleteFriendModal()
 		}
 	}
     const deleteFriend = async (id) => {
-		const url = `friends/${id}/delete/`;
+		const url = `api/friends/friend/${id}/delete/`;
 		try {
 			const response = await api.put(url);
 			console.log(response.data)

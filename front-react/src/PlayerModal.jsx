@@ -15,7 +15,7 @@ function PlayerModal() {
         e.preventDefault();
 
         try {
-            const response = await api.post('users/token/', { username, password });
+            const response = await api.post('api/users/user/token/', { username, password });
 			const api_invite = axios.create({
 				baseURL: import.meta.env.VITE_API_URL
 			  });

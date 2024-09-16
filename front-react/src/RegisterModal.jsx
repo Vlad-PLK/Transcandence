@@ -23,7 +23,7 @@ function RegisterModal() {
 
         try {
             localStorage.clear();
-            const response = await api.post('users/user/register/', { username, email, password });
+            const response = await api.post('api/users/user/register/', { username, email, password });
             console.log(response.data);
 			setUserData(response.data);
             // Очистить форму после успешной регистрации
