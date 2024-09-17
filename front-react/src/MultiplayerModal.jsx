@@ -9,7 +9,7 @@ function MultiplayerModal() {
         		    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         		  </div>
 				  <div className="modal-body ps-4 ms-4 mt-2 mb-4 border-bottom-0">
-						<a className="text-decoration-none text-dark fs-4" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">For more details, click here</a>
+						<a className="text-decoration-none text-dark fs-4" href="https://www.youtube.com/watch?v=xvFZjo5PgG0">For more details, click here</a>
 				  </div>
         		</div>
         	</div>

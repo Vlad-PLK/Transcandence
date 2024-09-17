@@ -14,7 +14,6 @@ function WelcomePage()
 {
   const { t } = useTranslation();
   const {navigate} = useNavigate();
-
   const main_image = {
 		backgroundImage: `url('/cyberpunk1.jpg')`,
 		backgroundSize: 'cover', // Adjust background size as needed

@@ -31,6 +31,10 @@ function UserFriends()
 	const [userFriends, setUserFriends] = useState([]);
 	const [userFriendRequest, setUserFriendRequest] = useState([]);
 	const [userFriendRequestSent, setUserFriendRequestSent] = useState([]);
+	const [showRequest, setShowRequest] = useState(true);
+	const toggleRequest = () => {
+		setShowRequest(!showRequest);
+	}
 	const toggleVisible = () => {
 		setVisible(!isVisible);
 	};
@@ -87,10 +91,11 @@ function UserFriends()
 		}
 	}, [isFr])
 	const accept_friendship = async (id) => {
-		const url = `api/friends/friend-request/${id}/accept/`;
+		const url = `api/friends/frient-request/${id}/accept/`;
 		try {
 			const response = await api.put(url);
 			console.log(response.data)
+			id = -1;
 		}catch(error) {
 				console.log('Error:', error);
 			  };
@@ -98,8 +103,9 @@ function UserFriends()
 	const reject_friendship = async (id) => {
 		const url = `api/friends/friend-requests/${id}/reject/`;
 		try {
-			const response = await api.put(url);
+			const response = await api.delete(url);
 			console.log(response.data)
+			id = -1;
 		}catch(error) {
 				console.log('Error:', error);
 			  };
@@ -200,7 +206,7 @@ function UserFriends()
             </div>
 			<SettingsModal/>
 			<FriendRequestModal/>
-			{/* <DeleteFriendModal/> */}
+			<DeleteFriendModal/>
             </>
         </>
     ); 
