@@ -405,6 +405,7 @@ function UserGame()
     const cameraDirection = new THREE.Vector3();
     setCamera(cameraRef.current, cameraDirection);
     cameraRef.current.position.set(Math.PI / 2, 100, Math.PI / 10000); // Place the camera above the scene
+
     let cameraDistance = 0;
     const loader = new FontLoader();
     const font = loader.parse(Ponderosa_Regular);
@@ -430,7 +431,6 @@ function UserGame()
     let whiteDwarfRotationSpeed = 0;
     let redGiantRotationSpeed = 0;
     let customRotationSpeed = 0;
-
 
     // ... Add geometry, materials, lights, etc.
     const planeGeometry = setPlane(sceneRef.current);
@@ -503,7 +503,6 @@ function UserGame()
                 streakPower = 0;
             }
         }
-
         if (boost == 1)
         {
             if (isBallOverBoostSurface(speedBoost1, sphere, sphereGeometry) || isBallOverBoostSurface(speedBoost2, sphere, sphereGeometry))
@@ -529,7 +528,6 @@ function UserGame()
         lightsMesh.rotation.y += earthRotationSpeed;
         cloudsMesh.rotation.y += earthRotationSpeed + 0.001;
         fresnelEarthMesh.rotation.y += earthRotationSpeed;
-
         angle += moonOrbitSpeed;
         moonMesh.position.x = earthMesh.position.x + a * Math.cos(angle);
         moonMesh.position.y = earthMesh.position.y + (a * Math.sin(angle)) * Math.sin(inclination);
@@ -778,9 +776,9 @@ function UserGame()
   return (
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
-        {/* <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}> */}
-            {/* <CustomTimer seconds={20} player1={userData.id} player2={3} player1_score={scoreP1} player2_score={scoreP2} match_winner={1}/> */}
-        {/* </div> */}
+        <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
+            <CustomTimer seconds={10} player1={userData.id} player2={guestData.id} player1_score={scoreP1} player2_score={scoreP2}/>
+        </div>
         <div className="d-flex justify-content-center" ref={mountRef}/>;
     </>
   )

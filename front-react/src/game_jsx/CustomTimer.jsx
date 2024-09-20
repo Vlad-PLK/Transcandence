@@ -15,7 +15,7 @@ const ConvertTime = (time) =>
 		return (minutes + ':' + secondes);
 	}
 
-function CustomTimer({seconds, player1, player2, player1_score, player2_score, match_winner})
+function CustomTimer({seconds, player1, player2, player1_score, player2_score})
 {
 	const [count, setCount] = useState(seconds);
 	const timerId = useRef();
@@ -23,7 +23,7 @@ function CustomTimer({seconds, player1, player2, player1_score, player2_score, m
 
 	const gameData = async () => {
 			try {
-				const response = await api.post('api/match-create/', {player1, player2, player1_score, player2_score, match_winner});
+				const response = await api.post('api/match-create/', {player1, player2, player1_score, player2_score});
 				console.log(response.data);
 			} catch (error) {
 				alert(error);
@@ -38,7 +38,7 @@ function CustomTimer({seconds, player1, player2, player1_score, player2_score, m
 	useEffect(() => {
 		if (count === 0)
 		{
-			console.log(player1, player2, player1_score, player2_score, match_winner);
+			console.log(player1, player2, player1_score, player2_score);
 			gameData();
 			// need to make an api request for the game result
 			clearInterval(timerId.current);

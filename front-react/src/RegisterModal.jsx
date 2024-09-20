@@ -9,9 +9,21 @@ function RegisterModal() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
+    const [err, setError] = useState('');
     const {setUserData} = useContext(UserDataContext);
-
+    const [msg, setMsg] = useState('');
+    const [modalState, setModalState] = useState(true);
+    const clearForm = () => {
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        setError('');
+        setMsg('');
+    }
+    const closeModal = () => {
+        setModalState(!modalState);
+    }
     const signupbutton = async (e) => {
         e.preventDefault();
         
@@ -23,23 +35,19 @@ function RegisterModal() {
 
         try {
             localStorage.clear();
-            const response = await api.post('users/user/register/', { username, email, password });
+            const response = await api.post('api/users/user/register/', { username, email, password });
             console.log(response.data);
 			setUserData(response.data);
-            // Очистить форму после успешной регистрации
             setUsername('');
             setEmail('');
             setPassword('');
             setConfirmPassword('');
             setError('');
-            // alert('Registration successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+            setMsg("Registration successful !");
+            closeModal();
         } catch (error) {
-            if (err.response && err.response.status === 400) {
-                setError(err.response.data); // Ошибка валидации с сервера
-            } else {
-                setError('Registration failed'); // Общая ошибка
-            }
-            console.error(error);
+            setMsg('');
+            setError(error.response.data.username);
         }
     }
 
@@ -50,7 +58,7 @@ function RegisterModal() {
                     <div className="modal-content rounded-4 shadow">
                         <div className="modal-header p-5 pb-4 border-bottom-0">
                             <h1 className="fw-bold mb-0 fs-4" id="signupModalLabel">Create your account now!</h1>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={clearForm}></button>
                         </div>
                         <div className="modal-body p-5 pt-0">
                             <form onSubmit={signupbutton}>
@@ -71,7 +79,8 @@ function RegisterModal() {
                                     <label htmlFor="paramcPassword">Confirm Password</label>
                                 </div>
                                 <button className="w-70 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign-up</button>
-                                {error && <p className="text-danger">{error}</p>}
+                                {err && <p className="text-danger">{err}</p>}
+                                {msg && <p className="text-success">{msg}</p>}
                             </form>
                         </div>
                     </div>

@@ -3,6 +3,8 @@ import { UserDataContext } from "./UserDataContext"
 import { useNavigate } from "react-router-dom";
 import { GuestDataContext } from "./GuestDataContext";
 import { GameContext } from "./GameContext";
+import GuestModal from "./GuestModal";
+import PlayerModal from "./PlayerModal";
 
 function LocalGameModal() {
     const {userData} = useContext(UserDataContext);
@@ -13,12 +15,6 @@ function LocalGameModal() {
       if (inputRef.current) {
         inputRef.current.value = "";
       }
-    }
-    const playAsGuest=()=>{
-        navigate("/userGameWindow/")
-    }
-    const playAsUser=()=>{
-        navigate("/userGameWindow/")
     }
     const startGame=()=>{
       setGuestData("guest");
@@ -41,9 +37,9 @@ function LocalGameModal() {
                               <label className="col-form-label">Player 2 :</label>
                             </div>
                             <div className="col-auto d-flex flex-row">
-                              <button className="btn btn-sm btn-warning" onClick={playAsGuest}>Play as a guest</button>
+                              <button className="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#guestModal">Play as a guest</button>
                               <p className="m-2" style={{color:"#000"}}>or</p>
-                              <button className="ms-2 btn btn-sm btn-danger" style={{color:"#000"}} onClick={playAsUser}>Login</button>
+                              <button className="ms-2 btn btn-sm btn-danger" style={{color:"#000"}} data-bs-toggle="modal" data-bs-target="#playerModal">Login</button>
                             </div>
                         </div>
                     </div>
@@ -54,6 +50,8 @@ function LocalGameModal() {
         		</div>
         	</div>
 		    </div>
+        <GuestModal/>
+        <PlayerModal/>
         </>
     )
 }

@@ -8,7 +8,7 @@ import { GameContext } from "./GameContext";
 
 function Root({children}){
   const [userData, setUserData] = useState(null);
-	const [guestData, setGuestData] = useState(null);
+	const [guestData, setGuestData] = useState({nickname: 'nickname', id: 6, guestNickname: 'guest'});
 	const [userStats, setUserStats] = useState(null);
   const [gameData, setGameData] = useState({starFlag:0, gameDuration:10, ballSpeed:5, paddleLength:50});
   const [isUserReady, setIsUserReady] = useState(false);

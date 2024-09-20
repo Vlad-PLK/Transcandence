@@ -6,6 +6,8 @@
     "settings": "Settings",
     "play_game": "Start a new game now !",
     "local": "LOCAL GAME",
+    "join_tournament": "JOIN TOURNAMENT",
+    "create_tournament": "CREATE TOURNAMENT",
     "multiplayer": "MULTIPLAYER",
-    "game_settings": "CHANGE GAME SETTINGS"
+    "game_settings": "GAME SETTINGS"
 }

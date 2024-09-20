@@ -9,15 +9,20 @@ function LoginModal()
 {
 	const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-	const [error, setError] = useState('');
+	const [errorLog, setLogError] = useState('');
 	const {setUserData} = useContext(UserDataContext);
 	const navigate = useNavigate();
 
+	const cleanForm = () => {
+		document.getElementById('usernameLogin').value = '';
+		document.getElementById('passwordLogin').value = '';
+	}
+
     const loginbutton = async (e) => {
         e.preventDefault();
-
+		cleanForm();
         try {
-            const response = await api.post('users/token/', { username, password });
+            const response = await api.post('api/users/user/token/', { username, password });
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
 			console.log(response.data);
@@ -26,10 +31,11 @@ function LoginModal()
             // Очистить форму после успешной регистрации
             setUsername('');
             setPassword('');
-            setError('');
-            // alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+			// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
 		} catch (error) {
-            alert(error);
+			setUsername('');
+            setPassword('');
+			setLogError(error.response.data.detail);
         }
     }
 	return (
@@ -44,17 +50,17 @@ function LoginModal()
         		  <div className="modal-body p-5 pt-0">
         		    <form onSubmit={loginbutton}>
         		      <div className="form-floating mb-2">
-        		        <input type="text" className="form-control rounded-3" id="username" placeholder='Username' autoComplete='username' value={username} onChange={(e) => setUsername(e.target.value)}/>
-        		        <label htmlFor="username">Username</label>
+        		        <input type="text" className="form-control rounded-3" id="usernameLogin" placeholder='Username' autoComplete='username' value={username} onChange={(e) => setUsername(e.target.value)}/>
+        		        <label htmlFor="usernameLogin">Username</label>
         		      </div>
         		      <div className="form-floating mb-2">
-        		        <input type="password" className="form-control rounded-3" id="password" placeholder='Password' autoComplete='password' value={password} onChange={(e) => setPassword(e.target.value)}/>
-        		        <label htmlFor="password">Password</label>
+        		        <input type="password" className="form-control rounded-3" id="passwordLogin" placeholder='Password' autoComplete='password' value={password} onChange={(e) => setPassword(e.target.value)}/>
+        		        <label htmlFor="passwordLogin">Password</label>
         		      </div>
         		      <button className="w-90 mt-2 btn btn-lg rounded-3 btn-primary" type="submit" data-bs-dismiss="modal">Login</button>
-        		      {error && <p className="text-danger">{error}</p>}
+        		      {errorLog && <p className="mt-2 text-danger">{errorLog}</p>}
         		      </form>
-        		    </div>
+        		  </div>
         		</div>
         	</div>
 		</div>

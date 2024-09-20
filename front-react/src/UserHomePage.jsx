@@ -64,7 +64,11 @@ function UserHomePage(){
 								<button className="dropdown-item" onClick={disconnect}>Disconnect</button>
 							</ul>
 							{userData && <button type="button" className="btn btn-outline-light me-2" onClick={stats_page}>{userData.username}
-								<img className="ms-2 rounded" src="/robot.webp" alt="" height="40" widht="40"/>
+								{userData.avatar != null ?
+									<img className="ms-2 rounded" src={"http://localhost:8000" + userData.avatar} alt="" height="40" widht="40"/>
+									:
+									<img className="ms-2 rounded" src="/robot.webp" alt="" height="40" widht="40"/>
+								}
 							</button>}
       			          </div>
       			      </div>
