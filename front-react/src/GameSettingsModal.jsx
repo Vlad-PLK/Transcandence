@@ -62,4 +62,5 @@ function GameSettingsModal() {
     )
 }
 
+
 export default GameSettingsModal
