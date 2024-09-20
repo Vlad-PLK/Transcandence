@@ -8,7 +8,6 @@ import api from './api';
 function SettingsModal()
 {
 	const {userData} = useContext(UserDataContext);
-	const [error, setError] = useState('');
 	const [errorAvatar, setErrorAvatar] = useState('');
 	const [errorNick, setErrorNick] = useState('');
 	const [errorPass, setErrorPass] = useState('');
@@ -16,23 +15,24 @@ function SettingsModal()
 	const [messageNick, setMessageNick] = useState('');
 	const [messagePass, setMessagePass] = useState('');
 	const [userAvatar, setUserAvatar] = useState(null);
-	const [message, setMessage] = useState('');
 	const {t} = useTranslation();
 	const navigate = useNavigate();
 
 	const clearNick = () => {
 		document.getElementById('paramUsername-change').value = '';
+		setMessageNick('');
 		setErrorNick('');
 	}
 	const clearAvatar = () => {
 		document.getElementById('avatar0').value = '';
-		document.getElementById('avatar1').value = '';
+		setMessageAvatar('');
 		setErrorAvatar('');
 	}
 	const clearPass = () => {
 		document.getElementById('oldPassword').value = '';
 		document.getElementById('paramNewPassword').value = '';
 		document.getElementById('paramNewConfirmPassword').value = '';
+		setMessagePass('');
 		setErrorPass('');
 	}
 	const clearAll = () => {
@@ -46,7 +46,7 @@ function SettingsModal()
 	const AvatarState = (event) => {
 		if (event.target.files && event.target.files[0]) {
 			console.log(event.target.files[0]);
-			setUserAvatar("/home/vpolojie/Pictures/42.jpg");
+			setUserAvatar(event.target.files[0]);
 		}
 	}
 	const changeAvatar = async (e) => {
@@ -54,15 +54,17 @@ function SettingsModal()
 		try {
 			const formData = new FormData();
 			formData.append('avatar', userAvatar);
-			const response = await api.post('api/users/user/avatar_upload/', formData, {
+			const response = await api.post('api/users/user/avatar-upload/', formData, {
 				headers: {
 				  'Content-Type': 'multipart/form-data',
 				},
 			  });
 			console.log(response.data);
 			setMessageAvatar('Avatar uploaded successfully');
+			setErrorAvatar('');
 		} catch (error) {
 			setErrorAvatar('Avatar upload failed');
+			setMessageAvatar('');
 		}
 	}
 	// clear form after submit //
@@ -76,8 +78,10 @@ function SettingsModal()
 				console.log(response.data);
 				document.getElementById('paramUsername-change').value = '';
 				setMessageNick('Username updated successfully');
+				setErrorNick('');
 			}).catch(error => {
 				setErrorNick('Username update failed');
+				setMessageNick('');
 			});
 		}
 		//check for existing usernames or if its the same//
@@ -103,9 +107,11 @@ function SettingsModal()
 					document.getElementById('paramNewPassword').value = '';
 					document.getElementById('paramNewConfirmPassword').value = '';
 					setMessagePass('Password updated successfully');
+					setErrorPass('');
 				}).catch(error => {
 					console.log(error.response.data);
 					setErrorPass('Password update failed : ' + error.response.data.old_password);
+					setMessagePass('');
 				});
 			}
 		}
@@ -122,17 +128,14 @@ function SettingsModal()
 						{userData && <div className="modal-body p-5 pt-0">
 							<p>Change Avatar</p>
 							<div className="d-flex mb-4">
+								<div>
+								<input type="file" id="avatar0" className="filetype" onChange={AvatarState}/>
 								{userData.avatar == null ?
-									<div>
-										<input type="file" id="avatar0" className="filetype" onChange={AvatarState}/>
 										<img className="rounded bg-warning" src="/robot.webp" alt="" height="100" widht="100"/>
-									</div>
-									:
-									<div>
-										<input type="file" id="avatar1" className="filetype" onChange={AvatarState}/>
-										<img className="rounded bg-warning" src={userData.avatar} alt="" height="100" widht="100"/>
-									</div>
+										:
+										<img className="rounded bg-warning" src={"http://localhost:8000" + userData.avatar} alt="" height="100" widht="100"/>
 								}
+								</div>
 								<div className="d-flex flex-column justify-content-center ms-3 mt-2">
 								<button className="btn btn-success btn-sm mb-2" onClick={changeAvatar}>SAVE</button>
 								<button className="btn btn-danger btn-sm" onClick={clearAvatar}>CANCEL</button>

@@ -12,6 +12,7 @@ function RegisterModal() {
     const [err, setError] = useState('');
     const {setUserData} = useContext(UserDataContext);
     const [msg, setMsg] = useState('');
+    const [modalState, setModalState] = useState(true);
     const clearForm = () => {
         setUsername('');
         setEmail('');
@@ -19,6 +20,9 @@ function RegisterModal() {
         setConfirmPassword('');
         setError('');
         setMsg('');
+    }
+    const closeModal = () => {
+        setModalState(!modalState);
     }
     const signupbutton = async (e) => {
         e.preventDefault();
@@ -40,6 +44,7 @@ function RegisterModal() {
             setConfirmPassword('');
             setError('');
             setMsg("Registration successful !");
+            closeModal();
         } catch (error) {
             setMsg('');
             setError(error.response.data.username);

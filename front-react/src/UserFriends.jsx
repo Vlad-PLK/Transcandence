@@ -137,7 +137,7 @@ function UserFriends()
 							{userData.avatar == null ? 
 								<img className="ms-2 rounded" src="/robot.webp" alt="" height="40" widht="40"/>
 								:
-								<img className="ms-2 rounded" src="/guychill.jpg" alt="" height="40" widht="40"/>
+								<img className="ms-2 rounded" src={'http://localhost:8000' + userData.avatar} alt="" height="40" widht="40"/>
 							}
 						</Link>}
       			        </div>
