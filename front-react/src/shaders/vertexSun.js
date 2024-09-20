@@ -13,7 +13,7 @@ const vertexSunShader = `
         vPosition = position;
 
         // // modelMatrix transforms the coordinates local to the model into world space
-        vec4 mvPos = modelViewMatrix * vec4( position, 1.0 );
+        vec4 mvPos = modelViewMatrix * vec4(position, 1.0 );
 
         // // normalMatrix is a matrix that is used to transform normals from object space to view space.
         vNormal = normalize( normalMatrix * normal );

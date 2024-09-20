@@ -5,11 +5,12 @@ function setPlane(scene)
     // Create a plane on the X and Y axis
     const planeGeometry = new THREE.PlaneGeometry(75, 100); // Width, height
     const planeMaterial = new THREE.MeshStandardMaterial({
-        color: 0x00ff00, // Green color
-        side: THREE.DoubleSide, // Ensure the plane is visible from both sides
-        transparent: true, // Make sure the material is transparent
-        opacity: 0.5, // Adjust opacity as needed
-        depthWrite: false, // Ensure the plane does not write to the depth buffer
+        color: 0x00ff00,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.5,
+        // depthWrite: false,
+        blending: THREE.AdditiveBlending
     });
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.rotation.x = -Math.PI / 2; // Rotate the plane to lie flat on the X and Y axis
