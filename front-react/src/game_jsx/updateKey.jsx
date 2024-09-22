@@ -1,9 +1,16 @@
 import * as THREE from 'three';
 import checkSun from './checkSun';
 
+function powerPaddle(paddle)
+{
+    console.log("paddle.geometry.parameters.width = ", paddle.geometry.parameters.width );
+    paddle.geometry.parameters.width = 6;
+    return (paddle);
+}
+
 function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry, topPaddleGeometry,  
     planeGeometry, cameraKeyIsPressed, paddle1Left, paddle1Right, 
-    paddle2Left, paddle2Right, camera, cameraPosition, sunMesh, stars)
+    paddle2Left, paddle2Right, camera, cameraPosition, streakPowerIsPressed, streakPower)
 {
 
     if (keyboardState['d'] || keyboardState['a'] || keyboardState['4'] || keyboardState['6'] || keyboardState['8'] || keyboardState['5'] || keyboardState['w'] || keyboardState['s'] || keyboardState['c'])
@@ -140,6 +147,7 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
                 else if (cameraPosition == 1)
                 {
                     camera.position.set(0, 50, -150);
+                    camera.lookAt(0, 0, 0);
                 }
                 else if (cameraPosition == 2)
                 {
@@ -149,16 +157,27 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
                 else if (cameraPosition == 3)
                 {
                     camera.position.set(0, 50, 150);
+                    camera.lookAt(0, 0, 0);
                 }
                 else if (cameraPosition == 4)
                 {
-                    camera.position.set(0, 120, 0); // Place the camera above the scene
+                    camera.position.set(0, 100, 0); // Place the camera above the scene
+                    camera.lookAt(0, 0, 0);
                     camera.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
+                    
                 }
                 cameraPosition += 1;  
                 // Set flag to true to prevent multiple toggles in rapid succession
                 cameraKeyIsPressed = true;
             }
+        }
+    }
+    else if (keyboardState['r'])
+    {
+        if (!streakPowerIsPressed && (streakPower == 1 || streakPower == 2))
+        {
+            // console.log("POWER : ");
+            streakPowerIsPressed = true;
         }
     }
     else
@@ -168,8 +187,9 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
         paddle2Left = false;
         paddle1Right = false;
         paddle2Right = false;
+        streakPowerIsPressed = false;
     }
-    return {cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition};
+    return {cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition, streakPowerIsPressed, streakPower, bottomPaddle, topPaddle};
 }
 
 export default updateKey

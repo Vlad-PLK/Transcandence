@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 
-function checkSun(camera, sunMesh, stars, sunLight)
+function checkSun(camera, starMesh, stars, starLight)
 {
     const cameraDirection = new THREE.Vector3();
     camera.getWorldDirection(cameraDirection);
 
-    const sunDirection = new THREE.Vector3().subVectors(sunMesh.position, camera.position).normalize();
+    const sunDirection = new THREE.Vector3().subVectors(starMesh.position, camera.position).normalize();
 
     const angle = cameraDirection.angleTo(sunDirection);
 
@@ -13,7 +13,7 @@ function checkSun(camera, sunMesh, stars, sunLight)
     const maxAngle = Math.PI / 5;
 
     // Calculate opacity based on angle (as camera points towards sun, stars fade)
-    let opacity = Math.pow(THREE.MathUtils.clamp(angle / maxAngle, 0, 1), 2 + (sunLight.intensity / 2));
+    let opacity = Math.pow(THREE.MathUtils.clamp(angle / maxAngle, 0, 1), 2 + (starLight.intensity / 2));
 
     stars.material.transparent = true; // Ensure transparency is enabled
     stars.material.opacity = opacity;
