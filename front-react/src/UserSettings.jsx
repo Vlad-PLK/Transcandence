@@ -40,7 +40,7 @@ function UserSettings()
 								<span className="visually-hidden">Toggle Dropstart</span>
 							</button>
 							<ul className="dropdown-menu opacity-50" style={{fontSize:"12px",textAlign:"center", minWidth:"5rem"}}>
-								<a className="dropdown-item" href="" data-bs-toggle="modal" data-bs-target="#settingsModal">Settings</a>
+								<a className="dropdown-item" href="" data-bs-toggle="modal" data-bs-target="#UserSettingsModal">Settings</a>
 								<Link to={`../userFriends`} className="dropdown-item">Friends</Link>
 								<hr className="dropdown-divider"/>
 								<button className="dropdown-item" onClick={disconnect}>Disconnect</button>

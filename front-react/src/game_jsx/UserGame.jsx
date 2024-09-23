@@ -485,8 +485,8 @@ function UserGame()
         setScoreP1(player1Score);
         setScoreP2(player2Score);
 
-        if (starType != 3)
-            updateStarfield(stars, cameraRef.current);
+        //if (starType != 3)
+        //    updateStarfield(stars, cameraRef.current);
 
         const updatedValues = updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry, 
             topPaddleGeometry, planeGeometry, cameraKeyIsPressed,

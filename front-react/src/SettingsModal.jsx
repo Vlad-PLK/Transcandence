@@ -118,7 +118,7 @@ function SettingsModal()
 	}
 	return (
 		<>
-			<div className="modal fade" id="settingsModal" tabIndex="-1" style={{fontFamily:'cyber4'}}>
+			<div className="modal fade" id="UserSettingsModal" tabIndex="-1" style={{fontFamily:'cyber4'}}>
 				<div className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
 					<div className="modal-content rounded-4 shadow">
 						<div className="modal-header d-flex flex-column justify-content-center p-5 pb-4 border-bottom-0">
