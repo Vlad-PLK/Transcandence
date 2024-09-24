@@ -328,6 +328,12 @@ function calculateRotationSpeed(radius, sunRotationSpeed)
 
 function updateStarfield(stars, camera)
 {
+    if (!stars || !stars.geometry || !stars.geometry.attributes.position)
+    {
+        console.error("Stars object or its geometry is not properly initialized.");
+        return;
+    }
+
     const starPositions = stars.geometry.attributes.position.array;
     
     const cameraDistance = camera.position.length();
@@ -345,7 +351,7 @@ function updateStarfield(stars, camera)
       starPositions[i + 2] = z * scaleFactor;
     }
     stars.geometry.attributes.position.needsUpdate = true;
-  }
+}
   
 
 function UserGame()
@@ -372,7 +378,7 @@ function UserGame()
     rendererRef.current = new THREE.WebGLRenderer();
     setRenderer(rendererRef.current);
     mountRef.current.appendChild(rendererRef.current.domElement);
-    const milky = textureLoader.load('../../public/milkyway.png', (texture) => {
+    const milky = textureLoader.load('../../public/milkyway.jpg', (texture) => {
         texture.mapping = THREE.EquirectangularReflectionMapping;
     });
     // ambient light //
@@ -394,11 +400,19 @@ function UserGame()
 
     // Start score
     if (userData)
-        updateScoreText(sceneRef.current, font, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, cameraPosition);
+        updateScoreText(sceneRef.current, font, "userData.username", "guestData.guestNickname", player1Score, player2Score, scoreTextMesh, cameraPosition);
 
 
     // SETTINGS
-    const starType = gameData.starType;
+    if (!gameData)
+        return;
+    // const starType = gameData?.starType || 4; // Default to 0 or another appropriate default
+    // let BHsize = gameData?.gargantuaSize || 200; // Default size
+    // let BHcolor = gameData?.gargantuaColor || 0x000000; // Default color
+    // let starRadius = gameData?.customStarSize || 1000; // Default size
+    // let starIntensity = gameData?.customStarIntensity || 4; // Default intensity
+    // let starColor = gameData?.customStarColor || 0x2e86c1;
+    const starType = gameData.starFlag;
     let BHsize, BHcolor;
     let starRadius, starIntensity, starColor;
 
@@ -411,7 +425,7 @@ function UserGame()
         sceneRef.current.background = milky;
     if (starType == 4)
     {
-        starRadius = gameData.customStarSize;
+        starRadius = gameData.customStarSize * 400;
         starIntensity = gameData.customStarIntensity;
         starColor = gameData.customStarColor;
     }
@@ -424,18 +438,18 @@ function UserGame()
 
     // TESTING SETTINGS
 
-    // if (gameData)
-    // {
-    //     console.log("Current Star FLAG", starType);
-    //     console.log("Current size BH", BHsize);
-    //     console.log("Current color BH", BHcolor);
-    //     console.log("Current custom size", starRadius);
-    //     console.log("Current custom intensity", starIntensity);
-    //     console.log("Current custom color", starColor);
-    //     console.log("Current boosts status", boost);
-    //     console.log("Current boost factor", boostPower);
-    //     console.log("Current powerup", powerUp);
-    // }
+    if (gameData)
+    {
+        console.log("Current Star FLAG", starType);
+        console.log("Current size BH", BHsize);
+        console.log("Current color BH", BHcolor);
+        console.log("Current custom size", starRadius);
+        console.log("Current custom intensity", starIntensity);
+        console.log("Current custom color", starColor);
+        console.log("Current boosts status", boost);
+        console.log("Current boost factor", boostPower);
+        console.log("Current powerup", powerUp);
+    }
 
     let maxDistance = 0;
 
@@ -466,7 +480,7 @@ function UserGame()
     {
         starRadius = BHsize;
         starColor = BHcolor;
-        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, blackHoleMesh, blackHoleGLensMesh, blackHoleGLensMaterial, blackHoleLight, moonMesh,  orbitRadius} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor));
+        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, blackHoleMesh, blackHoleGLensMesh, blackHoleGLensMaterial, blackHoleLight, moonMesh,  orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor));
         maxDistance = 3790;
     }
     else if (starType == 4)
@@ -485,8 +499,8 @@ function UserGame()
         setScoreP1(player1Score);
         setScoreP2(player2Score);
 
-        //if (starType != 3)
-        //    updateStarfield(stars, cameraRef.current);
+        if (starType != 3)
+            updateStarfield(stars, cameraRef.current);
 
         const updatedValues = updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry, 
             topPaddleGeometry, planeGeometry, cameraKeyIsPressed,
@@ -496,7 +510,7 @@ function UserGame()
         ({cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition, streakPowerIsPressed, streakPower, bottomPaddle, topPaddle} = updatedValues);
 
         ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
-            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower));
+            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, "userData.username", "guestData.guestNickname", player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower));
         
         if (powerUp == 1)
         {
@@ -580,8 +594,6 @@ function UserGame()
             blackHoleGLensMaterial.uniforms.iTime.value += 0.05;
             cameraDistance = cameraRef.current.position.length();
             blackHoleGLensMaterial.uniforms.ucameraPosition.value.copy(cameraRef.current.position);
-            blackHoleGLensMesh.lookAt(cameraRef.current.position);
-            blackHoleGLensMesh.rotateY(9.5/2);
             
             cameraRef.current.getWorldDirection(blackHoleGLensMaterial.uniforms.cameraDirection.value);
             if (cameraDistance > maxDistance)
@@ -781,9 +793,9 @@ function UserGame()
   return (
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
-        <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
+        {/* <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
             <CustomTimer seconds={20} player1={userData.id} player2={guestData.id} player1_score={scoreP1} player2_score={scoreP2}/>
-        </div>
+        </div> */}
         <div className="d-flex justify-content-center" ref={mountRef}/>;
     </>
   )

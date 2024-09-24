@@ -80,13 +80,17 @@ function GameSettingsModal() {
         setGameData(prevState => ({
             ...prevState,
             starFlag:0,
+            gargantuaSize:0,
+            gargantuaColor:"0xc5e0e2",
+            customStarSize:4,
+            customStarColor:"0x2ec149",
+            customStarIntensity:2,
             boostsEnabled:0,
+            boostFactor:1,
             powerEnabled:0,
             gameDuration:10,
-            ballSpeed:5,
-            paddleLength:50
           }));
-        console.log(gameData);
+        console.log("GSM : 0",gameData);
     }
 	return (
         <>
@@ -125,7 +129,7 @@ function GameSettingsModal() {
                                             type="radio"
                                             className="form-check-input"
                                             id="intermediateSize"
-                                            name="gargantuaSize"
+                                            name="gargacustomStarSizentuaSize"
                                             value="1" // Intermediate size
                                             onChange={handleBlackHoleSizeChange}
                                         />

@@ -1,7 +1,8 @@
 import React from 'react';
 import {DndContext} from '@dnd-kit/core';
-
-import {Draggable} from './Draggable';
+import { useState } from 'react';
+import Draggable from './Draggable';
+import Droppable from './Droppable';
 
 function Chat() {
     const containers = ['A', 'B', 'C'];
@@ -17,7 +18,7 @@ function Chat() {
         {containers.map((id) => (
           // We updated the Droppable component so it would accept an `id`
           // prop and pass it to `useDroppable`
-          <Droppable key={id} id={id}>
+          <Droppable key={id} id={id} className="" style={{color: "white"}}>
             {parent === id ? draggableMarkup : 'Drop here'}
           </Droppable>
         ))}

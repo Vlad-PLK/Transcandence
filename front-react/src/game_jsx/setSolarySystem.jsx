@@ -202,9 +202,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
     moonMesh.position.set(earthMesh.position.x + orbitRadius, earthMesh.position.y, earthMesh.position.z);
     mainGroup.add(moonMesh);
 
-    let stars;
-    if (starType != 3)
-      stars = setStarfield(scene);
+    const stars = setStarfield(scene);
 
     if (starType == 0)
     {
@@ -443,7 +441,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
         const blackHoleMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
         const blackHoleMesh = new THREE.Mesh(blackHoleGeometry, blackHoleMaterial);
         blackHoleMesh.position.set(0, 0, 0);
-        // blackHoleGroup.add(blackHoleMesh);
+        blackHoleGroup.add(blackHoleMesh);
 
         const blackHoleGLensMaterial = new THREE.ShaderMaterial({
           vertexShader: vertexBlackHoleShader,
@@ -488,7 +486,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
         // blackHoleGroup.add(photonSphereMesh);
         mainGroup.add(blackHoleGroup);
         scene.add(mainGroup);
-        return {earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, blackHoleMesh, blackHoleGLensMesh, blackHoleGLensMaterial, blackHoleLight,  moonMesh, orbitRadius}; // blackHoleGLensMaterial, blackHoleGLensMesh, blackHoleShadingMaterial, blackHoleShadingMesh, fresnelblackHoleMesh
+        return {earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, blackHoleMesh, blackHoleGLensMesh, blackHoleGLensMaterial, blackHoleLight,  moonMesh, orbitRadius, stars}; // blackHoleGLensMaterial, blackHoleGLensMesh, blackHoleShadingMaterial, blackHoleShadingMesh, fresnelblackHoleMesh
       }
       else if (starType == 4)
       {
@@ -496,6 +494,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
         const starColor = hexToRGB(customColor);
         const distance = 5000 + customRadius * 2.5;
         console.log("STAR COLOR", starColor);
+        console.log("STAR SIZE", starColor);
         const customGroup = new THREE.Group();
     
         const customGeometry = new THREE.IcosahedronGeometry(customRadius, 12);
@@ -596,6 +595,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
         mainGroup.add(customLight);
 
         mainGroup.add(customGroup);
+        console.log("Custom OBJECT", customGroup);
         scene.add(mainGroup);
 
         return {earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, customMesh, customShadyMaterial, customShadyMesh, customShadingMaterial, customShadingMesh, fresnelCustomMesh, customHaloMesh, customHaloMaterial, customLight, moonMesh, orbitRadius, stars};
