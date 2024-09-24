@@ -1,8 +1,12 @@
-import { useContext } from "react"
+import { useContext, useState } from "react";
 import { GameContext } from "./GameContext"
 
 function GameSettingsModal() {
     const { gameData, setGameData } = useContext(GameContext);
+
+    const [selectedSize, setSelectedSize] = useState(gameData.customStarSize || 1);
+    const [selectedIntensity, setSelectedIntensity] = useState(gameData.customStarIntensity || 1);
+    const [selectedBoostFactor, setSelectedBoostFactor] = useState(gameData.boostFactor || 1);
 
     const handleChange = (event) => {
         setGameData(prevState => ({
@@ -26,9 +30,11 @@ function GameSettingsModal() {
     };
 
     const handleCustomSizeChange = (event) => {
+        const newSize = event.target.value;
+        setSelectedSize(newSize); // Update state for real-time display
         setGameData(prevState => ({
             ...prevState,
-            customStarSize: event.target.value,
+            customStarSize: newSize,
         }));
     };
 
@@ -39,10 +45,19 @@ function GameSettingsModal() {
         }));
     };
 
-    const handleCustomIntensityChange = (event) => {
+    const handleCustomCoronaType = (event) => {
         setGameData(prevState => ({
             ...prevState,
-            customStarIntensity: event.target.value,
+            customCoronaType: event.target.value,
+        }));
+    };
+
+    const handleCustomIntensityChange = (event) => {
+        const newIntensity = event.target.value;
+        setSelectedIntensity(newIntensity); // Update state for real-time display
+        setGameData(prevState => ({
+            ...prevState,
+            customStarIntensity: newIntensity,
         }));
     };
 
@@ -54,9 +69,11 @@ function GameSettingsModal() {
       };
 
     const handleBoostFactorChange = (event) => {
+        const newBoostFactor = event.target.value;
+        setSelectedBoostFactor(newBoostFactor); // Update state for real-time display
         setGameData(prevState => ({
             ...prevState,
-            boostFactor: event.target.value,
+            boostFactor: newBoostFactor,
         }));
     };
 
@@ -84,7 +101,8 @@ function GameSettingsModal() {
             gargantuaColor:"0xc5e0e2",
             customStarSize:4,
             customStarColor:"0x2ec149",
-            customStarIntensity:2,
+            customCoronaType:0,
+            customStarIntensity:4,
             boostsEnabled:0,
             boostFactor:1,
             powerEnabled:0,
@@ -164,7 +182,7 @@ function GameSettingsModal() {
                                 {gameData.starFlag === "4" && (
                                     <>
                                         <div className="pt-3">
-                                            <label htmlFor="customRange" className="form-label">Select the size</label>
+                                            <label htmlFor="customRange" className="form-label">Select the size: {selectedSize}</label>
                                             <input
                                                 type="range"
                                                 className="form-range"
@@ -172,6 +190,7 @@ function GameSettingsModal() {
                                                 max="8"
                                                 step="1"
                                                 id="customRange"
+                                                value={selectedSize}
                                                 onChange={handleCustomSizeChange}
                                             />    
                                         </div>
@@ -189,16 +208,25 @@ function GameSettingsModal() {
                                             </form>
                                         </div>
                                         <div className="pt-3">
-                                            <label htmlFor="customRange1" className="form-label">Select the intensity</label>
+                                            <label htmlFor="customRange1" className="form-label">Select the intensity: {selectedIntensity}</label>
                                             <input
                                                 type="range"
                                                 className="form-range"
                                                 min="1"
-                                                max="6"
+                                                max="8"
                                                 step="1"
                                                 id="customRange1"
+                                                value={selectedIntensity}
                                                 onChange={handleCustomIntensityChange}
                                             />
+                                        </div>
+                                        <div>
+                                            <h5>Select the type of corona you want</h5>
+                                            <select className="form-select" onChange={handleCustomCoronaType}>
+                                                <option value="0">No corona</option>
+                                                <option value="1">Corona type 1</option>
+                                                <option value="2">Corona type 2</option>
+                                            </select>
                                         </div>
                                     </>
                                 )}
@@ -211,7 +239,7 @@ function GameSettingsModal() {
                                 </select>
                                 {gameData.boostsEnabled === "1" && (
                                 <>
-                                    <label htmlFor="customRange2" className="form-label">Select the booster speed factor</label>
+                                    <label htmlFor="customRange2" className="form-label">Select the booster speed factor: {selectedBoostFactor}</label>
                                     <input
                                         type="range"
                                         className="form-range"
@@ -219,6 +247,7 @@ function GameSettingsModal() {
                                         max="3"
                                         step="1"
                                         id="customRange2"
+                                        value={selectedBoostFactor}
                                         onChange={handleBoostFactorChange}
                                     />
                                 </>

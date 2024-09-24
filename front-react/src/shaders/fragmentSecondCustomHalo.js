@@ -1,6 +1,4 @@
-import * as THREE from 'three';
-
-const fragmentCustomHalo = `
+const fragmentSecondCustomHalo = `
 uniform float iTime;
 uniform vec2 iResolution;
 uniform sampler2D iChannel1;
@@ -31,7 +29,6 @@ float snoise(vec3 uv, float res) {
 void main() {
     vec2 fragCoord = vUv * iResolution;
 
-    // Frequency data for brightness variation
     float freqs[4];
     freqs[0] = texture(iChannel1, vec2(0.01, 0.25)).x;
     freqs[1] = texture(iChannel1, vec2(0.07, 0.25)).x;
@@ -40,44 +37,44 @@ void main() {
 
     float brightness = freqs[1] * 0.25 + freqs[2] * 0.25;
     float radius = 1.0 + brightness * 0.2;
+    float invRadius = 1.0 / radius;
 
     float time = iTime * 0.4;
     vec2 uv = fragCoord.xy / iResolution.xy;
+    vec2 p = uv - 0.5;
 
-    // Adjust for aspect ratio without squashing the corona
-    float aspect = iResolution.x / iResolution.y;
-    vec2 p = uv - 0.5; // Center the coordinates
-    p.x *= aspect;     // Uniform scaling
+    float horizontalScale = 1.65; // Reduce horizontal length
+    float verticalScale = 0.75;   // Increase vertical length
+    p.x *= horizontalScale;      // Squash horizontally
+    p.y *= verticalScale;        // Stretch vertically
 
-    // Calculate fade and distance uniformly
+    // Normalize p to ensure a uniform circle
     float dist = length(p);
-    float fade = pow(dist * 2.0, 0.7);
+    float angle = atan(p.y, p.x);
+
+    vec3 coord = vec3(angle, dist, time * 0.1);
+
+    float fade = pow(dist * 2.0, 0.5);  // Smoother fade effect
 
     float fVal1 = (0.5 + intensity / 10.0) - fade;
     float fVal2 = (0.5 + intensity / 10.0) - fade;
 
-    float angle = atan(p.y, p.x); // Circular coordinate system
-    vec3 coord = vec3(angle / 6.2832, dist, time * 0.1);
-
-    // Smooth noise for corona effect
     float newTime1 = abs(snoise(coord + vec3(0.0, -time * (0.35 + brightness * 0.001), time * 0.015), 15.0));
     float newTime2 = abs(snoise(coord + vec3(0.0, -time * (0.15 + brightness * 0.001), time * 0.015), 45.0));
 
-    // Multi-octave noise to create corona layers
     for (int i = 1; i <= 7; i++) {
         float power = pow(2.0, float(i + 1));
-        fVal1 += (0.5 / power) * snoise(coord + vec3(0.0, -time, time * 0.2), power * (10.0) * (newTime1 + 1.0));
-        fVal2 += (0.5 / power) * snoise(coord + vec3(0.0, -time, time * 0.2), power * (25.0) * (newTime2 + 1.0));
+        fVal1 += (0.5 / power) * snoise(coord + vec3(0.0, -time, time * 0.2), (power * (10.0) * (newTime1 + 1.0)));
+        fVal2 += (0.5 / power) * snoise(coord + vec3(0.0, -time, time * 0.2), (power * (25.0) * (newTime2 + 1.0)));
     }
 
-    // Compute corona effect
     float corona = pow(fVal1 * max(1.1 - fade, 0.0), 2.0) * 50.0;
     corona += pow(fVal2 * max(1.1 - fade, 0.0), 2.0) * 50.0;
     corona *= 1.2 - newTime1;
 
-    // Final color blending
+    // Final composition
     gl_FragColor = vec4(vec3(corona * color), 1.0);
 }
 `;
 
-export default fragmentCustomHalo;
+export default fragmentSecondCustomHalo;

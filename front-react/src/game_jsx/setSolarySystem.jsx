@@ -33,6 +33,7 @@ import { getFresnelCustomMat } from "../shaders/getFresnelCustomMat.js";
 import fragmentCustomShader from '../shaders/fragmentCustom.js';
 import fragmentCustomShading from '../shaders/fragmentCustomShader.js';
 import fragmentCustomHalo from '../shaders/fragmentCustomHalo.js';
+import fragmentSecondCustomHalo from '../shaders/fragmentSecondCustomHalo.js';
 
 function hexToRGB(hexColor) {
   if (typeof hexColor === 'string' && hexColor.startsWith('#'))
@@ -117,7 +118,7 @@ function setStarfield(scene) {
           }
       `,
       vertexColors: true,
-      depthTest: false,
+      depthTest: true,
       depthWrite: false,
   });
 
@@ -130,7 +131,7 @@ function setStarfield(scene) {
 
 
 
-function setSolarySystem(scene, camera, renderer, textureLoader, starType, customIntensity, customRadius, customColor)
+function setSolarySystem(scene, camera, renderer, textureLoader, starType, customIntensity, customRadius, customColor, customCorona)
 {
     const mainGroup = new THREE.Group();
 
@@ -494,7 +495,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
         const starColor = hexToRGB(customColor);
         const distance = 5000 + customRadius * 2.5;
         console.log("STAR COLOR", starColor);
-        console.log("STAR SIZE", starColor);
+        console.log("STAR CORONA", customCorona);
         const customGroup = new THREE.Group();
     
         const customGeometry = new THREE.IcosahedronGeometry(customRadius, 12);
@@ -544,27 +545,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
           customShadingMesh.position.set(-300, 150, -distance);
           customGroup.add(customShadingMesh);
           let customHaloMaterial;
-          if (customIntensity < 10)
-          {
-             customHaloMaterial = new THREE.ShaderMaterial(
-              {
-                  blending: THREE.AdditiveBlending,
-                  uniforms: {
-                    iResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-                    iTime: { value: 0 },
-                    intensity: { value: customIntensity },
-                    color: { value: starColor }, // example star color
-                    ucameraPosition: {value: new THREE.Vector3()}
-                },
-                  depthWrite: true,
-                  transparent: false,
-                  vertexShader: vertexHalo,
-                  fragmentShader: fragmentCustomHalo,
-                  side: THREE.BackSide,
-              }
-            );
-          }
-          else
+          if (customCorona == 1)
           {
             customHaloMaterial = new THREE.ShaderMaterial(
               {
@@ -576,7 +557,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
                     color: { value: starColor }, // example star color
                     ucameraPosition: {value: new THREE.Vector3()}
                 },
-                  depthTest: false,       // Keep depth testing
+                  depthTest: true,
                   depthWrite: true,
                   transparent: false,
                   vertexShader: vertexHalo,
@@ -585,17 +566,39 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
               }
             );
           }
+          else if (customCorona == 2)
+          {
+            customHaloMaterial = new THREE.ShaderMaterial(
+              {
+                  blending: THREE.AdditiveBlending,
+                  uniforms: {
+                    iResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                    iTime: { value: 0 },
+                    intensity: { value: customIntensity },
+                    color: { value: starColor }, // example star color
+                    ucameraPosition: {value: new THREE.Vector3()}
+                },
+                  depthTest: true,
+                  depthWrite: true,
+                  transparent: false,
+                  vertexShader: vertexHalo,
+                  fragmentShader: fragmentSecondCustomHalo,
+                  side: THREE.BackSide,
+              }
+            );
+          }
+          
         const customHaloMesh = new THREE.Mesh(customGeometry, customHaloMaterial);
         customHaloMesh.position.set(-300, 150, -distance);
         customHaloMesh.scale.setScalar(1.0 + customIntensity * 0.15);
-        customGroup.add(customHaloMesh);
+        if (customCorona != 0)
+          customGroup.add(customHaloMesh);
 
         const customLight = new THREE.DirectionalLight(customColor, customIntensity);
         customLight.position.set(-100, 200, -300);
         mainGroup.add(customLight);
 
         mainGroup.add(customGroup);
-        console.log("Custom OBJECT", customGroup);
         scene.add(mainGroup);
 
         return {earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, customMesh, customShadyMaterial, customShadyMesh, customShadingMaterial, customShadingMesh, fresnelCustomMesh, customHaloMesh, customHaloMaterial, customLight, moonMesh, orbitRadius, stars};

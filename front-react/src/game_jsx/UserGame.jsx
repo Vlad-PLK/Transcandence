@@ -81,13 +81,20 @@ let bottomPaddle, topPaddle, bottomPaddleGeometry, topPaddleGeometry;
 // Score
 let scoreTextMesh = null;
 
+const displayPressedKeys = () => {
+    const pressedKeys = Object.keys(keyboardState).filter(key => keyboardState[key]);
+    console.log("Pressed keys:", pressedKeys);
+};
+
 const keyboardState = {};
     
 const handleKeyDown = (event) => {
     keyboardState[event.key] = true;
+    displayPressedKeys();
 };
 const handleKeyUp = (event) => {
     keyboardState[event.key] = false;
+    displayPressedKeys();
 };
 
 document.addEventListener('keydown', handleKeyDown);
@@ -404,17 +411,11 @@ function UserGame()
 
 
     // SETTINGS
-    if (!gameData)
-        return;
-    // const starType = gameData?.starType || 4; // Default to 0 or another appropriate default
-    // let BHsize = gameData?.gargantuaSize || 200; // Default size
-    // let BHcolor = gameData?.gargantuaColor || 0x000000; // Default color
-    // let starRadius = gameData?.customStarSize || 1000; // Default size
-    // let starIntensity = gameData?.customStarIntensity || 4; // Default intensity
-    // let starColor = gameData?.customStarColor || 0x2e86c1;
+    // if (!gameData)
+    //     return;
     const starType = gameData.starFlag;
     let BHsize, BHcolor;
-    let starRadius, starIntensity, starColor;
+    let starRadius, starIntensity, starColor, starCorona;
 
     if (starType == 3)
     {
@@ -428,6 +429,7 @@ function UserGame()
         starRadius = gameData.customStarSize * 400;
         starIntensity = gameData.customStarIntensity;
         starColor = gameData.customStarColor;
+        starCorona = gameData.customCoronaType;
     }
 
     const boost = gameData.boostsEnabled;
@@ -446,6 +448,7 @@ function UserGame()
         console.log("Current custom size", starRadius);
         console.log("Current custom intensity", starIntensity);
         console.log("Current custom color", starColor);
+        console.log("Current custom corona", starCorona);
         console.log("Current boosts status", boost);
         console.log("Current boost factor", boostPower);
         console.log("Current powerup", powerUp);
@@ -465,27 +468,27 @@ function UserGame()
     if (boost == 1)
         ({ speedBoostGeometry, speedBoost1, speedBoost2 } = setBoosts(sceneRef.current));
     if (starType == 0)
-        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, sunMesh, sunShadyMaterial, sunShadyMesh, sunShadingMaterial, sunShadingMesh, fresnelSunMesh, sunHaloMesh, sunLight, moonMesh, orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor));
+        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, sunMesh, sunShadyMaterial, sunShadyMesh, sunShadingMaterial, sunShadingMesh, fresnelSunMesh, sunHaloMesh, sunLight, moonMesh, orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor, starCorona));
     else if (starType == 1)
     {
-        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, whiteDwarfMesh, whiteDwarfShadyMaterial, whiteDwarfShadyMesh, whiteDwarfShadingMaterial, whiteDwarfShadingMesh, fresnelwhiteDwarfMesh, whiteDwarfHaloMesh, whiteDwarfLight, moonMesh, orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor));
+        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, whiteDwarfMesh, whiteDwarfShadyMaterial, whiteDwarfShadyMesh, whiteDwarfShadingMaterial, whiteDwarfShadingMesh, fresnelwhiteDwarfMesh, whiteDwarfHaloMesh, whiteDwarfLight, moonMesh, orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor, starCorona));
         whiteDwarfRotationSpeed = calculateRotationSpeed(150, sunRotationSpeed);
     }
     else if (starType == 2)
     {
-        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, redGiantMesh, redGiantShadyMaterial, redGiantShadyMesh, redGiantShadingMaterial, redGiantShadingMesh, fresnelRedGiantMesh, redGiantHaloMesh, redGiantLight, moonMesh, orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor));
+        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, redGiantMesh, redGiantShadyMaterial, redGiantShadyMesh, redGiantShadingMaterial, redGiantShadingMesh, fresnelRedGiantMesh, redGiantHaloMesh, redGiantLight, moonMesh, orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor, starCorona));
         redGiantRotationSpeed = calculateRotationSpeed(5000, sunRotationSpeed);
     }
     else if (starType == 3)
     {
         starRadius = BHsize;
         starColor = BHcolor;
-        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, blackHoleMesh, blackHoleGLensMesh, blackHoleGLensMaterial, blackHoleLight, moonMesh,  orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor));
+        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, blackHoleMesh, blackHoleGLensMesh, blackHoleGLensMaterial, blackHoleLight, moonMesh,  orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor, starCorona));
         maxDistance = 3790;
     }
     else if (starType == 4)
     {
-        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, customMesh, customShadyMaterial, customShadyMesh, customShadingMaterial, customShadingMesh, fresnelCustomMesh, customHaloMaterial, customHaloMesh, customLight, moonMesh, orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor));
+        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, customMesh, customShadyMaterial, customShadyMesh, customShadingMaterial, customShadingMesh, fresnelCustomMesh, customHaloMaterial, customHaloMesh, customLight, moonMesh, orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor, starCorona));
         customRotationSpeed = calculateRotationSpeed(customMesh.geometry.parameters.radius, sunRotationSpeed);
     }
     let sphere = null;
@@ -607,13 +610,16 @@ function UserGame()
             customShadingMesh.rotation.y -= customRotationSpeed;
             customShadingMaterial.uniforms.time.value += 0.01;
             fresnelCustomMesh.rotation.y -= customRotationSpeed;
-            customHaloMesh.rotation.y -= customRotationSpeed;
-            customHaloMaterial.uniforms.iTime.value += 0.004;
-            // customHaloMaterial.uniforms.ucameraPosition.value.copy(cameraRef.current.position);
-            customHaloMesh.lookAt(cameraRef.current.position);
-            customHaloMesh.rotateY(9.5 / 2);
-            // console.log(cameraRef.current.position.distanceTo(customHaloMesh));
-            // customHaloMesh.scale.setScalar(10000000000/cameraRef.current.position.distanceTo(customHaloMesh));
+            if (starCorona != 0)
+            {
+                customHaloMesh.rotation.y -= customRotationSpeed;
+                customHaloMaterial.uniforms.iTime.value += 0.004;
+                // customHaloMaterial.uniforms.ucameraPosition.value.copy(cameraRef.current.position);
+                customHaloMesh.lookAt(cameraRef.current.position);
+                customHaloMesh.rotateY(9.5 / 2);
+                // console.log(cameraRef.current.position.distanceTo(customHaloMesh));
+                // customHaloMesh.scale.setScalar(10000000000/cameraRef.current.position.distanceTo(customHaloMesh));
+            }
 
             checkSun(cameraRef.current, customMesh, stars, customLight);
         }
