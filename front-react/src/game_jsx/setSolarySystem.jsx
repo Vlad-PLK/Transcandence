@@ -19,7 +19,7 @@ import fragmentWhiteDwarfShader from '../shaders/fragmentWhiteDwarf.js';
 import fragmentWhiteDwarfShading from '../shaders/fragmentWhiteDwarfShader.js'
 import fragmentWhiteDwarfHalo from '../shaders/fragmentWhiteDwarfHalo.js';
 
-// import { getFresnelRedGiantMat } from "../shaders/getFresnelRedGiantMat.js";
+import { getFresnelRedGiant } from "../shaders/getFresnelRedGiant.js";
 import fragmentRedGiantShader from '../shaders/fragmentRedGiant.js';
 import fragmentRedGiantShading from '../shaders/fragmentRedGiantShader.js'
 import fragmentRedGiantHalo from '../shaders/fragmentRedGiantHalo.js';
@@ -30,7 +30,7 @@ import photonSphereVertexShader from '../shaders/vertexPhotonBlackHole.js';
 import photonSphereFragmentShader from '../shaders/fragmentPhotonBlackHole.js';
 
 import { getFresnelCustomMat } from "../shaders/getFresnelCustomMat.js";
-import fragmentCustomShader from '../shaders/fragmentCustom.js';
+import fragmentCustomShader from '../shaders/fragmentCustom.js'; 
 import fragmentCustomShading from '../shaders/fragmentCustomShader.js';
 import fragmentCustomHalo from '../shaders/fragmentCustomHalo.js';
 import fragmentSecondCustomHalo from '../shaders/fragmentSecondCustomHalo.js';
@@ -81,7 +81,7 @@ function setStarfield(scene) {
 
       starVertices.push(x, y, z);
 
-      const size = THREE.MathUtils.randFloat(0.01, 2.0);
+      const size = THREE.MathUtils.randFloat(0.01, 2);
       starSizes.push(size);
 
       const color = colors[Math.floor(Math.random() * colors.length)];
@@ -384,7 +384,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
       redGiantShadyMesh.position.set(0, 0, -10000);
       redGiantGroup.add(redGiantShadyMesh);
 
-      const fresnelRedGiantMaterial = getFresnelEarthMat();
+      const fresnelRedGiantMaterial = getFresnelRedGiant();
       const fresnelRedGiantMesh = new THREE.Mesh(redGiantGeometry, fresnelRedGiantMaterial);
       fresnelRedGiantMesh.position.set(0, 0, -10000);
       redGiantGroup.add(fresnelRedGiantMesh);

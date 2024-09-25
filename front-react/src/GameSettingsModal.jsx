@@ -31,7 +31,7 @@ function GameSettingsModal() {
 
     const handleCustomSizeChange = (event) => {
         const newSize = event.target.value;
-        setSelectedSize(newSize); // Update state for real-time display
+        setSelectedSize(newSize);
         setGameData(prevState => ({
             ...prevState,
             customStarSize: newSize,
@@ -54,7 +54,7 @@ function GameSettingsModal() {
 
     const handleCustomIntensityChange = (event) => {
         const newIntensity = event.target.value;
-        setSelectedIntensity(newIntensity); // Update state for real-time display
+        setSelectedIntensity(newIntensity);
         setGameData(prevState => ({
             ...prevState,
             customStarIntensity: newIntensity,
@@ -70,7 +70,7 @@ function GameSettingsModal() {
 
     const handleBoostFactorChange = (event) => {
         const newBoostFactor = event.target.value;
-        setSelectedBoostFactor(newBoostFactor); // Update state for real-time display
+        setSelectedBoostFactor(newBoostFactor);
         setGameData(prevState => ({
             ...prevState,
             boostFactor: newBoostFactor,
@@ -100,7 +100,7 @@ function GameSettingsModal() {
             gargantuaSize:0,
             gargantuaColor:"0xc5e0e2",
             customStarSize:4,
-            customStarColor:"0x2ec149",
+            customStarColor:"0x54d5c2",
             customCoronaType:0,
             customStarIntensity:4,
             boostsEnabled:0,

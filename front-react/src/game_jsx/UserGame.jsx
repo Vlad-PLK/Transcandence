@@ -172,7 +172,7 @@ function resetSphere(scene, sphere, sphereGeometry)
 
 function resetPaddles(topPaddle, bottomPaddle, planeGeometry)
 {
-    if (topPaddle.geometry.parameters.width == paddleWidth/1.5 || bottomPaddle.geometry.parameters.width == paddleWidth/2)
+    if (topPaddle.geometry.parameters.width == paddleWidth/2 || bottomPaddle.geometry.parameters.width == paddleWidth/2)
     {
         const PaddleGeo = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth);
         topPaddle.geometry.dispose();
@@ -186,7 +186,7 @@ function resetPaddles(topPaddle, bottomPaddle, planeGeometry)
 
 function powerPaddle(paddle)
 {
-    const newPaddleGeo = new THREE.BoxGeometry(paddleWidth/1.5, paddleHeight, paddleDepth);
+    const newPaddleGeo = new THREE.BoxGeometry(paddleWidth/2, paddleHeight, paddleDepth);
     
     paddle.geometry.dispose();
     paddle.geometry = newPaddleGeo;
@@ -291,6 +291,8 @@ function checkCollision(scene, sphere, sphereGeometry,
             player1Streak += 1;
             if (player1Streak == 2)
                 streakPower = 2;
+            else
+                streakPower = 0;
         }
         scoreFlag = 1;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
@@ -308,6 +310,8 @@ function checkCollision(scene, sphere, sphereGeometry,
             player2Streak += 1;
             if (player2Streak == 2)
                 streakPower = 1;
+            else
+                streakPower = 0;
         }
         scoreFlag = 2;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
@@ -335,28 +339,28 @@ function calculateRotationSpeed(radius, sunRotationSpeed)
 
 function updateStarfield(stars, camera)
 {
-    if (!stars || !stars.geometry || !stars.geometry.attributes.position)
-    {
+    if (!stars || !stars.geometry || !stars.geometry.attributes.position) {
         console.error("Stars object or its geometry is not properly initialized.");
         return;
     }
 
     const starPositions = stars.geometry.attributes.position.array;
-    
     const cameraDistance = camera.position.length();
-    
+
     for (let i = 0; i < starPositions.length; i += 3) {
-      const x = starPositions[i];
-      const y = starPositions[i + 1];
-      const z = starPositions[i + 2];
-      
-      const distance = Math.sqrt(x * x + y * y + z * z);
-  
-      const scaleFactor = cameraDistance / (distance/8);
-      starPositions[i] = x * scaleFactor;
-      starPositions[i + 1] = y * scaleFactor;
-      starPositions[i + 2] = z * scaleFactor;
+        const x = starPositions[i];
+        const y = starPositions[i + 1];
+        const z = starPositions[i + 2];
+
+        const distance = Math.sqrt(x * x + y * y + z * z);
+
+        // Adjust this scaleFactor to ensure stars look stationary
+        const scaleFactor = cameraDistance / (distance / 8); 
+        starPositions[i] = x * scaleFactor;
+        starPositions[i + 1] = y * scaleFactor;
+        starPositions[i + 2] = z * scaleFactor;
     }
+
     stars.geometry.attributes.position.needsUpdate = true;
 }
   
@@ -422,8 +426,8 @@ function UserGame()
         BHsize = gameData.gargantuaSize;
         BHcolor = gameData.gargantuaColor;
     }
-    if (starType != 3)
-        sceneRef.current.background = milky;
+    // if (starType != 3)
+    //     sceneRef.current.background = milky;
     if (starType == 4)
     {
         starRadius = gameData.customStarSize * 400;
@@ -800,7 +804,7 @@ function UserGame()
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
         <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
-            <CustomTimer seconds={20} player1={userData.id} player2={guestData.id} player1_score={scoreP1} player2_score={scoreP2} isGuest={guestData.isGuest}/>
+            <CustomTimer seconds={250} player1={userData.id} player2={guestData.id} player1_score={scoreP1} player2_score={scoreP2} isGuest={guestData.isGuest}/>
         </div>
         <div className="d-flex justify-content-center" ref={mountRef}/>;
     </>
