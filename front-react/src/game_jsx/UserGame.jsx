@@ -385,7 +385,7 @@ function UserGame()
     rendererRef.current = new THREE.WebGLRenderer();
     setRenderer(rendererRef.current);
     mountRef.current.appendChild(rendererRef.current.domElement);
-    const milky = textureLoader.load('../../public/milkyway.jpg', (texture) => {
+    const milky = textureLoader.load('../../milkyway.jpg', (texture) => {
         texture.mapping = THREE.EquirectangularReflectionMapping;
     });
     // ambient light //
@@ -406,8 +406,8 @@ function UserGame()
     const font = loader.parse(Ponderosa_Regular);
 
     // Start score
-    if (userData)
-        updateScoreText(sceneRef.current, font, "userData.username", "guestData.guestNickname", player1Score, player2Score, scoreTextMesh, cameraPosition);
+    if (userData && guestData)
+        updateScoreText(sceneRef.current, font, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, cameraPosition);
 
 
     // SETTINGS
@@ -513,7 +513,7 @@ function UserGame()
         ({cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition, streakPowerIsPressed, streakPower, bottomPaddle, topPaddle} = updatedValues);
 
         ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
-            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, "userData.username", "guestData.guestNickname", player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower));
+            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower));
         
         if (powerUp == 1)
         {
@@ -784,8 +784,8 @@ function UserGame()
             }
         }
         window.removeEventListener('resize', onWindowResize);
-        document.removeEventListener('keydown', handleKeyDown);
-        document.removeEventListener('keyup', handleKeyUp);
+        //document.removeEventListener('keydown', handleKeyDown);
+        //document.removeEventListener('keyup', handleKeyUp);
         if (rendererRef.current) {
             rendererRef.current.dispose();
         }
@@ -799,9 +799,9 @@ function UserGame()
   return (
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
-        {/* <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
-            <CustomTimer seconds={20} player1={userData.id} player2={guestData.id} player1_score={scoreP1} player2_score={scoreP2}/>
-        </div> */}
+        <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
+            <CustomTimer seconds={20} player1={userData.id} player2={guestData.id} player1_score={scoreP1} player2_score={scoreP2} isGuest={guestData.isGuest}/>
+        </div>
         <div className="d-flex justify-content-center" ref={mountRef}/>;
     </>
   )

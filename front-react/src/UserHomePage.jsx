@@ -2,15 +2,11 @@ import { useContext, useEffect, useState, useRef } from "react";
 import React from "react";
 import { UserDataContext } from "./UserDataContext";
 import { UserStatsContext } from "./UserStatsContext";
-import SettingsModal from "./SettingsModal";
-import Chat from "./Chat";
-import Droppable from "./Droppable";
-import Draggable from "./Draggable";
 import { useTranslation } from "react-i18next";
 import TranslationSelect from "./TranslationSelect";
 import { Link } from "react-router-dom";
-import {DndContext} from '@dnd-kit/core';
 import './customFonts.css';
+import SettingsModal from "./SettingsModal";
 import { useNavigate } from "react-router-dom";
 import api from "./api";
 

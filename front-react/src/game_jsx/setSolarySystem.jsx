@@ -141,9 +141,9 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.update();
     const earthGeometry = new THREE.IcosahedronGeometry(300, 12);
-    const bumpMapEarth = textureLoader.load("../../public/earthbump1k.jpg");
+    const bumpMapEarth = textureLoader.load("../../earthbump1k.jpg");
     const earthMaterial = new THREE.MeshPhongMaterial({
-        map: textureLoader.load("../../public/earthmap1k.jpg"),
+        map: textureLoader.load("../../earthmap1k.jpg"),
         bumpMap: bumpMapEarth,
         bumpScale: 7,
       });
@@ -154,7 +154,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
     const lightMaterial = new THREE.MeshBasicMaterial({
       transparent: true,
       opacity: 0.4,
-      map: textureLoader.load("../../public/earthByNight.jpg"),
+      map: textureLoader.load("../../earthByNight.jpg"),
       blending: THREE.AdditiveBlending,
       });
     const lightsMesh = new THREE.Mesh(earthGeometry, lightMaterial);
@@ -163,7 +163,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
     earthGroup.add(lightsMesh);
 
     const cloudMaterial = new THREE.MeshStandardMaterial({
-        map: textureLoader.load("../../public/Clouds.png"),
+        map: textureLoader.load("../../Clouds.png"),
         transparent: true,
         opacity: 0.8,
         blending: THREE.AdditiveBlending,
@@ -196,7 +196,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
 
     const moonGeometry = new THREE.IcosahedronGeometry(82, 12);
     const bumpMapMoon = textureLoader.load("./moonbump2k.jpg");
-    const moonMaterial = new THREE.MeshStandardMaterial({map: textureLoader.load("../../public/moonmap2k.jpg"), bumpMap: bumpMapMoon,
+    const moonMaterial = new THREE.MeshStandardMaterial({map: textureLoader.load("../../moonmap2k.jpg"), bumpMap: bumpMapMoon,
     bumpScale: 2});
     const moonMesh = new THREE.Mesh(moonGeometry, moonMaterial);
     const orbitRadius = 500;

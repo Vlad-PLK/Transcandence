@@ -8,7 +8,7 @@ function PlayerModal() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
-	const {setGuestData} = useContext(GuestDataContext);
+	const {guestData, setGuestData} = useContext(GuestDataContext);
 	const navigate = useNavigate();
 
     const launchGame = async (e) => {
@@ -16,6 +16,7 @@ function PlayerModal() {
 
         try {
             const response = await api.post('api/users/user/token/', { username, password });
+			console.log(response);
 			const api_invite = axios.create({
 				baseURL: import.meta.env.VITE_API_URL
 			  });
@@ -33,14 +34,15 @@ function PlayerModal() {
 			);
 			api_invite.get('api/player-info/')
 			.then(response_get => {
-				console.log("guest player login : ", response_get.data)
 				const guestResponse = response_get.data;
 				setGuestData(prevState => ({
 					...prevState,
 					guestNickname: guestResponse.username,
 					nickname: guestResponse.username,
-					id: guestResponse.id
+					id: guestResponse.id,
+					isGuest: false
 				}));
+				console.log(guestData);
 				navigate("/userGameWindow/");
             	setUsername('');
             	setPassword('');

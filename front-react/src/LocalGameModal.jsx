@@ -8,18 +8,12 @@ import PlayerModal from "./PlayerModal";
 
 function LocalGameModal() {
     const {userData} = useContext(UserDataContext);
-    const {guestData, setGuestData} = useContext(GuestDataContext);
-    const {gameData, setGameData} = useContext(GameContext);
+    // const {setGuestData} = useContext(GuestDataContext);
     const navigate = useNavigate();
-    const clearInput=(inputRef)=>{
-      if (inputRef.current) {
-        inputRef.current.value = "";
-      }
-    }
     const startGame=()=>{
-      setGuestData("guest");
+      // setGuestData("guest");
       navigate("/userGameWindow/")
-  }
+    }
     return (
         <>
             <div className="modal fade" id="localGame" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
