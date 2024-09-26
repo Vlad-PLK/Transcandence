@@ -12,6 +12,17 @@ services:
       - 3000:3000
     volumes:
       - frontend:/app
+    depends_on:
+      - backend
+    networks:
+      - transcendance
+  backend:
+    container_name: backend
+    build: ./backend
+    ports:
+      - 8000:8000
+    networks:
+      - transcendance
     
 volumes:
   frontend:
