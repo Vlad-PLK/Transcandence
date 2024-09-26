@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import api from "./api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
 import { UserDataContext } from './UserDataContext';
@@ -10,6 +10,7 @@ function LoginModal()
 	const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 	const [errorLog, setLogError] = useState('');
+	const modalRef = useRef(null);
 	const {setUserData} = useContext(UserDataContext);
 	const navigate = useNavigate();
 
@@ -40,7 +41,7 @@ function LoginModal()
     }
 	return (
 	<>
-      	<div className="modal fade" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
+      	<div ref={modalRef} className="modal fade" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
         	<div className="modal-dialog modal-dialog-centered modal-lg" role="document">
         		<div className="modal-content rounded-4 shadow">
         		  <div className="modal-header p-5 pb-4 border-bottom-0">
@@ -48,7 +49,7 @@ function LoginModal()
         		    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         		  </div>
         		  <div className="modal-body p-5 pt-0">
-        		    <form onSubmit={loginbutton}>
+					<form action="" onSubmit={loginbutton}>
         		      <div className="form-floating mb-2">
         		        <input type="text" className="form-control rounded-3" id="usernameLogin" placeholder='Username' autoComplete='username' value={username} onChange={(e) => setUsername(e.target.value)}/>
         		        <label htmlFor="usernameLogin">Username</label>
@@ -59,8 +60,8 @@ function LoginModal()
         		      </div>
         		      <button className="w-90 mt-2 btn btn-lg rounded-3 btn-primary" type="submit" data-bs-dismiss="modal">Login</button>
         		      {errorLog && <p className="mt-2 text-danger">{errorLog}</p>}
-        		      </form>
-        		  </div>
+					</form>
+        		  	 </div>
         		</div>
         	</div>
 		</div>

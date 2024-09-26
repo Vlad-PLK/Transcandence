@@ -83,7 +83,6 @@ let scoreTextMesh = null;
 
 const displayPressedKeys = () => {
     const pressedKeys = Object.keys(keyboardState).filter(key => keyboardState[key]);
-    console.log("Pressed keys:", pressedKeys);
 };
 
 const keyboardState = {};
