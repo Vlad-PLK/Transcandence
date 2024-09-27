@@ -44,14 +44,14 @@ function UserFriends()
 		setFr(!isFr);
 	};
 	useEffect(() => {
-		if ((userData && isVisible) || isAccepted || isNotFriend)
+		if (userData && isVisible || isAccepted || isNotFriend)
 			{
 				try {
 					api.get('api/friends/friend-list/')
 					.then(response => {
 						setUserFriends(response.data)
 						setAccepted(false);
-						toggleNotFriend();
+						setNotFriend(false);
 					  })
 					.catch(error => {
 						console.log('Error:', error);
