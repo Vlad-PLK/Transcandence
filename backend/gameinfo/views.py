@@ -2,10 +2,10 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from .models import PlayerStats, Match
-from .serializers import PlayerStatsSerializer, PlayerInfoSerializer, MatchSerializer
+from .serializers import PlayerStatsSerializer, PlayerInfoSerializer, MatchSerializer, UsernameSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-
+from users.models import CustomUser
 
 class PlayerStatsView(APIView):
     permission_classes = [IsAuthenticated]
@@ -73,3 +73,18 @@ class GetMatches(APIView):
             return Response({"error": "No matches found"}, status=200)
         serializer = MatchSerializer(matches, many=True)
         return Response(serializer.data)
+    
+
+class GetUserId(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *argv, **kwargs):
+        serializer = UsernameSerializer(data=request.data)
+        if serializer.is_valid():
+            username = serializer.validated_data.get('username')
+            try:
+                user = CustomUser.objects.get(username=username)
+                return Response({'user_id': user.id}, status=status.HTTP_200_OK);
+            except CustomUser.DoesNotExist:
+                return Response({'error': 'User not found'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -34,3 +34,6 @@ class MatchSerializer(serializers.ModelSerializer):
         if obj.match_winner is not None:
             return obj.match_winner.username
         return "Ничья"
+    
+class UsernameSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=50)
