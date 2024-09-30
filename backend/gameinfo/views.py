@@ -78,7 +78,7 @@ class GetMatches(APIView):
 class GetUserId(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, *argv, **kwargs):
+    def post(self, request, *argv, **kwargs):
         serializer = UsernameSerializer(data=request.data)
         if serializer.is_valid():
             username = serializer.validated_data.get('username')
