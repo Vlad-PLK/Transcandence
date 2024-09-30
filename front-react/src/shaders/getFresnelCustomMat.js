@@ -40,7 +40,7 @@ function getFresnelCustomMat(customColor, intensity, facingHex = 0x000000) {
   
       void main() {
         float f = clamp( vReflectionFactor, 0.0, 1.0 );
-        vec3 fresnelColor = mix(color2, color1, vec3(f)) * (intensity * 0.25);
+        vec3 fresnelColor = mix(color2, color1, vec3(f) * (intensity * 0.25));
         gl_FragColor = vec4(fresnelColor, f);
       }
     `;

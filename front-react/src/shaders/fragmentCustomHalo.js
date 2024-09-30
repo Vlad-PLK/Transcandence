@@ -47,7 +47,7 @@ void main() {
     // Adjust for aspect ratio without squashing the corona
     float aspect = iResolution.x / iResolution.y;
     vec2 p = uv - 0.5; // Center the coordinates
-    p.x *= aspect;     // Uniform scaling
+    p.x *= aspect;
 
     // Calculate fade and distance uniformly
     float dist = length(p);

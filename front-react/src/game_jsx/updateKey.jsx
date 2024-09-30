@@ -13,7 +13,7 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
     paddle2Left, paddle2Right, camera, cameraPosition, streakPowerIsPressed, streakPower)
 {
 
-    if (keyboardState['d'] || keyboardState['a'] || keyboardState['p'] || keyboardState['m'] || keyboardState['8'] || keyboardState['5'] || keyboardState['w'] || keyboardState['s'] || keyboardState['c'])
+    if (keyboardState['d'] || keyboardState['a'] || keyboardState['6'] || keyboardState['4'] || keyboardState['8'] || keyboardState['5'] || keyboardState['w'] || keyboardState['s'] || keyboardState['c'])
     {
         if (cameraPosition == 1 || cameraPosition == 2)
         {
@@ -95,7 +95,7 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
         }
         else if (cameraPosition == 0 || cameraPosition == 5)
         {
-            if (keyboardState['p'])
+            if (keyboardState['8'])
             {
                 // Move white paddle up
                 if (bottomPaddle.position.x > -planeGeometry.parameters.width / 2 + bottomPaddleGeometry.parameters.width / 2)
@@ -104,7 +104,7 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
                     paddle1Right = true;
                 }
             }
-            else if (keyboardState['m'])
+            else if (keyboardState['5'])
             {
                 // Move white paddle down
                 if (bottomPaddle.position.x < planeGeometry.parameters.width / 2 - bottomPaddleGeometry.parameters.width / 2)
@@ -113,7 +113,7 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
                     paddle1Left = true
                 }
             }
-            if (keyboardState['s'])
+            if (keyboardState['w'])
             {
                 // Move black paddle up
                 if (topPaddle.position.x > -planeGeometry.parameters.width / 2 + topPaddleGeometry.parameters.width / 2)
@@ -122,7 +122,7 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
                     paddle2Right = true;
                 }
             }
-            else if (keyboardState['w'])
+            else if (keyboardState['s'])
             {
                 // Move black paddle down
                 if (topPaddle.position.x < planeGeometry.parameters.width / 2 - topPaddleGeometry.parameters.width / 2)

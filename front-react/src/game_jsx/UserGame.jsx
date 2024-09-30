@@ -519,7 +519,7 @@ function UserGame()
         ({cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition, streakPowerIsPressed, streakPower, bottomPaddle, topPaddle} = updatedValues);
 
         ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
-            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, "userData.username", "guestData.guestNickname", player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower));
+            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower));
         
         if (powerUp == 1)
         {
@@ -805,9 +805,9 @@ function UserGame()
   return (
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
-        {/* <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
+        {<div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
             <CustomTimer seconds={250} player1={userData.id} player2={guestData.id} player1_score={scoreP1} player2_score={scoreP2} isGuest={guestData.isGuest}/>
-        </div> */}
+        </div>}
         <div className="d-flex justify-content-center" ref={mountRef}/>;
     </>
   )

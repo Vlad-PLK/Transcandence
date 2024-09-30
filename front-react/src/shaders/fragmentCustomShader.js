@@ -146,7 +146,7 @@ const fragmentCustomShading = `
     }
 
     vec3 brightness2Color(float n, vec3 color, float intensity) {
-        n *= 0.12 * intensity * 0.7;
+        n *= 0.12 * intensity * 1.;
         return color * vec3(n, n * n, n * n * n * n)/0.25 * 0.7;
     }
     

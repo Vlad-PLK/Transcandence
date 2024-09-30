@@ -4,29 +4,43 @@ import { GameContext } from "./GameContext"
 function GameSettingsModal() {
     const { gameData, setGameData } = useContext(GameContext);
 
+    const [selectedStar, setSelectedStar] = useState(gameData.starFlag || 0);
     const [selectedSize, setSelectedSize] = useState(gameData.customStarSize || 1);
+    const [selectedColor, setSelectedColor] = useState(gameData.customStarColor || "#DC1010");
     const [selectedIntensity, setSelectedIntensity] = useState(gameData.customStarIntensity || 1);
+    const [selectedCorona, setSelectedCorona] = useState(gameData.customCoronaType || 0);
+    const [selectedBHSize, setSelectedBHSize] = useState(gameData.gargantuaSize || 2);
     const [selectedBHIntensity, setSelectedBHIntensity] = useState(gameData.gargantuaIntensity || 1);
+    const [selectedBHColor, setSelectedBHColor] = useState(gameData.gargantuaColor || "#c5e0e2");
+    const [selectedBoost, setSelectedBoost] = useState(gameData.boostsEnabled || 0);
     const [selectedBoostFactor, setSelectedBoostFactor] = useState(gameData.boostFactor || 1);
+    const [selectedPower, setSelectedPower] = useState(gameData.powerEnabled || 0);
 
     const handleChange = (event) => {
+        const star = event.target.value;
+        console.log(star);
+        setSelectedStar(star);
         setGameData(prevState => ({
             ...prevState,
-            starFlag: event.target.value,
+            starFlag: star,
         }));
     };
 
     const handleBlackHoleSizeChange = (event) => {
+        const newBHSize = event.target.value;
+        setSelectedBHSize(newBHSize);
         setGameData(prevState => ({
             ...prevState,
-            gargantuaSize: event.target.value,
+            gargantuaSize: newBHSize,
         }));
     };
 
     const handleGargantuaColorChange = (event) => {
+        const newBHColor = event.target.value;
+        setSelectedBHColor(newBHColor);
         setGameData(prevState => ({
             ...prevState,
-            gargantuaColor: event.target.value,
+            gargantuaColor: newBHColor,
         }));
     };
 
@@ -49,16 +63,20 @@ function GameSettingsModal() {
     };
 
     const handleCustomColorChange = (event) => {
+        const newColor = event.target.value;
+        setSelectedColor(newColor);
         setGameData(prevState => ({
             ...prevState,
-            customStarColor: event.target.value,
+            customStarColor: newColor,
         }));
     };
 
     const handleCustomCoronaType = (event) => {
+        const newCorona = event.target.value;
+        setSelectedCorona(newCorona);
         setGameData(prevState => ({
             ...prevState,
-            customCoronaType: event.target.value,
+            customCoronaType: newCorona,
         }));
     };
 
@@ -72,9 +90,11 @@ function GameSettingsModal() {
     };
 
     const handleBoostChange = (event) => {
+        const newBoost = event.target.value;
+        setSelectedBoost(newBoost);
         setGameData(prevState => ({
           ...prevState,
-          boostsEnabled: event.target.value,
+          boostsEnabled: newBoost,
         }));
       };
 
@@ -88,9 +108,11 @@ function GameSettingsModal() {
     };
 
     const handlePowerChange = (event) => {
+        const newPower = event.target.value;
+        setSelectedPower(newPower);
         setGameData(prevState => ({
           ...prevState,
-          powerEnabled: event.target.value,
+          powerEnabled: newPower,
         }));
       };
 
@@ -104,14 +126,25 @@ function GameSettingsModal() {
     }
     const default_setttings = () => {
         //reset all selector to default value//
+        setSelectedStar(0);
+        setSelectedBHSize(2.0);
+        setSelectedBHColor("#c5e0e2");
+        setSelectedBHIntensity(1.0);
+        setSelectedSize(4);
+        setSelectedColor("#DC1010");
+        setSelectedCorona(0);
+        setSelectedIntensity(4);
+        setSelectedBoost(0);
+        setSelectedBoostFactor(1);
+        setSelectedPower(0);
         setGameData(prevState => ({
             ...prevState,
             starFlag:0,
-            gargantuaSize:1.0,
-            gargantuaColor:"0xc5e0e2",
+            gargantuaSize:2.0,
+            gargantuaColor:"#c5e0e2",
             gargantuaIntensity:1.0,
             customStarSize:4,
-            customStarColor:"0x54d5c2",
+            customStarColor:"#DC1010",
             customCoronaType:0,
             customStarIntensity:4,
             boostsEnabled:0,
@@ -119,7 +152,6 @@ function GameSettingsModal() {
             powerEnabled:0,
             gameDuration:10,
           }));
-        console.log("GSM : 0",gameData);
     }
 	return (
         <>
@@ -132,7 +164,7 @@ function GameSettingsModal() {
                         <div className="modal-body p-5 pt-0">
                             <div>
                                 <h5>Select the type of star you want</h5>
-                                <select className="form-select" onChange={handleChange}>
+                                <select className="form-select" value={selectedStar} onChange={handleChange}>
                                     <option value="0">The Sun</option>
                                     <option value="1">White Dwarf</option>
                                     <option value="2">Red Giant</option>
@@ -150,6 +182,7 @@ function GameSettingsModal() {
                                         name="gargantuaSize"
                                         value="1.0" // Small size
                                         onChange={handleBlackHoleSizeChange}
+                                        checked={selectedBHSize === "1.0"}
                                     />
                                     <label className="form-check-label" htmlFor="smallSize">Small</label>
                                     </div>
@@ -161,6 +194,7 @@ function GameSettingsModal() {
                                             name="gargacustomStarSizentuaSize"
                                             value="2.0" // Intermediate size
                                             onChange={handleBlackHoleSizeChange}
+                                            checked={selectedBHSize === "2.0"}
                                         />
                                         <label className="form-check-label" htmlFor="intermediateSize">Intermediate</label>
                                     </div>
@@ -172,6 +206,7 @@ function GameSettingsModal() {
                                             name="gargantuaSize"
                                             value="3.0" // Big size
                                             onChange={handleBlackHoleSizeChange}
+                                            checked={selectedBHSize === "3.0"}
                                         />
                                         <label className="form-check-label" htmlFor="bigSize">Big</label>
                                     </div>
@@ -183,6 +218,7 @@ function GameSettingsModal() {
                                                 type="color" 
                                                 className="form-control form-control-color" 
                                                 id="gargantuaColor"
+                                                value={selectedBHColor}
                                                 onChange={handleGargantuaColorChange}
                                                 title="Choose a color"
                                             />
@@ -226,6 +262,7 @@ function GameSettingsModal() {
                                                     type="color"
                                                     className="form-control form-control-color"
                                                     id="customColor"
+                                                    value={selectedColor}
                                                     onChange={handleCustomColorChange}
                                                     title="Choose a color"
                                                 />
@@ -246,7 +283,7 @@ function GameSettingsModal() {
                                         </div>
                                         <div>
                                             <h5>Select the type of corona you want</h5>
-                                            <select className="form-select" onChange={handleCustomCoronaType}>
+                                            <select className="form-select" value={selectedCorona} onChange={handleCustomCoronaType}>
                                                 <option value="0">No corona</option>
                                                 <option value="1">Corona type 1</option>
                                                 <option value="2">Corona type 2</option>
@@ -257,7 +294,7 @@ function GameSettingsModal() {
                             </div>
                             <div className="pt-4">
                                 <h5>Do you want to add Boosters?</h5>
-                                <select className="form-select" onChange={handleBoostChange}>
+                                <select className="form-select" value={selectedBoost} onChange={handleBoostChange}>
                                     <option value="0">Disable Boosters</option>
                                     <option value="1">Enable Boosters</option>
                                 </select>
@@ -279,7 +316,7 @@ function GameSettingsModal() {
                             </div>
                             <div className="pt-4">
                                 <h5>Do you want to add the losing streak power?</h5>
-                                <select className="form-select" onChange={handlePowerChange}>
+                                <select className="form-select" value={selectedPower} onChange={handlePowerChange}>
                                     <option value="0">Disable streak power</option>
                                     <option value="1">Enable streak power</option>
                                 </select>
