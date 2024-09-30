@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import api from "./api";
 import { UserDataContext } from './UserDataContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import takeData from './takeData';
 
 function DeleteFriendModal(toggleNotFriend)
 {

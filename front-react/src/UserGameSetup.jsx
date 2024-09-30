@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserDataContext } from "./UserDataContext";
 import SettingsModal from "./SettingsModal";
 import { useParams } from "react-router";
@@ -17,7 +17,7 @@ import { color } from "three/examples/jsm/nodes/Nodes.js";
 
 function UserGameSetup()
 {
-	const {userData} = useContext(UserDataContext);
+	const {userData, setUserData} = useContext(UserDataContext);
 	const navigate = useNavigate();
 	const {t} = useTranslation();
 	const main_image = {
@@ -25,9 +25,13 @@ function UserGameSetup()
 		backgroundSize: 'cover', // Adjust background size as needed
 		backgroundPosition: 'center', // Adjust background position as needed
 	};
+	useEffect(() => {
+		if (userData == null)
+			navigate("/");
+	}, [userData])
 	const disconnect=() => {
 		localStorage.clear();
-		navigate("/");
+		setUserData(null);
 	}
 	const buttons_style = {
 		position: 'absolute', 
