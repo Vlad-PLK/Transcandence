@@ -2,12 +2,16 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .serializers import UserSerializer, UsernameUpdateSerializer, ChangePasswordSerializer
+from .serializers import UserSerializer, UsernameUpdateSerializer, ChangePasswordSerializer, CustomTokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import permissions
 from .models import CustomUser
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView
+import pyotp
+from django.core.mail import send_mail
+
 
 class CreateUserView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -54,4 +58,59 @@ class ChangePasswordView(APIView):
             user.set_password(serializer.validated_data['new_password'])
             user.save()
             return Response({'detail': 'Password changed succesfully'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Enable2FAView(APIView):
+    permission_classes = [IsAuthenticated]  
+
+    def post(self, request, *args, **kwargs):
+        user = request.user  
+        
+        if user.is_2fa_enabled:
+            return Response(
+                {"message": "Двухфакторная аутентификация уже включена."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if not user.secret_key:
+            user.generate_2fa_secret_key()
+
+        user.is_2fa_enabled = True
+        user.save()
+
+        totp = pyotp.TOTP(user.secret_key)
+        otp_code = totp.now()
+
+        send_mail(
+            'Двухфакторная аутентификация включена',
+            f'Двухфакторная аутентификация была включена для вашего аккаунта. '
+            f'Ваш текущий OTP-код: {otp_code}',
+            'from@example.com',
+            [user.email],
+        )
+
+        return Response(
+            { 
+                "message": "Двухфакторная аутентификация теперь включена.",
+                "secret_key": user.secret_key,
+                "otp_code": otp_code 
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+class CustomTokenObtainPairView(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data
+
+        serializer = CustomTokenObtainPairSerializer(data=data)
+        if serializer.is_valid():
+            user = serializer.validated_data
+
+            http_request = request._request
+            http_request.POST = data 
+
+            return TokenObtainPairView.as_view()(http_request)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
