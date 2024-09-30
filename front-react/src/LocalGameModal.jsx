@@ -1,15 +1,38 @@
-import { useContext, useRef } from "react"
+import { useContext, useRef, useState } from "react"
 import { UserDataContext } from "./UserDataContext"
 import { useNavigate } from "react-router-dom";
 import { GuestDataContext } from "./GuestDataContext";
 import { GameContext } from "./GameContext";
 import GuestModal from "./GuestModal";
 import PlayerModal from "./PlayerModal";
+import api from "./api";
 
 function LocalGameModal() {
     const {userData} = useContext(UserDataContext);
     // const {setGuestData} = useContext(GuestDataContext);
+    const [path, setPath] = useState('');
     const navigate = useNavigate();
+    const launchGame = () => {
+      api.get("api/get-user-id/", {
+        params: {
+          username: "vlad_plk"
+        }
+      })
+      .then(response => {
+      console.log(response);
+      //setGuestData(prevState => ({
+      //	...prevState,
+      //	guestNickname: username,
+      //	nickname: username,
+      //	id: response.id,
+      //	isGuest: false
+      //}));
+      //navigate("/userGameWindow/"); 
+      })
+      .catch(error => {
+      console.log('Error:', error);
+      });
+    }
     const startGame=()=>{
       // setGuestData("guest");
       navigate("/userGameWindow/")
@@ -38,7 +61,7 @@ function LocalGameModal() {
                         </div>
                     </div>
                     <div className="d-flex justify-content-center mt-3">
-        		        <button className="btn btn-sm rounded-3 btn-dark" type="submit" data-bs-dismiss="modal" onClick={startGame}>START THE GAME</button>
+        		        <button className="btn btn-sm rounded-3 btn-dark" type="submit" data-bs-dismiss="modal" onClick={launchGame}>START THE GAME</button>
                     </div>
                   </div>
         		</div>

@@ -16,24 +16,26 @@ function UserFriends()
     const {userData} = useContext(UserDataContext);
     const {t} = useTranslation();
 	const navigate = useNavigate();
+	const [isVisible, setVisible] = useState(false);
+	const [isDeleted, setDeleted] = useState(false);
+	const [isNotFriend, setNotFriend] = useState(false);
+	const [isFr, setFr] = useState(false);
+	const [isAccepted, setAccepted] = useState(false);
+	const [userFriends, setUserFriends] = useState([]);
+	const [userFriendRequest, setUserFriendRequest] = useState([]);
+	const [userFriendRequestSent, setUserFriendRequestSent] = useState([]);
     const main_image = {
 		backgroundImage: `url('/friends2.jpg')`,
 		backgroundSize: 'cover', // Adjust background size as needed
 		backgroundPosition: 'center', // Adjust background position as needed
 		fontFamily: 'cyber4'
 	};
+	const toggleNotFriend = () => {
+		setNotFriend(!isNotFriend);
+	}
     const disconnect=() => {
 		localStorage.clear();
 		navigate("/");
-	}
-	const [isVisible, setVisible] = useState(false);
-	const [isFr, setFr] = useState(false);
-	const [userFriends, setUserFriends] = useState([]);
-	const [userFriendRequest, setUserFriendRequest] = useState([]);
-	const [userFriendRequestSent, setUserFriendRequestSent] = useState([]);
-	const [showRequest, setShowRequest] = useState(true);
-	const toggleRequest = () => {
-		setShowRequest(!showRequest);
 	}
 	const toggleVisible = () => {
 		setVisible(!isVisible);
@@ -42,13 +44,14 @@ function UserFriends()
 		setFr(!isFr);
 	};
 	useEffect(() => {
-		if (userData && isVisible)
+		if (userData && isVisible || isAccepted || isNotFriend)
 			{
 				try {
 					api.get('api/friends/friend-list/')
 					.then(response => {
-						console.log(response.data)
 						setUserFriends(response.data)
+						setAccepted(false);
+						setNotFriend(false);
 					  })
 					.catch(error => {
 						console.log('Error:', error);
@@ -58,14 +61,13 @@ function UserFriends()
 					alert(error);
 				}
 		}
-	}, [isVisible])
+	}, [isVisible, isAccepted, isNotFriend])
 	useEffect(() => {
-		if (userData && isFr)
+		if (userData && isFr || isAccepted || isDeleted)
 			{
 				try {
 					api.get('api/friends/friends-requests-list/')
 					.then(response => {
-						console.log(response.data)
 						setUserFriendRequest(response.data)
 					  })
 					.catch(error => {
@@ -78,7 +80,8 @@ function UserFriends()
 				try {
 					api.get('api/friends/from-user-request-list')
 					.then(response => {
-						console.log(response.data)
+						setAccepted(false);
+						setDeleted(false);
 						setUserFriendRequestSent(response.data)
 					  })
 					.catch(error => {
@@ -89,12 +92,12 @@ function UserFriends()
 					alert(error);
 				}
 		}
-	}, [isFr])
+	}, [isFr, isAccepted, isDeleted])
 	const accept_friendship = async (id) => {
 		const url = `api/friends/frient-request/${id}/accept/`;
 		try {
-			const response = await api.put(url);
-			console.log(response.data)
+			await api.put(url);
+			setAccepted(true);
 			id = -1;
 		}catch(error) {
 				console.log('Error:', error);
@@ -103,8 +106,8 @@ function UserFriends()
 	const reject_friendship = async (id) => {
 		const url = `api/friends/friend-requests/${id}/reject/`;
 		try {
-			const response = await api.delete(url);
-			console.log(response.data)
+			await api.delete(url);
+			setDeleted(true);
 			id = -1;
 		}catch(error) {
 				console.log('Error:', error);
@@ -206,7 +209,7 @@ function UserFriends()
             </div>
 			<SettingsModal/>
 			<FriendRequestModal/>
-			<DeleteFriendModal/>
+			<DeleteFriendModal setDeleteFriend={toggleNotFriend}/>
             </>
         </>
     ); 

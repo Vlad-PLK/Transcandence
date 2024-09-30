@@ -1,0 +1,12 @@
+<div ref={containerRef} style={{position: "relative",
+  border: "1px solid black",
+  height: "800px",
+  width: "800px",
+  overflow: "hidden",}}>
+				<div ref={boxRef} style={{position: "absolute",
+  top: "0",
+  left: "0",
+  color: "black",
+  height: "60px",
+  width: "60px",
+  cursor: "pointer"}}>

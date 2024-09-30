@@ -2,14 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import api from "./api";
 import { UserDataContext } from './UserDataContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import takeData from './takeData';
 
-function DeleteFriendModal()
+function DeleteFriendModal(toggleNotFriend)
 {
-	const [error, setError] = useState('');
-	const [friend, setFriend] = useState('');
 	const [isClicked, setClicked] = useState(false);
 	const [userFriends, setUserFriends] = useState([]);
+	const [isDeleted, setDeleted] = useState(false);
 	const {userData} = useContext(UserDataContext);
 
 	const toggleList = () => {
@@ -17,13 +15,13 @@ function DeleteFriendModal()
 	}
 
 	useEffect(() => {
-		if (userData && isClicked)
+		if (userData && isClicked || isDeleted)
 		{
 			try {
 				api.get('api/friends/friend-list/')
 				.then(response => {
-					console.log(response.data)
 					setUserFriends(response.data)
+					setDeleted(false);
 				  })
 				.catch(error => {
 					console.log('Error:', error);
@@ -33,12 +31,14 @@ function DeleteFriendModal()
 				alert(error);
 			}
 		}
-	}, [isClicked])
+	}, [isClicked, isDeleted])
 	
     const deleteFriend = async (id) => {
 		const url = `api/friends/friend/${id}/delete/`;
 		try {
 			const response = await api.delete(url);
+			setDeleted(true);
+			toggleNotFriend();
 			console.log(response.data)
 		}catch(error) {
 				console.log('Error:', error);

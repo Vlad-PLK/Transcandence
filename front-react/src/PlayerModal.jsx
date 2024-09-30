@@ -2,58 +2,31 @@ import { useContext, useState, useRef } from "react"
 import { useNavigate } from "react-router-dom";
 import { GuestDataContext } from "./GuestDataContext";
 import api from "./api";
-import axios from "axios";
 
 function PlayerModal() {
     const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
 	const {guestData, setGuestData} = useContext(GuestDataContext);
 	const navigate = useNavigate();
 
-    const launchGame = async (e) => {
-        e.preventDefault();
-
-        try {
-            const response = await api.post('api/users/user/token/', { username, password });
+    const launchGame = () => {
+        api.get('api/get-user-id/', {username})
+		.then(response => {
 			console.log(response);
-			const api_invite = axios.create({
-				baseURL: import.meta.env.VITE_API_URL
-			  });
-			api_invite.interceptors.request.use(
-			(config) => {
-			  const token = response.data.access;
-			  if (token) {
-				config.headers.Authorization = `Bearer ${token}`;
-			  }
-			  return config;
-			},
-			(error) => {
-			  return Promise.reject(error);
-			}
-			);
-			api_invite.get('api/player-info/')
-			.then(response_get => {
-				const guestResponse = response_get.data;
-				setGuestData(prevState => ({
-					...prevState,
-					guestNickname: guestResponse.username,
-					nickname: guestResponse.username,
-					id: guestResponse.id,
-					isGuest: false
-				}));
-				console.log(guestData);
-				navigate("/userGameWindow/");
-            	setUsername('');
-            	setPassword('');
-            	setError('');
-			  })
-			.catch(error => {
-				console.log('Error:', error);
-			  });
-		} catch (error) {
-            alert(error);
-        }
+			//setGuestData(prevState => ({
+			//	...prevState,
+			//	guestNickname: username,
+			//	nickname: username,
+			//	id: response.id,
+			//	isGuest: false
+			//}));
+			//navigate("/userGameWindow/");
+        	setUsername('');
+        	setError('');
+		})
+		.catch(error => {
+			console.log('Error:', error);
+		});
     }
 	return (
 	<>
@@ -68,10 +41,6 @@ function PlayerModal() {
         		      <div className="form-floating mb-2">
         		        <input type="text" className="form-control rounded-3" id="guestUsernameLogin" placeholder='guestUser' autoComplete='username' value={username} onChange={(e) => setUsername(e.target.value)}/>
         		        <label htmlFor="nickname">Username</label>
-        		      </div>
-					  <div className="form-floating mb-2">
-        		        <input type="password" className="form-control rounded-3" id="guestPassword" placeholder='guestPass' autoComplete='password' value={password} onChange={(e) => setPassword(e.target.value)}/>
-        		        <label htmlFor="password">Password</label>
         		      </div>
         		      <button className="w-90 mt-2 btn btn-lg rounded-3 btn-danger" type="submit" data-bs-dismiss="modal">Start the Game</button>
         		      {error && <p className="text-danger">{error}</p>}

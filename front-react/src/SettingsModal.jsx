@@ -7,7 +7,7 @@ import api from './api';
 
 function SettingsModal()
 {
-	const {userData} = useContext(UserDataContext);
+	const {userData, setUserData} = useContext(UserDataContext);
 	const [errorAvatar, setErrorAvatar] = useState('');
 	const [errorNick, setErrorNick] = useState('');
 	const [errorPass, setErrorPass] = useState('');
@@ -15,9 +15,13 @@ function SettingsModal()
 	const [messageNick, setMessageNick] = useState('');
 	const [messagePass, setMessagePass] = useState('');
 	const [userAvatar, setUserAvatar] = useState(null);
+	const [isAvatar, setIsAvatar] = useState(false);
 	const {t} = useTranslation();
 	const navigate = useNavigate();
 
+	const toggleAvatar = () => {
+		setIsAvatar(!isAvatar);
+	}
 	const clearNick = () => {
 		document.getElementById('paramUsername-change').value = '';
 		setMessageNick('');
@@ -43,12 +47,14 @@ function SettingsModal()
 		setMessageNick('');
 		setMessagePass('');
 	}
+
 	const AvatarState = (event) => {
 		if (event.target.files && event.target.files[0]) {
 			console.log(event.target.files[0]);
 			setUserAvatar(event.target.files[0]);
 		}
 	}
+
 	const changeAvatar = async (e) => {
 		e.preventDefault();
 		try {
@@ -59,7 +65,7 @@ function SettingsModal()
 				  'Content-Type': 'multipart/form-data',
 				},
 			  });
-			console.log(response.data);
+			setUserData(response.data);
 			setMessageAvatar('Avatar uploaded successfully');
 			setErrorAvatar('');
 		} catch (error) {
