@@ -6,6 +6,7 @@ function GameSettingsModal() {
 
     const [selectedSize, setSelectedSize] = useState(gameData.customStarSize || 1);
     const [selectedIntensity, setSelectedIntensity] = useState(gameData.customStarIntensity || 1);
+    const [selectedBHIntensity, setSelectedBHIntensity] = useState(gameData.gargantuaIntensity || 1);
     const [selectedBoostFactor, setSelectedBoostFactor] = useState(gameData.boostFactor || 1);
 
     const handleChange = (event) => {
@@ -26,6 +27,15 @@ function GameSettingsModal() {
         setGameData(prevState => ({
             ...prevState,
             gargantuaColor: event.target.value,
+        }));
+    };
+
+    const handleGargantuaIntensityChange = (event) => {
+        const newBHIntensity = event.target.value;
+        setSelectedBHIntensity(newBHIntensity);
+        setGameData(prevState => ({
+            ...prevState,
+            gargantuaIntensity: newBHIntensity,
         }));
     };
 
@@ -97,8 +107,9 @@ function GameSettingsModal() {
         setGameData(prevState => ({
             ...prevState,
             starFlag:0,
-            gargantuaSize:0,
+            gargantuaSize:1.0,
             gargantuaColor:"0xc5e0e2",
+            gargantuaIntensity:1.0,
             customStarSize:4,
             customStarColor:"0x54d5c2",
             customCoronaType:0,
@@ -137,7 +148,7 @@ function GameSettingsModal() {
                                         className="form-check-input"
                                         id="smallSize"
                                         name="gargantuaSize"
-                                        value="0" // Small size
+                                        value="1.0" // Small size
                                         onChange={handleBlackHoleSizeChange}
                                     />
                                     <label className="form-check-label" htmlFor="smallSize">Small</label>
@@ -148,7 +159,7 @@ function GameSettingsModal() {
                                             className="form-check-input"
                                             id="intermediateSize"
                                             name="gargacustomStarSizentuaSize"
-                                            value="1" // Intermediate size
+                                            value="2.0" // Intermediate size
                                             onChange={handleBlackHoleSizeChange}
                                         />
                                         <label className="form-check-label" htmlFor="intermediateSize">Intermediate</label>
@@ -159,7 +170,7 @@ function GameSettingsModal() {
                                             className="form-check-input"
                                             id="bigSize"
                                             name="gargantuaSize"
-                                            value="2" // Big size
+                                            value="3.0" // Big size
                                             onChange={handleBlackHoleSizeChange}
                                         />
                                         <label className="form-check-label" htmlFor="bigSize">Big</label>
@@ -177,6 +188,19 @@ function GameSettingsModal() {
                                             />
                                         </form>
                                     </div>
+                                    <div className="pt-3">
+                                            <label htmlFor="customRange2" className="form-label">Select the intensity: {selectedBHIntensity}</label>
+                                            <input
+                                                type="range"
+                                                className="form-range"
+                                                min="1"
+                                                max="3"
+                                                step="1"
+                                                id="customRange2"
+                                                value={selectedBHIntensity}
+                                                onChange={handleGargantuaIntensityChange}
+                                            />
+                                        </div>
                                 </>)}
 
                                 {gameData.starFlag === "4" && (

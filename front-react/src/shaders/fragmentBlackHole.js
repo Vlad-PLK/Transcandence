@@ -20,7 +20,8 @@ uniform vec2 iMouse;                // mouse pixel coords. xy: current (if MLB d
 uniform sampler2D iChannel0;         // input channel. XX = 2D/Cube
 uniform vec4 iDate;                 // (year, month, day, time in seconds)
 uniform float iSampleRate;           // sound sample rate (i.e., 44100)
-uniform float size;
+uniform float customSize;
+uniform float customIntensity;
 uniform vec3 color;
 
 mat2 Rot(float a) {
@@ -57,7 +58,7 @@ vec3 GetRd(vec2 uv, vec3 ro, vec3 lookat, vec3 up, float zoom, inout vec3 bBend)
          i = c + uv.x * r + uv.y * u,
          rd = normalize(i - ro);
     vec3 offs = normalize(uv.x * r + uv.y * u);
-    bBend = rd - .1 * offs / (1. + dot(uv, uv));
+    bBend = rd - (.15 * customSize) * offs / (1. + dot(uv, uv));
     return rd;   
 }
 
@@ -80,7 +81,7 @@ vec3 GetBg(vec3 rd) {
 }
 
 float GetDist(vec3 p) {
-    float d = length(p) - .3;
+    float d = length(p) - (0.35 * customSize);
     return d;
 }
 
@@ -88,7 +89,7 @@ float GetDisc(vec3 p, vec3 pp) {
     float t = iTime;
     vec3 rd = p - pp;
     vec3 c = pp + rd * pp.y;
-    rd = normalize(rd) * .5;
+    rd = normalize(rd) * .1;
     p = c - rd;
     rd *= 2.;
     float m = 0.;
@@ -96,24 +97,24 @@ float GetDisc(vec3 p, vec3 pp) {
     for(float i = 0.; i < 1.; i += 1. / numSamples) {
         c = p + i * rd;
         float d = length(c.xz);
-        float l = smoothstep(3.5, .6, d);
+        float l = smoothstep(2. * customSize, .6, d);
         l *= smoothstep(.1, .6, d);
         float x = atan(c.x, c.z);
         l *= sin(x * floor(5.) + d * 20. - t) * .3 + .7;
         m += l;
-    }
-    return 1.5 * m / numSamples;
+    }   
+    return (1.5 * customIntensity) * m / numSamples;
 }
 
 void main() {
     vec2 uv = (gl_FragCoord.xy - .5 * iResolution.xy) / iResolution.y;
     vec2 m = iMouse.xy / iResolution.xy;
     vec3 col = vec3(0);
-    vec3 ro = vec3(3.0, 0, -3.5 + sin(iTime * .001));
-    ro.yz *= Rot(m.y * TAU + 4.5 * .01);
+    vec3 ro = vec3(3.0, 0, -4.5 + sin(iTime * .001));
+    ro.yz *= Rot(m.y * TAU + 18.5 * .01);
     ro.xz *= Rot(-m.x * TAU + iTime * .02);
     vec3 lookat = vec3(0);
-    float zoom = .5;
+    float zoom = .2;
     vec3 up = normalize(vec3(.5, 1, 0.2));
     vec3 bBend;
     vec3 rd = GetRd(uv, ro, lookat, up, zoom, bBend);
@@ -143,7 +144,7 @@ void main() {
     if(dS < SURFDIST)
         col = vec3(0); // it's black!
     #ifdef USEDISC
-    col += disc * color * 2.;
+    col += disc * color;
     #endif
     #ifdef USESTREAM
     col += min(.5, stream) * color;

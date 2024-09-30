@@ -19,8 +19,8 @@ void main() {
     float specular = pow(max(dot(reflection, directionToBlackHole), 0.0), 16.0); // Adjust shininess
 
     // Apply texture and combine with intensity and specular highlight
-    vec4 color = texture2D(utexture, vUv);
-    color.rgb = mix(color.rgb, vec3(1.0, 0.5, 0.0), 1.1); // Orange color
+    vec4 photoncolor;
+    color.rgb = mix(photoncolor.rgb, color, 1.1); // Orange color
     color.rgb += specular * 0.5; // Add shininess effect
 
     gl_FragColor = color;

@@ -12,9 +12,10 @@ function Root({children}){
 	const [userStats, setUserStats] = useState(null);
   const [gameData, setGameData] = useState({
     starFlag:0,
-    gargantuaSize:0,
+    gargantuaSize:1,
     gargantuaColor:"0xc5e0e2",
     customStarSize:4,
+    gargantuaIntensity:1,
     customStarColor:"0x2ec149",
     customCoronaType:0,
     customStarIntensity:4,

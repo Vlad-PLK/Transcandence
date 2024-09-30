@@ -435,6 +435,7 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
     }
     else if (starType == 3)
       {
+        console.log("BH SIZE", customRadius);
         const BHColor = hexToRGB(customColor)
         const blackHoleGroup = new THREE.Group();
       
@@ -452,7 +453,8 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
               ucameraPosition: { value: new THREE.Vector3() },
               cameraDirection: { value: new THREE.Vector3() },
               color: {value: BHColor},
-              size: { value: customRadius },
+              customSize: { value: customRadius },
+              customIntensity: {value: customIntensity},
               iTime: { value: 0.0 }
           },
           side: THREE.DoubleSide,
