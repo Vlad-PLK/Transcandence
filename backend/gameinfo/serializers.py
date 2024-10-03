@@ -37,3 +37,22 @@ class MatchSerializer(serializers.ModelSerializer):
     
 class UsernameSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=50)
+
+
+class GameSettingsUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            'startFlag',
+            'gargantuaSize',
+            'gargantuaColor',
+            'customStarSize',
+            'gargantuaIntensity',
+            'customStarColor',
+            'customCoronaType',
+            'customStarIntensity',
+            'boostsEnabled',
+            'boostFactor',
+            'powerEnabled',
+            'gameDuration',
+        ]

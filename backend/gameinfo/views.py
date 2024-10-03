@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from .models import PlayerStats, Match
-from .serializers import PlayerStatsSerializer, PlayerInfoSerializer, MatchSerializer, UsernameSerializer
+from .serializers import GameSettingsUpdateSerializer, PlayerStatsSerializer, PlayerInfoSerializer, MatchSerializer, UsernameSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from users.models import CustomUser
@@ -88,3 +88,42 @@ class GetUserId(APIView):
             except CustomUser.DoesNotExist:
                 return Response({'error': 'User not found'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateGameSettings(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serializer = GameSettingsUpdateSerializer(user)
+        return Response(serializer.data)
+    
+    def patch(self, request):
+        user = request.user
+        serializer = GameSettingsUpdateSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request):
+        user = request.user
+
+        user.startFlag = 0
+        user.gargantuaSize = 2
+        user.gargantuaColor = "#c5e0e2"
+        user.customStarSize = 4
+        user.gargantuaIntensity = 1
+        user.customStarColor = "#DC1010"
+        user.customCoronaType = 0
+        user.customStarIntensity = 4
+        user.boostsEnabled = 0
+        user.boostFactor = 1
+        user.powerEnabled = 0
+        user.gameDuration = 10
+
+        user.save()
+
+        serializer = GameSettingsUpdateSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
