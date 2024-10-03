@@ -3,8 +3,10 @@ import api from "./api";
 import { UserDataContext } from './UserDataContext';
 import LoginModal from './LoginModal';
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 
 function RegisterModal() {
+    const { t } = useTranslation();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -29,7 +31,7 @@ function RegisterModal() {
         
         // Проверка на совпадение паролей
         if (password !== confirmPassword) {
-            setError('Passwords do not match');
+            setError(t('register.errors.passwords_mismatch')); // Use translation for error
             return;
         }
 
@@ -43,7 +45,7 @@ function RegisterModal() {
             setPassword('');
             setConfirmPassword('');
             setError('');
-            setMsg("Registration successful !");
+            setMsg(t('register.success')); // Use translation for success message
             closeModal();
         } catch (error) {
             setMsg('');
@@ -57,28 +59,28 @@ function RegisterModal() {
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content rounded-4 shadow">
                         <div className="modal-header p-5 pb-4 border-bottom-0">
-                            <h1 className="fw-bold mb-0 fs-4" id="signupModalLabel">Create your account now!</h1>
+                            <h1 className="fw-bold mb-0 fs-4" id="signupModalLabel">{t('register.title')}</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={clearForm}></button>
                         </div>
                         <div className="modal-body p-5 pt-0">
                             <form onSubmit={signupbutton}>
                                 <div className="form-floating mb-3">
-                                    <input type="text" className="form-control rounded-3" id="paramUsername" placeholder="username" autoComplete='username' value={username} onChange={(e) => setUsername(e.target.value)} />
-                                    <label htmlFor="paramUsername">Username</label>
+                                    <input type="text" className="form-control rounded-3" id="paramUsername" placeholder={t('register.username')} autoComplete='username' value={username} onChange={(e) => setUsername(e.target.value)} />
+                                    <label htmlFor="paramUsername">{t('register.username')}</label>
                                 </div>
                                 <div className="form-floating mb-3">
-                                    <input type="email" className="form-control rounded-3" id="paramEmail" placeholder="name@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-                                    <label htmlFor="paramEmail">Email address</label>
+                                    <input type="email" className="form-control rounded-3" id="paramEmail" placeholder={t('register.email')} value={email} onChange={(e) => setEmail(e.target.value)} />
+                                    <label htmlFor="paramEmail">{t('register.email')}</label>
                                 </div>
                                 <div className="form-floating mb-3">
-                                    <input type="password" className="form-control rounded-3" id="paramPassword" placeholder="Password" autoComplete='new-password' value={password} onChange={(e) => setPassword(e.target.value)} />
-                                    <label htmlFor="paramPassword">Password</label>
+                                    <input type="password" className="form-control rounded-3" id="paramPassword" placeholder={t('register.password')} autoComplete='new-password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                                    <label htmlFor="paramPassword">{t('register.password')}</label>
                                 </div>
                                 <div className="form-floating mb-3">
-                                    <input type="password" className="form-control rounded-3" id="paramcPassword" placeholder="Confirm Password" autoComplete='new-password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-                                    <label htmlFor="paramcPassword">Confirm Password</label>
+                                    <input type="password" className="form-control rounded-3" id="paramcPassword" placeholder={t('register.confirm_password')} autoComplete='new-password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                                    <label htmlFor="paramPassword">{t('register.confirm_password')}</label>
                                 </div>
-                                <button className="w-70 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign-up</button>
+                                <button className="w-70 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">{t('register.sign_up')}</button>
                                 {err && <p className="text-danger">{err}</p>}
                                 {msg && <p className="text-success">{msg}</p>}
                             </form>

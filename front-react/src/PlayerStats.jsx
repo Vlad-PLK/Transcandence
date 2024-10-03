@@ -2,10 +2,10 @@ import React, { useState, useContext, useEffect } from 'react';
 import { UserDataContext } from './UserDataContext';
 import { UserStatsContext } from './UserStatsContext';
 import api from './api';
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 function PlayerStats(){
+	const { t } = useTranslation();
 	const [isVisible, setVisible] = useState(false);
 	const {userData} = useContext(UserDataContext);
 	const {userStats, setUserStats} = useContext(UserStatsContext);
@@ -24,8 +24,8 @@ function PlayerStats(){
 					  })
 					.catch(error => {
 						console.log('Error:', error);
+						// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
 					  });
-					// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
 				} catch (error) {
 					alert(error);
 				}
@@ -37,62 +37,67 @@ function PlayerStats(){
 					  })
 					.catch(error => {
 						console.log('Error:', error);
+						// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
 					  });
-					// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
 				} catch (error) {
 					alert(error);
 				}
 		}
 	}, [isVisible])
+	
 	return (
 	<>
-			<div className="player-stats card mb-3 border-0" style={{color: '#6B3EB8'}}>
-      			<div className="card-header bg-dark">
-      			  <h2>Stats</h2>
-      			</div>
-				{isVisible ?
-					<>
-						{userStats ? 
-						<div className="">
+		<div className="player-stats card mb-3 border-0" style={{color: '#6B3EB8'}}>
+			<div className="card-header bg-dark">
+				<h2>{t('playerStats.stats')}</h2>
+			</div>
+			{isVisible ?
+				<>
+					{userStats ? 
+					<div className="">
 						<ul className="list-group list-group-flush">
-							<li className="list-group-item">Wins : {userStats.wins} | Losses : {userStats.losses} | Draws : {userStats.draws}</li>
-							<li className="list-group-item">Total Goals : {userStats.goals}</li>
-						</ul> 
-						</div>
-						: 
-						<p className="card-text text-dark mt-3">No game stats yet !</p>}
-						<div className="card-header bg-dark">
-							<h2 className="">Match History</h2>
-      					</div>
-						{userMatch.length > 0 ?
-						<ul className="match-history list-group">
-			  			{userMatch.map((match, index) => (
-							(userData.username == match.player1_name) ?
+							<li className="list-group-item">
+								{t('playerStats.wins')} : {userStats.wins} | {t('playerStats.losses')} : {userStats.losses} | {t('playerStats.draws')} : {userStats.draws}
+							</li>
+							<li className="list-group-item">
+								{t('playerStats.totalGoals')} : {userStats.goals}
+							</li>
+						</ul>
+					</div>
+					: 
+					<p className="card-text text-dark mt-3">{t('playerStats.noStats')}</p>}
+					<div className="card-header bg-dark">
+						<h2>{t('playerStats.matchHistory')}</h2>
+					</div>
+					{userMatch.length > 0 ?
+					<ul className="match-history list-group">
+						{userMatch.map((match, index) => (
+							(userData.username === match.player1_name) ?
 							<li key={index} className="list-group-item">
-				  				Opponent : {match.player2_name} | Winner : {match.match_winner_name} <br/> Final Score : {match.player1_score} - {match.player2_score}
+								{t('playerStats.opponent')} : {match.player2_name} | {t('playerStats.winner')} : {match.match_winner_name} <br/> 
+								{t('playerStats.finalScore')} : {match.player1_score} - {match.player2_score}
 							</li>
 							:
 							<li key={index} className="list-group-item">
-				  				Opponent : {match.player1_name} | Winner : {match.match_winner_name} <br/> Final Score : {match.player1_score} - {match.player2_score}
+								{t('playerStats.opponent')} : {match.player1_name} | {t('playerStats.winner')} : {match.match_winner_name} <br/> 
+								{t('playerStats.finalScore')} : {match.player1_score} - {match.player2_score}
 							</li>
-			  			))}
-						</ul>
-						:
-						<p className="card-text text-muted">No match history available.</p>}
-					</>
-		  			:
-					<>
-					</>
-				} 		
-				<div className="card-header d-flex flex-column justify-content-center bg-dark">
-					<button type="button" className="btn btn-dark float-right" onClick={toggleVisible}>
-      			    {isVisible ? 'Hide' : 'Show'}
-    				</button>
-      			</div>
-    		</div>
+						))}
+					</ul>
+					:
+					<p className="card-text text-muted">{t('playerStats.noHistory')}</p>}
+				</>
+				:
+				<></>
+			}
+			<div className="card-header d-flex flex-column justify-content-center bg-dark">
+				<button type="button" className="btn btn-dark float-right" onClick={toggleVisible}>
+					{isVisible ? t('playerStats.hide') : t('playerStats.show')}
+				</button>
+			</div>
+		</div>
 	</>
-    
-  );
+	);
 };
 
 export default PlayerStats;

@@ -1,8 +1,10 @@
 import { useContext, useState } from "react";
-import { GameContext } from "./GameContext"
+import { GameContext } from "./GameContext";
+import { useTranslation } from 'react-i18next';
 
 function GameSettingsModal() {
     const { gameData, setGameData } = useContext(GameContext);
+    const { t } = useTranslation();
 
     const [selectedStar, setSelectedStar] = useState(gameData.starFlag || 0);
     const [selectedSize, setSelectedSize] = useState(gameData.customStarSize || 1);
@@ -153,7 +155,8 @@ function GameSettingsModal() {
             gameDuration:10,
           }));
     }
-	return (
+
+    return (
         <>
             <div className="modal fade" id="gameSettings" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
                 <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -163,69 +166,70 @@ function GameSettingsModal() {
                         </div>
                         <div className="modal-body p-5 pt-0">
                             <div>
-                                <h5>Select the type of star you want</h5>
+                                <h5>{t('gameSettings.selectStar')}</h5>
                                 <select className="form-select" value={selectedStar} onChange={handleChange}>
-                                    <option value="0">The Sun</option>
-                                    <option value="1">White Dwarf</option>
-                                    <option value="2">Red Giant</option>
-                                    <option value="3">Gargantua</option>
-                                    <option value="4">Custom</option>
+                                    <option value="0">{t('gameSettings.sun')}</option>
+                                    <option value="1">{t('gameSettings.whiteDwarf')}</option>
+                                    <option value="2">{t('gameSettings.redGiant')}</option>
+                                    <option value="3">{t('gameSettings.gargantua')}</option>
+                                    <option value="4">{t('gameSettings.custom')}</option>
                                 </select>
+
                                 {gameData.starFlag === "3" && (
-                                <>
-                                    <h5 className="pt-3">Select the size</h5>
-                                    <div className="form-check">
-                                    <input
-                                        type="radio"
-                                        className="form-check-input"
-                                        id="smallSize"
-                                        name="gargantuaSize"
-                                        value="1.0" // Small size
-                                        onChange={handleBlackHoleSizeChange}
-                                        checked={selectedBHSize === "1.0"}
-                                    />
-                                    <label className="form-check-label" htmlFor="smallSize">Small</label>
-                                    </div>
-                                    <div className="form-check">
-                                        <input
-                                            type="radio"
-                                            className="form-check-input"
-                                            id="intermediateSize"
-                                            name="gargacustomStarSizentuaSize"
-                                            value="2.0" // Intermediate size
-                                            onChange={handleBlackHoleSizeChange}
-                                            checked={selectedBHSize === "2.0"}
-                                        />
-                                        <label className="form-check-label" htmlFor="intermediateSize">Intermediate</label>
-                                    </div>
-                                    <div className="form-check">
-                                        <input
-                                            type="radio"
-                                            className="form-check-input"
-                                            id="bigSize"
-                                            name="gargantuaSize"
-                                            value="3.0" // Big size
-                                            onChange={handleBlackHoleSizeChange}
-                                            checked={selectedBHSize === "3.0"}
-                                        />
-                                        <label className="form-check-label" htmlFor="bigSize">Big</label>
-                                    </div>
-                                    <div>
-                                        <h5 className="pt-3">Pick the color</h5>
+                                    <>
+                                        <h5 className="pt-3">{t('gameSettings.selectSize')}</h5>
+                                        <div className="form-check">
+                                            <input
+                                                type="radio"
+                                                className="form-check-input"
+                                                id="smallSize"
+                                                name="gargantuaSize"
+                                                value="1.0"
+                                                onChange={handleBlackHoleSizeChange}
+                                                checked={selectedBHSize === "1.0"}
+                                            />
+                                            <label className="form-check-label" htmlFor="smallSize">{t('gameSettings.small')}</label>
+                                        </div>
+                                        <div className="form-check">
+                                            <input
+                                                type="radio"
+                                                className="form-check-input"
+                                                id="intermediateSize"
+                                                name="gargantuaSize"
+                                                value="2.0"
+                                                onChange={handleBlackHoleSizeChange}
+                                                checked={selectedBHSize === "2.0"}
+                                            />
+                                            <label className="form-check-label" htmlFor="intermediateSize">{t('gameSettings.intermediate')}</label>
+                                        </div>
+                                        <div className="form-check">
+                                            <input
+                                                type="radio"
+                                                className="form-check-input"
+                                                id="bigSize"
+                                                name="gargantuaSize"
+                                                value="3.0"
+                                                onChange={handleBlackHoleSizeChange}
+                                                checked={selectedBHSize === "3.0"}
+                                            />
+                                            <label className="form-check-label" htmlFor="bigSize">{t('gameSettings.big')}</label>
+                                        </div>
+
+                                        <h5 className="pt-3">{t('gameSettings.pickColor')}</h5>
                                         <form>
-                                            <label htmlFor="gargantuaColor" className="form-label">Color picker</label>
-                                            <input 
-                                                type="color" 
-                                                className="form-control form-control-color" 
+                                            <label htmlFor="gargantuaColor" className="form-label">{t('gameSettings.colorPicker')}</label>
+                                            <input
+                                                type="color"
+                                                className="form-control form-control-color"
                                                 id="gargantuaColor"
                                                 value={selectedBHColor}
                                                 onChange={handleGargantuaColorChange}
-                                                title="Choose a color"
+                                                title={t('gameSettings.pickColor')}
                                             />
                                         </form>
-                                    </div>
-                                    <div className="pt-3">
-                                            <label htmlFor="customRange2" className="form-label">Select the intensity: {selectedBHIntensity}</label>
+
+                                        <div className="pt-3">
+                                            <label htmlFor="customRange2" className="form-label">{t('gameSettings.intensity')} {selectedBHIntensity}</label>
                                             <input
                                                 type="range"
                                                 className="form-range"
@@ -237,12 +241,13 @@ function GameSettingsModal() {
                                                 onChange={handleGargantuaIntensityChange}
                                             />
                                         </div>
-                                </>)}
+                                    </>
+                                )}
 
                                 {gameData.starFlag === "4" && (
                                     <>
                                         <div className="pt-3">
-                                            <label htmlFor="customRange" className="form-label">Select the size: {selectedSize}</label>
+                                            <label htmlFor="customRange" className="form-label">{t('gameSettings.selectSize')} {selectedSize}</label>
                                             <input
                                                 type="range"
                                                 className="form-range"
@@ -254,22 +259,24 @@ function GameSettingsModal() {
                                                 onChange={handleCustomSizeChange}
                                             />    
                                         </div>
+
                                         <div className="pt-3">
-                                            <h5>Pick the color</h5>
+                                            <h5>{t('gameSettings.pickColor')}</h5>
                                             <form>
-                                                <label htmlFor="customColor" className="form-label">Color picker</label>
+                                                <label htmlFor="customColor" className="form-label">{t('gameSettings.colorPicker')}</label>
                                                 <input
                                                     type="color"
                                                     className="form-control form-control-color"
                                                     id="customColor"
                                                     value={selectedColor}
                                                     onChange={handleCustomColorChange}
-                                                    title="Choose a color"
+                                                    title={t('gameSettings.pickColor')}
                                                 />
                                             </form>
                                         </div>
+
                                         <div className="pt-3">
-                                            <label htmlFor="customRange1" className="form-label">Select the intensity: {selectedIntensity}</label>
+                                            <label htmlFor="customRange1" className="form-label">{t('gameSettings.intensity')} {selectedIntensity}</label>
                                             <input
                                                 type="range"
                                                 className="form-range"
@@ -281,50 +288,52 @@ function GameSettingsModal() {
                                                 onChange={handleCustomIntensityChange}
                                             />
                                         </div>
-                                        <div>
-                                            <h5>Select the type of corona you want</h5>
-                                            <select className="form-select" value={selectedCorona} onChange={handleCustomCoronaType}>
-                                                <option value="0">No corona</option>
-                                                <option value="1">Corona type 1</option>
-                                                <option value="2">Corona type 2</option>
-                                            </select>
-                                        </div>
+
+                                        <h5>{t('gameSettings.corona')}</h5>
+                                        <select className="form-select" value={selectedCorona} onChange={handleCustomCoronaType}>
+                                            <option value="0">{t('gameSettings.noCorona')}</option>
+                                            <option value="1">{t('gameSettings.corona1')}</option>
+                                            <option value="2">{t('gameSettings.corona2')}</option>
+                                        </select>
                                     </>
                                 )}
                             </div>
+
                             <div className="pt-4">
-                                <h5>Do you want to add Boosters?</h5>
+                                <h5>{t('gameSettings.addBoosters')}</h5>
                                 <select className="form-select" value={selectedBoost} onChange={handleBoostChange}>
-                                    <option value="0">Disable Boosters</option>
-                                    <option value="1">Enable Boosters</option>
+                                    <option value="0">{t('gameSettings.disableBoosters')}</option>
+                                    <option value="1">{t('gameSettings.enableBoosters')}</option>
                                 </select>
                                 {gameData.boostsEnabled === "1" && (
-                                <>
-                                    <label htmlFor="customRange2" className="form-label">Select the booster speed factor: {selectedBoostFactor}</label>
-                                    <input
-                                        type="range"
-                                        className="form-range"
-                                        min="1"
-                                        max="3"
-                                        step="1"
-                                        id="customRange2"
-                                        value={selectedBoostFactor}
-                                        onChange={handleBoostFactorChange}
-                                    />
-                                </>
+                                    <>
+                                        <label htmlFor="customRange2" className="form-label">{t('gameSettings.boosterSpeed')} {selectedBoostFactor}</label>
+                                        <input
+                                            type="range"
+                                            className="form-range"
+                                            min="1"
+                                            max="3"
+                                            step="1"
+                                            id="customRange2"
+                                            value={selectedBoostFactor}
+                                            onChange={handleBoostFactorChange}
+                                        />
+                                    </>
                                 )}
                             </div>
+
                             <div className="pt-4">
-                                <h5>Do you want to add the losing streak power?</h5>
+                                <h5>{t('gameSettings.addStreakPower')}</h5>
                                 <select className="form-select" value={selectedPower} onChange={handlePowerChange}>
-                                    <option value="0">Disable streak power</option>
-                                    <option value="1">Enable streak power</option>
+                                    <option value="0">{t('gameSettings.disableStreakPower')}</option>
+                                    <option value="1">{t('gameSettings.enableStreakPower')}</option>
                                 </select>
                             </div>
-                            <div className="d=flex flex-column pt-3">
-                                <button className="btn btn-md btn-success me-2" onClick={save_setttings}>SAVE</button>
-                                <button className="btn btn-md btn-danger me-2" onClick={cancel_setttings}>CANCEL</button>
-                                <button className="btn btn-md btn-warning" onClick={default_setttings}>DEFAULT</button>
+
+                            <div className="d-flex flex-row pt-3">
+                                <button className="btn btn-md btn-success me-2" onClick={save_setttings}>{t('gameSettings.save')}</button>
+                                <button className="btn btn-md btn-danger me-2" onClick={cancel_setttings}>{t('gameSettings.cancel')}</button>
+                                <button className="btn btn-md btn-warning" onClick={default_setttings}>{t('gameSettings.default')}</button>
                             </div>
                         </div>
                     </div>
@@ -334,4 +343,4 @@ function GameSettingsModal() {
     );
 }
 
-export default GameSettingsModal
+export default GameSettingsModal;

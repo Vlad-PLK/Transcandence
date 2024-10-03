@@ -1,76 +1,78 @@
-import { useContext, useRef, useState } from "react"
-import { UserDataContext } from "./UserDataContext"
+import { useContext } from "react";
+import { UserDataContext } from "./UserDataContext";
 import { useNavigate } from "react-router-dom";
-import { GuestDataContext } from "./GuestDataContext";
 import { GameContext } from "./GameContext";
 import GuestModal from "./GuestModal";
 import PlayerModal from "./PlayerModal";
 import api from "./api";
+import { useTranslation } from 'react-i18next';
 
 function LocalGameModal() {
-    const {userData} = useContext(UserDataContext);
-    // const {setGuestData} = useContext(GuestDataContext);
-    const [path, setPath] = useState('');
+    const { t } = useTranslation();
+    
+    const { userData } = useContext(UserDataContext);
     const navigate = useNavigate();
+
     const launchGame = () => {
-      api.get("api/get-user-id/", {
-        params: {
-          username: "vlad_plk"
-        }
-      })
-      .then(response => {
-      console.log(response);
-      //setGuestData(prevState => ({
-      //	...prevState,
-      //	guestNickname: username,
-      //	nickname: username,
-      //	id: response.id,
-      //	isGuest: false
-      //}));
-      //navigate("/userGameWindow/"); 
-      })
-      .catch(error => {
-      console.log('Error:', error);
-      });
-    }
-    const startGame=()=>{
-      // setGuestData("guest");
-      navigate("/userGameWindow/")
-    }
+        api.get("api/get-user-id/", {
+            params: {
+                username: "vlad_plk"
+            }
+        })
+        .then(response => {
+            console.log(response);
+            //setGuestData(prevState => ({
+            //	...prevState,
+            //	guestNickname: username,
+            //	nickname: username,
+            //	id: response.id,
+            //	isGuest: false
+            //}));
+            //navigate("/userGameWindow/"); 
+        })
+        .catch(error => {
+            console.log('Error:', error);
+        });
+    };
+
+    const startGame = () => {
+        navigate("/userGameWindow/");
+    };
+
     return (
         <>
-            <div className="modal fade" id="localGame" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
-        	<div className="modal-dialog modal-dialog-centered modal-lg" role="document">
-        		<div className="modal-content rounded-4 shadow">
-        		  <div className="modal-header d-flex flex-column justify-content-center">
-        		    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        		    <h1 className="fw-bold mb-0 fs-4" id="loginModalLabel">SET LOCAL GAME : </h1>
-        		  </div>
-        		  <div className="modal-body mt-3 p-5 pt-0">
-                    <div className="">
-                        {userData && <p className="" style={{color:'blue'}}>Player 1 : {userData.username}</p>}
-                        <div className="row g-3 align-items-center" style={{color:'red'}}>
-                            <div className="col-auto">
-                              <label className="col-form-label">Player 2 :</label>
+            <div className="modal fade" id="localGame" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{ fontFamily: 'cyber4' }}>
+                <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div className="modal-content rounded-4 shadow">
+                        <div className="modal-header d-flex flex-column justify-content-center">
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h1 className="fw-bold mb-0 fs-4" id="loginModalLabel">{t('localGame.setLocalGame')}</h1> 
+                        </div>
+                        <div className="modal-body mt-3 p-5 pt-0">
+                            <div className="">
+                                {userData && <p className="" style={{ color: 'blue' }}>{t('localGame.player1')}: {userData.username}</p>} 
+                                <div className="row g-3 align-items-center" style={{ color: 'red' }}>
+                                    <div className="col-auto">
+                                        <label className="col-form-label">{t('localGame.player2')}:</label> 
+                                    </div>
+                                    <div className="col-auto d-flex flex-row">
+                                        <button className="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#guestModal">{t('localGame.playAsAGuest')}</button> 
+                                        <p className="m-2" style={{ color: "#000" }}>{t('localGame.OR')}</p>
+                                        <button className="ms-2 btn btn-sm btn-danger" style={{ color: "#000" }} data-bs-toggle="modal" data-bs-target="#playerModal">{t('login')}</button> 
+                                    </div>
+                                </div>
                             </div>
-                            <div className="col-auto d-flex flex-row">
-                              <button className="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#guestModal">Play as a guest</button>
-                              <p className="m-2" style={{color:"#000"}}>or</p>
-                              <button className="ms-2 btn btn-sm btn-danger" style={{color:"#000"}} data-bs-toggle="modal" data-bs-target="#playerModal">Login</button>
+                            <div className="d-flex justify-content-center mt-3">
+                                <button className="btn btn-sm rounded-3 btn-dark" type="submit" data-bs-dismiss="modal" onClick={launchGame}>{t('localGame.startTheGame')}</button> 
                             </div>
                         </div>
                     </div>
-                    <div className="d-flex justify-content-center mt-3">
-        		        <button className="btn btn-sm rounded-3 btn-dark" type="submit" data-bs-dismiss="modal" onClick={launchGame}>START THE GAME</button>
-                    </div>
-                  </div>
-        		</div>
-        	</div>
-		    </div>
-        <GuestModal/>
-        <PlayerModal/>
+                </div>
+            </div>
+            <GuestModal />
+            <PlayerModal />
         </>
-    )
+    );
 }
 
-export default LocalGameModal
+export default LocalGameModal;

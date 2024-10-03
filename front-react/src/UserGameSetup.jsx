@@ -60,10 +60,10 @@ function UserGameSetup()
 								<span className="visually-hidden">Toggle Dropstart</span>
 							</button>
 							<ul className="dropdown-menu opacity-50" style={{fontSize:"12px",textAlign:"center", minWidth:"5rem"}}>
-								<a className="dropdown-item" href="" data-bs-toggle="modal" data-bs-target="#UserSettingsModal">Settings</a>
-								<Link to={`../userFriends`} className="dropdown-item">Friends</Link>
+								<a className="dropdown-item" href="" data-bs-toggle="modal" data-bs-target="#UserSettingsModal">{t('dropdown.settings')}</a>
+								<Link to={`../userFriends`} className="dropdown-item">{t('dropdown.friends')}</Link>
 								<hr className="dropdown-divider"/>
-								<button className="dropdown-item" onClick={disconnect}>Disconnect</button>
+								<button className="dropdown-item" onClick={disconnect}>{t('dropdown.disconnect')}</button>
 							</ul>
 							{userData && <Link to={`../userSettings/`} type="button" className="btn btn-outline-light me-2">{userData.username}
 								{userData.avatar != null ?
