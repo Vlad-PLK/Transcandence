@@ -5,6 +5,7 @@ function TranslationSelect()
 	const {i18n: {changeLanguage, language} } = useTranslation();
 	const handleLanguageChange = (event) => {
 		const selectedLang = event.target.value;
+		localStorage.setItem("language", selectedLang);
 		changeLanguage(selectedLang);
 	};
 

@@ -5,11 +5,13 @@ import takeData from "./takeData";
 import { ACCESS_TOKEN } from "./constants";
 import { UserStatsContext } from "./UserStatsContext";
 import { GameContext } from "./GameContext";
+import { useTranslation } from "react-i18next"
 
 function Root({children}){
   const [userData, setUserData] = useState(null);
 	const [guestData, setGuestData] = useState({nickname: 'nickname', id: 6, guestNickname: 'guest', isGuest: true});
 	const [userStats, setUserStats] = useState(null);
+  const {i18n: {changeLanguage} } = useTranslation();
   const [gameData, setGameData] = useState({
     starFlag:0,
     gargantuaSize:2,
@@ -25,13 +27,18 @@ function Root({children}){
     gameDuration:10,
   });
   const [isUserReady, setIsUserReady] = useState(false);
-
+  useEffect(() => {
+    if (localStorage.getItem("language") != null)
+      changeLanguage(localStorage.getItem("language"));
+  }, [])
+  
   useEffect(() => {
     if (isUserReady == false){
       const token = localStorage.getItem(ACCESS_TOKEN);
       if (!token)
           setIsUserReady(true);
-      takeData(setUserData, setIsUserReady);
+      else
+          takeData(setUserData, setIsUserReady);
     }
   }, [isUserReady])
 

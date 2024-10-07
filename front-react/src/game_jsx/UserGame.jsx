@@ -806,7 +806,7 @@ function UserGame()
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
         {<div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
-            <CustomTimer seconds={250} player1={userData.id} player2={guestData.id} player1_score={scoreP1} player2_score={scoreP2} isGuest={guestData.isGuest}/>
+            <CustomTimer seconds={10} player1={userData.id} player2={guestData.id} player1_score={scoreP1} player2_score={scoreP2} isGuest={guestData.isGuest}/>
         </div>}
         <div className="d-flex justify-content-center" ref={mountRef}/>;
     </>

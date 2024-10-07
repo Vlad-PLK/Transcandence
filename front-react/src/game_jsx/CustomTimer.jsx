@@ -43,7 +43,7 @@ function CustomTimer({seconds, player1, player2, player1_score, player2_score, i
 				gameData();
 			// need to make an api request for the game result
 			clearInterval(timerId.current);
-			navigate("../userGameEnd");
+			navigate("../userGameEnd", {replace: true});
 		}
 	}, [count]);
 	return (
