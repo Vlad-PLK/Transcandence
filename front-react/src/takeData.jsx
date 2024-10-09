@@ -12,6 +12,9 @@ function takeData(setUserData, setIsUserReady)
 	  })
 	.catch(error => {
 		console.log('Error:', error);
+		setUserData(null);
+		if (setIsUserReady != null)
+			setIsUserReady(true);
 	  });
 }
 

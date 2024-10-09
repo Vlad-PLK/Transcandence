@@ -5,7 +5,7 @@ import binascii
 
 def generate_otp(user):
     if not user.secret_key:
-        raise ValueError("Секретный ключ отсутствует.")
+      raise ValueError("Секретный ключ отсутствует.")
     
     try:
         base64.b32decode(user.secret_key, casefold=True)

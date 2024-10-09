@@ -10,11 +10,13 @@ import { useNavigate } from "react-router-dom";
 import UserHomePage from "./UserHomePage";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "./constants";
 import { UserConnectContext } from "./UserConnectContext";
+import { userData } from "three/examples/jsm/nodes/Nodes.js";
 
 function WelcomePage()
 {
   const { t } = useTranslation();
   const {navigate} = useNavigate();
+  const {userData} = useContext(UserDataContext);
   const main_image = {
 		backgroundImage: `url('/cyberpunk1.jpg')`,
 		backgroundSize: 'cover', // Adjust background size as needed
@@ -23,7 +25,7 @@ function WelcomePage()
 
 	return (
     <>
-    {localStorage.getItem(ACCESS_TOKEN) == null ?	
+    {userData == null ?	
       <>
       <div className="d-flex flex-column vh-100" style={main_image}>
       <header className="p-4 opacity-75" style={{fontFamily: 'cyber4'}}>
