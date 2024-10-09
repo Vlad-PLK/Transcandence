@@ -143,5 +143,18 @@
     "join_tournament": "REJOINDRE UN TOURNOI",
     "create_tournament": "CREER UN TOURNOI",
     "multiplayer": "MULTIJOUEUR",
-    "game_settings": "PARAMETRES DU JEU"
+    "game_settings": "PARAMETRES DU JEU",
+    "gameEnd":
+    {
+        "title": "Partie terminée",
+        "thanks": "Merci d'avoir joué !",
+        "scoreboard":
+        {
+            "player": "Joueur",
+            "score": "Score",
+            "scoresUnavailable": "Scores indisponibles",
+            "restartButton": "Bouton pour les statistiques du tournoi"
+        },
+        "winnerCrown": "👑"
+    }
 }

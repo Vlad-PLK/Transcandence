@@ -143,5 +143,19 @@
     "join_tournament": "JOIN TOURNAMENT",
     "create_tournament": "CREATE TOURNAMENT",
     "multiplayer": "MULTIPLAYER",
-    "game_settings": "GAME SETTINGS"
+    "game_settings": "GAME SETTINGS",
+
+    "gameEnd":
+    {
+        "title": "Game Over",
+        "thanks": "Thank you for playing!",
+        "scoreboard":
+        {
+            "player": "Player",
+            "score": "Score",
+            "scoresUnavailable": "Scores unavailable",
+            "restartButton": "Button for tournament stats"
+        },
+        "winnerCrown": "👑"
+    }
 }

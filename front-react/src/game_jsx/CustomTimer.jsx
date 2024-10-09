@@ -15,7 +15,7 @@ const ConvertTime = (time) =>
 		return (minutes + ':' + secondes);
 	}
 
-function CustomTimer({seconds, player1, player2, player1_score, player2_score, isGuest})
+function CustomTimer({seconds, player1, player1_nick, player2, player2_nick, player1_score, player2_score, isGuest})
 {
 	const [count, setCount] = useState(seconds);
 	const timerId = useRef();
@@ -38,12 +38,19 @@ function CustomTimer({seconds, player1, player2, player1_score, player2_score, i
 	useEffect(() => {
 		if (count === 0)
 		{
-			console.log(player1, player2, player1_score, player2_score);
+			console.log("TIMER :", player1, player1_nick, player2, player2_nick, player1_score, player2_score);
 			if (isGuest == false)
 				gameData();
-			// need to make an api request for the game result
 			clearInterval(timerId.current);
-			navigate("../userGameEnd");
+			navigate("../userGameEnd", {
+				state:
+				{
+					player1: player1_nick,
+					player2: player2_nick,
+					player1_score: player1_score,
+					player2_score: player2_score
+				}
+			});
 		}
 	}, [count]);
 	return (
