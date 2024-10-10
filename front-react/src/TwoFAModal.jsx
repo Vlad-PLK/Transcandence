@@ -6,20 +6,18 @@ import { useNavigate } from 'react-router-dom';
 import takeData from './takeData';
 import { UserDataContext } from './UserDataContext';
 
-
-
-function TwoFAModal(username, password) 
+function TwoFAModal({username, password}) 
 {
     const { t } = useTranslation();
 	const [errorLog, setLogError] = useState('');
 	const navigate = useNavigate();
-    const [opt_code, setCode] = useState('');
+    const [otp_code, setCode] = useState('');
     const inputRefs = useRef([]);
 	const { setUserData } = useContext(UserDataContext);
 
 
     const handleChange = (event, index) => {
-        const newCode = opt_code.split('');
+        const newCode = otp_code.split('');
         newCode[index] = event.target.value;
         setCode(newCode.join(''));
 
@@ -33,15 +31,14 @@ function TwoFAModal(username, password)
         try {
 			localStorage.removeItem(ACCESS_TOKEN);
 			localStorage.removeItem(REFRESH_TOKEN);
-            console.log(username, password, opt_code);
-            const response = await api.post('api/users/user/token/', { username, password, opt_code });
+            const response = await api.post('api/users/user/token/', { username, password, otp_code });
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
 			console.log(response.data);
 			takeData(setUserData);
 			navigate("userPage/");
 		} catch (error) {
-			setLogError(error.response);
+			setLogError("Invalid 2FA code please try again");
         }
     }
 
@@ -52,7 +49,7 @@ function TwoFAModal(username, password)
                 <div className="modal-content rounded-4 shadow">
                     <div className="modal-header d-flex flex-column p-5 pb-4 border-bottom-0">
         		        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        <svg className="mb-3" xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-file-lock" viewBox="0 0 16 16">
+                        <svg className="mb-3 bi bi-file-lock" xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M8 5a1 1 0 0 1 1 1v1H7V6a1 1 0 0 1 1-1m2 2.076V6a2 2 0 1 0-4 0v1.076c-.54.166-1 .597-1 1.224v2.4c0 .816.781 1.3 1.5 1.3h3c.719 0 1.5-.484 1.5-1.3V8.3c0-.627-.46-1.058-1-1.224M6.105 8.125A.64.64 0 0 1 6.5 8h3a.64.64 0 0 1 .395.125c.085.068.105.133.105.175v2.4c0 .042-.02.107-.105.175A.64.64 0 0 1 9.5 11h-3a.64.64 0 0 1-.395-.125C6.02 10.807 6 10.742 6 10.7V8.3c0-.042.02-.107.105-.175"/>
                             <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1"/>
                         </svg>
@@ -69,7 +66,7 @@ function TwoFAModal(username, password)
                                     className="form-control text-center py-3"
                                     maxLength="1"
                                     autoFocus={index === 0}
-                                    value={opt_code.charAt(index)}
+                                    value={otp_code.charAt(index)}
                                     onChange={(event) => handleChange(event, index)}
                                     ref={(el) => inputRefs.current[index] = el}
                                 />
@@ -77,7 +74,7 @@ function TwoFAModal(username, password)
                         ))}
                     </div>
                     <div className="d-flex flex-column align-items-center">
-                        <button className="btn btn-success btn-lg mt-4 align-items-center" onClick={send_otp}>Verify</button>
+                        <button className="btn btn-success btn-lg mt-4 align-items-center" data-bs-dismiss="modal" onClick={send_otp}>Verify</button>
                         {errorLog && <p className="mt-2 text-danger">{errorLog}</p>}
                     </div>
         		  	</div>

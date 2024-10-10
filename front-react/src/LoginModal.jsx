@@ -24,6 +24,7 @@ function LoginModal()
 	}
 
     const loginbutton = async (e) => {
+		console.log(TwoFA);
         e.preventDefault();
 		cleanForm();
         try {
@@ -43,6 +44,10 @@ function LoginModal()
 			setLogError(error.response.data.detail);
         }
     }
+
+	const send_otp = () => {
+		api.post('api/users/user/token/', {username, password});
+	}
 	return (
 	<>
       	<div className="modal fade" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
@@ -61,14 +66,14 @@ function LoginModal()
         		        <input type="password" className="form-control rounded-3" id="passwordLogin" placeholder={t('password')} autoComplete='password' value={password} onChange={(e) => setPassword(e.target.value)}/>
         		        <label htmlFor="passwordLogin">{t('password')}</label>
         		      </div>
-					  {TwoFA == true ?
-        		      		<button className="w-90 mt-2 btn btn-lg rounded-3 btn-primary" data-bs-toggle="modal" data-bs-target="#twofaModal">{t('login_login')}</button>
+					  	{TwoFA && TwoFA.activated == true ?
+        		      		<button className="w-90 mt-2 btn btn-lg rounded-3 btn-primary" data-bs-toggle="modal" data-bs-target="#twofaModal" onClick={send_otp}>{t('login_login')}</button>
 						:
 						<>
         		      		<button className="w-90 mt-2 btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton}>{t('login_login')}</button>
         		      		{errorLog && <p className="mt-2 text-danger">{errorLog}</p>}
 						</>
-					  }
+						}
         		  	 </div>
         		</div>
         	</div>
