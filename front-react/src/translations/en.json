@@ -157,5 +157,6 @@
             "restartButton": "Button for tournament stats"
         },
         "winnerCrown": "👑"
-    }
+    },
+    "two_fa": "Activate 2FA by email"
 }

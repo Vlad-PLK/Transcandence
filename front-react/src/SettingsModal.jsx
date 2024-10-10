@@ -2,11 +2,13 @@ import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { UserDataContext } from './UserDataContext';
+import { TwoFaContext } from './TwoFaContext';
 import { useState } from 'react';
 import api from './api';
 
 function SettingsModal() {
     const { userData, setUserData } = useContext(UserDataContext);
+    const { TwoFA, setTwoFA } = useContext(TwoFaContext);
     const [errorAvatar, setErrorAvatar] = useState('');
     const [errorNick, setErrorNick] = useState('');
     const [errorPass, setErrorPass] = useState('');
@@ -18,10 +20,6 @@ function SettingsModal() {
     const { t } = useTranslation();
     const [selectedFile, setSelectedFile] = useState(null);
     const navigate = useNavigate();
-
-    const toggleAvatar = () => {
-        setIsAvatar(!isAvatar);
-    }
 
     const clearNick = () => {
         document.getElementById('paramUsername-change').value = '';
@@ -121,14 +119,23 @@ function SettingsModal() {
         }
     }
 
+    const handle2FA = () => {
+        setTwoFA(true);
+        console.log(TwoFA);
+        //api.post('api/users/user/enable-2fa/');
+    }
     return (
         <>
             <div className="modal fade" id="UserSettingsModal" tabIndex="-1" style={{ fontFamily: 'cyber4' }}>
-                <div className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+                <div className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
                     <div className="modal-content rounded-4 shadow">
                         <div className="modal-header d-flex flex-column justify-content-center p-5 pb-4 border-bottom-0">
                             <button type="button" className="btn-close" data-bs-dismiss="modal" onClick={clearAll}></button>
                             <h1 className="fw-bold mb-0 fs-4">{t('userSettings.settings')}</h1>
+                        </div>
+                        <div className="form-check form-switch ms-5 mb-3" style={{transform: "scale(1.2)", transformOrigin: "top left"}}>
+                                <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" onChange={handle2FA}/>
+                                <label className="form-check-label" htmlFor="flexSwitchCheckChecked">{t('two_fa')}</label>
                         </div>
                         {userData && <div className="modal-body p-5 pt-0">
                             <p>{t('userSettings.changeAvatar')}</p>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { UserDataContext } from "./UserDataContext";
 import { GuestDataContext } from "./GuestDataContext";
+import { TwoFaContext } from "./TwoFaContext";
 import takeData from "./takeData";
 import { ACCESS_TOKEN } from "./constants";
 import { UserStatsContext } from "./UserStatsContext";
@@ -11,6 +12,7 @@ function Root({children}){
   const [userData, setUserData] = useState(null);
 	const [guestData, setGuestData] = useState({nickname: 'nickname', id: 6, guestNickname: 'guest', isGuest: true});
 	const [userStats, setUserStats] = useState(null);
+  const [TwoFA, setTwoFA] = useState(false);
   const {i18n: {changeLanguage} } = useTranslation();
   const [gameData, setGameData] = useState({
     starFlag:0,
@@ -48,7 +50,9 @@ function Root({children}){
 			<GuestDataContext.Provider value={{guestData, setGuestData}}>
       <UserStatsContext.Provider value={{userStats, setUserStats}}>
       <GameContext.Provider value={{gameData, setGameData}}>
+      <TwoFaContext.Provider value={{TwoFA, setTwoFA}}>
         <div>{children}</div>
+      </TwoFaContext.Provider>
       </GameContext.Provider>
       </UserStatsContext.Provider>
 			</GuestDataContext.Provider>
