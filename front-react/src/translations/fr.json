@@ -2,6 +2,7 @@
     "title": "Transcendance",
     "login": "Se connecter",
     "signup": "S'inscrire",
+    "login_error": "Les donnees saisies sont incorrectes !",
     "register": {
         "title": "Creez votre compte maintenant!",
         "username": "Nom d'utilisateur",

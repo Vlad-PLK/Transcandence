@@ -2,8 +2,10 @@ import React, { useContext, useState } from 'react';
 import api from "./api";
 import { UserDataContext } from './UserDataContext';
 import LoginModal from './LoginModal';
+import takeData from './takeData';
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next"; // Import useTranslation
+import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
 
 function RegisterModal() {
     const { t } = useTranslation();
@@ -14,7 +16,6 @@ function RegisterModal() {
     const [err, setError] = useState('');
     const {setUserData} = useContext(UserDataContext);
     const [msg, setMsg] = useState('');
-    const [modalState, setModalState] = useState(true);
     const clearForm = () => {
         setUsername('');
         setEmail('');
@@ -23,32 +24,42 @@ function RegisterModal() {
         setError('');
         setMsg('');
     }
-    const closeModal = () => {
-        setModalState(!modalState);
+
+    const login = async () => {
+        try {
+            const response = await api.post('api/users/user/token/', { username, password });
+			localStorage.setItem(ACCESS_TOKEN, response.data.access);
+			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
+			console.log(response.data);
+			takeData(setUserData);
+            setUsername('');
+            setPassword('');
+		} catch (error) {
+			setUsername('');
+            setPassword('');
+        }
     }
+
     const signupbutton = async (e) => {
         e.preventDefault();
-        
-        // Проверка на совпадение паролей
         if (password !== confirmPassword) {
             setError(t('register.errors.passwords_mismatch')); // Use translation for error
             return;
         }
-
         try {
-            localStorage.clear();
+            localStorage.removeItem(ACCESS_TOKEN);
+			localStorage.removeItem(REFRESH_TOKEN);
             const response = await api.post('api/users/user/register/', { username, email, password });
-            console.log(response.data);
 			setUserData(response.data);
-            setUsername('');
+            login();
             setEmail('');
-            setPassword('');
             setConfirmPassword('');
             setError('');
             setMsg(t('register.success')); // Use translation for success message
-            closeModal();
+            
         } catch (error) {
             setMsg('');
+            setUsername('');
             setError(error.response.data.username);
         }
     }
@@ -80,7 +91,7 @@ function RegisterModal() {
                                     <input type="password" className="form-control rounded-3" id="paramcPassword" placeholder={t('register.confirm_password')} autoComplete='new-password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                                     <label htmlFor="paramPassword">{t('register.confirm_password')}</label>
                                 </div>
-                                <button className="w-70 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">{t('register.sign_up')}</button>
+                                <button className="w-70 mb-2 btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" type="submit">{t('register.sign_up')}</button>
                                 {err && <p className="text-danger">{err}</p>}
                                 {msg && <p className="text-success">{msg}</p>}
                             </form>

@@ -11,30 +11,32 @@ function PlayerModal() {
     const { guestData, setGuestData } = useContext(GuestDataContext);
     const navigate = useNavigate();
 
-    const launchGame = (e) => {
+    const launchGame = async (e) => {
         e.preventDefault();
         if (!username) {
             setError(t('usernameRequired'));
             return;
         }
-        api.get('api/get-user-id/', { params: { username } })
-            .then(response => {
-                console.log(response);
-                setGuestData(prevState => ({
-                    ...prevState,
-                    guestNickname: username,
-                    nickname: username,
-                    id: response.data.id,
-                    isGuest: false
-                }));
-                navigate("/userGameWindow/");
-                setUsername('');
-                setError('');
-            })
-            .catch(error => {
-                console.log('Error:', error);
-                setError(t('userNotFound'));
-            });
+        try
+        {
+            const response = await api.post('api/get-user-id/', {username});
+            console.log(response.data);
+            setGuestData(prevState => ({
+                ...prevState,
+                guestNickname: username,
+                nickname: username,
+                id: response.data.user_id,
+                isGuest: false
+            }));
+            navigate("/userGameWindow/");
+            setUsername('');
+            setError('');
+        }
+        catch(error)
+        {
+            console.log('Error:', error);
+            setError(t('userNotFound'));
+        }
     };
 
     return (
@@ -60,7 +62,7 @@ function PlayerModal() {
                                     <label htmlFor="guestUsernameLogin">{t('username')}</label>
                                 </div>
                                 <button className="w-90 mt-2 btn btn-lg rounded-3 btn-danger" type="submit" data-bs-dismiss="modal">{t('startTheGame')}</button>
-                                {error && <p className="text-danger">{error}</p>}
+                                {error && <p className="text-danger mt-1">{error}</p>}
                             </form>
                         </div>
                     </div>

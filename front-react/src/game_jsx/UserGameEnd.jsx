@@ -18,6 +18,11 @@ function UserGameEnd()
         localStorage.clear();
         navigate("/");
     }
+    const main_image = {
+		backgroundImage: `url('/cyber4.jpg')`,
+		backgroundSize: 'cover',
+		backgroundPosition: 'center',
+	};
 
     const { player1, player2, player1_score, player2_score } = location.state || {};
 
@@ -33,7 +38,8 @@ function UserGameEnd()
 
     return (
         <>
-            <header className="p-4 opacity-75" style={{ fontFamily: 'cyber4', backgroundColor: '#333' }}>
+			<div id="big_container" className="d-flex flex-column vh-100" style={main_image}>
+            <header className="p-4 opacity-75" style={{ fontFamily: 'cyber4'}}>
                 <div className="container">
                     <div className="d-flex flex-wrap align-items-center justify-content-lg-start">
                         <TranslationSelect />
@@ -63,9 +69,7 @@ function UserGameEnd()
                     </div>
                 </div>
             </header>
-
-            <div className="endgame-container">
-                <div className="endgame-content">
+                <div className="endgame-content mt-3" style={{ fontFamily: 'cyber4'}}>
                     <h1 className="endgame-title">{t('gameEnd.title')}</h1>
                     <p className="endgame-thanks">{t('gameEnd.thanks')}</p>
 

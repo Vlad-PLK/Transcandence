@@ -790,24 +790,21 @@ function UserGame()
             }
         }
         window.removeEventListener('resize', onWindowResize);
-        //document.removeEventListener('keydown', handleKeyDown);
-        //document.removeEventListener('keyup', handleKeyUp);
         if (rendererRef.current) {
             rendererRef.current.dispose();
         }
         if (mountRef.current){
             mountRef.current.removeChild(rendererRef.current.domElement);
         }
-      // Cleanup Three.js objects and event listeners
     };
-    }, [setScoreP1, setScoreP2]); // Empty dependency array to run effect only once
+    }, [setScoreP1, setScoreP2]);
 
   return (
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
         {<div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
         <CustomTimer 
-                seconds={7} 
+                seconds={20} 
                 player1={userData.id} 
                 player1_nick={userData.username}
                 player2={guestData.id} 

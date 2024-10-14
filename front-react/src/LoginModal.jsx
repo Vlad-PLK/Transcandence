@@ -24,7 +24,6 @@ function LoginModal()
 	}
 
     const loginbutton = async (e) => {
-		console.log(TwoFA);
         e.preventDefault();
 		cleanForm();
         try {
@@ -39,9 +38,10 @@ function LoginModal()
             setUsername('');
             setPassword('');
 		} catch (error) {
+			console.log(error);
 			setUsername('');
             setPassword('');
-			setLogError(error.response.data.detail);
+			setLogError(t('login_error'));
         }
     }
 

@@ -3,6 +3,7 @@
     "main.title": "42",
     "login": "Login",
     "signup": "Take me there!",
+    "login_error": "The provided credentials are wrong",
     "register": {
         "title": "Create your account now!",
         "username": "Username",

@@ -38,11 +38,12 @@ function CustomTimer({seconds, player1, player1_nick, player2, player2_nick, pla
 	useEffect(() => {
 		if (count === 0)
 		{
-			console.log("TIMER :", player1, player1_nick, player2, player2_nick, player1_score, player2_score);
+			// console.log("TIMER :", player1, player1_nick, player2, player2_nick, player1_score, player2_score);
 			if (isGuest == false)
 				gameData();
 			clearInterval(timerId.current);
 			navigate("../userGameEnd", {
+				replace: true,
 				state:
 				{
 					player1: player1_nick,
