@@ -1,22 +1,23 @@
 import { useContext, useState } from "react";
 import { GameContext } from "./GameContext";
 import { useTranslation } from 'react-i18next';
+import api from "./api";
 
 function GameSettingsModal() {
     const { gameData, setGameData } = useContext(GameContext);
     const { t } = useTranslation();
 
-    const [selectedStar, setSelectedStar] = useState(gameData.starFlag || 0);
-    const [selectedSize, setSelectedSize] = useState(gameData.customStarSize || 1);
-    const [selectedColor, setSelectedColor] = useState(gameData.customStarColor || "#DC1010");
-    const [selectedIntensity, setSelectedIntensity] = useState(gameData.customStarIntensity || 1);
-    const [selectedCorona, setSelectedCorona] = useState(gameData.customCoronaType || 0);
-    const [selectedBHSize, setSelectedBHSize] = useState(gameData.gargantuaSize || 2);
-    const [selectedBHIntensity, setSelectedBHIntensity] = useState(gameData.gargantuaIntensity || 1);
-    const [selectedBHColor, setSelectedBHColor] = useState(gameData.gargantuaColor || "#c5e0e2");
-    const [selectedBoost, setSelectedBoost] = useState(gameData.boostsEnabled || 0);
-    const [selectedBoostFactor, setSelectedBoostFactor] = useState(gameData.boostFactor || 1);
-    const [selectedPower, setSelectedPower] = useState(gameData.powerEnabled || 0);
+    const [selectedStar, setSelectedStar] = useState(gameData.starFlag);
+    const [selectedSize, setSelectedSize] = useState(gameData.customStarSize);
+    const [selectedColor, setSelectedColor] = useState(gameData.customStarColor);
+    const [selectedIntensity, setSelectedIntensity] = useState(gameData.customStarIntensity);
+    const [selectedCorona, setSelectedCorona] = useState(gameData.customCoronaType);
+    const [selectedBHSize, setSelectedBHSize] = useState(gameData.gargantuaSize);
+    const [selectedBHIntensity, setSelectedBHIntensity] = useState(gameData.gargantuaIntensity);
+    const [selectedBHColor, setSelectedBHColor] = useState(gameData.gargantuaColor);
+    const [selectedBoost, setSelectedBoost] = useState(gameData.boostsEnabled);
+    const [selectedBoostFactor, setSelectedBoostFactor] = useState(gameData.boostFactor);
+    const [selectedPower, setSelectedPower] = useState(gameData.powerEnabled);
 
     const handleChange = (event) => {
         const star = event.target.value;
@@ -120,40 +121,42 @@ function GameSettingsModal() {
 
     const save_setttings = () => {
         //send request to back to save settings for the user//
+        api.patch('api/update-game-settings/', 
+            {
+                starFlag: selectedStar,
+                gargantuaSize: selectedBHSize,
+                gargantuaColor: selectedBHColor,
+                customStarSize: selectedSize,
+                gargantuaIntensity: selectedBHIntensity,
+                customStarColor: selectedColor,
+                customCoronaType: selectedCorona,
+                customStarIntensity: selectedIntensity,
+                boostsEnabled: selectedBoost,
+                boostFactor: selectedBoostFactor,
+                powerEnabled: selectedPower,
+                gameDuration: 20,
+            }
+        ).then(response => {
+            console.log(response);
+        }).catch(error => {
+            console.log(error);
+        })
         console.log(gameData);
     }
     const cancel_setttings = () => {
         //reset all selector to the previous state//
         console.log(gameData);
     }
-    const default_setttings = () => {
+    const default_setttings = async() => {
         //reset all selector to default value//
-        setSelectedStar(0);
-        setSelectedBHSize(2.0);
-        setSelectedBHColor("#c5e0e2");
-        setSelectedBHIntensity(1.0);
-        setSelectedSize(4);
-        setSelectedColor("#DC1010");
-        setSelectedCorona(0);
-        setSelectedIntensity(4);
-        setSelectedBoost(0);
-        setSelectedBoostFactor(1);
-        setSelectedPower(0);
-        setGameData(prevState => ({
-            ...prevState,
-            starFlag:0,
-            gargantuaSize:2.0,
-            gargantuaColor:"#c5e0e2",
-            gargantuaIntensity:1.0,
-            customStarSize:4,
-            customStarColor:"#DC1010",
-            customCoronaType:0,
-            customStarIntensity:4,
-            boostsEnabled:0,
-            boostFactor:1,
-            powerEnabled:0,
-            gameDuration:10,
-          }));
+        try
+        {
+            await api.put('api/update-game-settings/');
+        }
+        catch(error)
+        {
+            console.log(error);
+        }
     }
 
     return (
@@ -167,7 +170,7 @@ function GameSettingsModal() {
                         <div className="modal-body p-5 pt-0">
                             <div>
                                 <h5>{t('gameSettings.selectStar')}</h5>
-                                <select className="form-select" value={selectedStar} onChange={handleChange}>
+                                <select className="form-select" value={gameData.starFlag} onChange={handleChange}>
                                     <option value="0">{t('gameSettings.sun')}</option>
                                     <option value="1">{t('gameSettings.whiteDwarf')}</option>
                                     <option value="2">{t('gameSettings.redGiant')}</option>
@@ -186,7 +189,7 @@ function GameSettingsModal() {
                                                 name="gargantuaSize"
                                                 value="1.0"
                                                 onChange={handleBlackHoleSizeChange}
-                                                checked={selectedBHSize === "1.0"}
+                                                checked={selectedBHSize === "1"}
                                             />
                                             <label className="form-check-label" htmlFor="smallSize">{t('gameSettings.small')}</label>
                                         </div>
@@ -196,9 +199,9 @@ function GameSettingsModal() {
                                                 className="form-check-input"
                                                 id="intermediateSize"
                                                 name="gargantuaSize"
-                                                value="2.0"
+                                                value="2"
                                                 onChange={handleBlackHoleSizeChange}
-                                                checked={selectedBHSize === "2.0"}
+                                                checked={selectedBHSize === "2"}
                                             />
                                             <label className="form-check-label" htmlFor="intermediateSize">{t('gameSettings.intermediate')}</label>
                                         </div>
@@ -208,9 +211,9 @@ function GameSettingsModal() {
                                                 className="form-check-input"
                                                 id="bigSize"
                                                 name="gargantuaSize"
-                                                value="3.0"
+                                                value="3"
                                                 onChange={handleBlackHoleSizeChange}
-                                                checked={selectedBHSize === "3.0"}
+                                                checked={selectedBHSize === "3"}
                                             />
                                             <label className="form-check-label" htmlFor="bigSize">{t('gameSettings.big')}</label>
                                         </div>
@@ -301,7 +304,7 @@ function GameSettingsModal() {
 
                             <div className="pt-4">
                                 <h5>{t('gameSettings.addBoosters')}</h5>
-                                <select className="form-select" value={selectedBoost} onChange={handleBoostChange}>
+                                <select className="form-select" value={gameData.boostsEnabled.toString()} onChange={handleBoostChange}>
                                     <option value="0">{t('gameSettings.disableBoosters')}</option>
                                     <option value="1">{t('gameSettings.enableBoosters')}</option>
                                 </select>
@@ -324,7 +327,7 @@ function GameSettingsModal() {
 
                             <div className="pt-4">
                                 <h5>{t('gameSettings.addStreakPower')}</h5>
-                                <select className="form-select" value={selectedPower} onChange={handlePowerChange}>
+                                <select className="form-select" value={gameData.powerEnabled} onChange={handlePowerChange}>
                                     <option value="0">{t('gameSettings.disableStreakPower')}</option>
                                     <option value="1">{t('gameSettings.enableStreakPower')}</option>
                                 </select>
