@@ -74,12 +74,12 @@ function PlayerStats(){
 						{userMatch.map((match, index) => (
 							(userData.username === match.player1_name) ?
 							<li key={index} className="list-group-item">
-								{t('playerStats.opponent')} : {match.player2_name} | {t('playerStats.winner')} : {match.match_winner_name} <br/> 
+								{t('playerStats.opponent')} : {match.player2_name} | {t('playerStats.winner')} : {match.match_winner != null ? match.match_winner_name : t('draw_result')} <br/> 
 								{t('playerStats.finalScore')} : {match.player1_score} - {match.player2_score}
 							</li>
 							:
 							<li key={index} className="list-group-item">
-								{t('playerStats.opponent')} : {match.player1_name} | {t('playerStats.winner')} : {match.match_winner_name} <br/> 
+								{t('playerStats.opponent')} : {match.player1_name} | {t('playerStats.winner')} : {match.match_winner != null ? match.match_winner_name : t('draw_result')} <br/> 
 								{t('playerStats.finalScore')} : {match.player1_score} - {match.player2_score}
 							</li>
 						))}

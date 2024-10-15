@@ -3,6 +3,7 @@
     "login": "Se connecter",
     "signup": "S'inscrire",
     "login_error": "Les donnees saisies sont incorrectes !",
+    "draw_result": "Egalite",
     "register": {
         "title": "Creez votre compte maintenant!",
         "username": "Nom d'utilisateur",
