@@ -7,6 +7,7 @@ import { TwoFaContext } from './TwoFaContext';
 import { useNavigate } from 'react-router-dom';
 import TwoFAModal from './TwoFAModal';
 import takeData from './takeData';
+import { GameContext } from './GameContext';
 
 function LoginModal()
 {
@@ -16,6 +17,7 @@ function LoginModal()
 	const [errorLog, setLogError] = useState('');
 	const { TwoFA, setTwoFA } = useContext(TwoFaContext);
 	const { setUserData } = useContext(UserDataContext);
+	const { gameData, setGameData } = useContext(GameContext);
 	const navigate = useNavigate();
 
 	const cleanForm = () => {
@@ -32,8 +34,14 @@ function LoginModal()
             const response = await api.post('api/users/user/token/', { username, password });
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-			console.log(response.data);
 			takeData(setUserData);
+			api.get('api/update-game-settings/')
+			.then(response => {
+				setGameData(response.data);
+			})
+			.catch(error => {
+				console.log('Error:', error);
+			});
 			navigate("userPage/");
             setUsername('');
             setPassword('');

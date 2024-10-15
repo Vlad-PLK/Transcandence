@@ -34,7 +34,7 @@ function UserGameEnd()
         navigate("../UserGame");
     };
 
-	console.log("GAME_END", player1, player1_score, player2, player2_score);
+	// console.log("GAME_END", player1, player1_score, player2, player2_score);
 
     return (
         <>

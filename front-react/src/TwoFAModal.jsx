@@ -34,7 +34,6 @@ function TwoFAModal({username, password})
             const response = await api.post('api/users/user/token/', { username, password, otp_code });
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-			console.log(response.data);
 			takeData(setUserData);
 			navigate("userPage/");
 		} catch (error) {

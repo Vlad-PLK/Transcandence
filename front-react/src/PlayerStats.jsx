@@ -19,7 +19,6 @@ function PlayerStats(){
 				try {
 					api.get('api/player-stats/')
 					.then(response => {
-						console.log(response.data)
 						setUserStats(response.data)
 					  })
 					.catch(error => {
@@ -32,7 +31,6 @@ function PlayerStats(){
 				try {
 					api.get('api/get-matches/')
 					.then(response => {
-						console.log(response.data)
 						setUserMatch(response.data)
 					  })
 					.catch(error => {

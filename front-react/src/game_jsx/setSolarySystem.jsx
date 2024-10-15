@@ -435,7 +435,6 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
     }
     else if (starType == 3)
       {
-        console.log("BH SIZE", customRadius);
         const BHColor = hexToRGB(customColor)
         const blackHoleGroup = new THREE.Group();
       
@@ -493,11 +492,8 @@ function setSolarySystem(scene, camera, renderer, textureLoader, starType, custo
       }
       else if (starType == 4)
       {
-        console.log("CUSTOM COLOR", customColor);
         const starColor = hexToRGB(customColor);
         const distance = 5000 + customRadius * 2.5;
-        console.log("STAR COLOR", starColor);
-        console.log("STAR CORONA", customCorona);
         const customGroup = new THREE.Group();
     
         const customGeometry = new THREE.IcosahedronGeometry(customRadius, 12);

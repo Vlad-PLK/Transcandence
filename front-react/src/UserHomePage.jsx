@@ -9,10 +9,12 @@ import './customFonts.css';
 import SettingsModal from "./SettingsModal";
 import { useNavigate } from "react-router-dom";
 import api from "./api";
+import { GameContext } from "./GameContext";
 
 function UserHomePage() {
 	const { userData, setUserData } = useContext(UserDataContext);
 	const { userStats, setUserStats } = useContext(UserStatsContext);
+	const { gameData, setGameData } = useContext(GameContext);
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [parent, setParent] = useState(null);
@@ -92,6 +94,7 @@ function UserHomePage() {
 		}
 		navigate('../userSettings');
 	}
+
 	function handleDragEnd(event) {
 		const { over } = event;
 		setParent(over ? over.id : null);

@@ -416,7 +416,7 @@ function UserGame()
     // SETTINGS
     // if (!gameData)
     //     return;
-    const starType = gameData.starFlag;
+    const starType = gameData.startFlag;
     let BHsize, sizeChecker, BHcolor, BHintensity;
     let starRadius, starIntensity, starColor, starCorona;
 
@@ -443,21 +443,21 @@ function UserGame()
 
     const powerUp = gameData.powerEnabled;
 
-    // TESTING SETTINGS
+    // // TESTING SETTINGS
 
-    if (gameData)
-    {
-        console.log("Current Star FLAG", starType);
-        console.log("Current size BH", BHsize);
-        console.log("Current color BH", BHcolor);
-        console.log("Current custom size", starRadius);
-        console.log("Current custom intensity", starIntensity);
-        console.log("Current custom color", starColor);
-        console.log("Current custom corona", starCorona);
-        console.log("Current boosts status", boost);
-        console.log("Current boost factor", boostPower);
-        console.log("Current powerup", powerUp);
-    }
+    // if (gameData)
+    // {
+    //     console.log("Current Star FLAG", starType);
+    //     console.log("Current size BH", BHsize);
+    //     console.log("Current color BH", BHcolor);
+    //     console.log("Current custom size", starRadius);
+    //     console.log("Current custom intensity", starIntensity);
+    //     console.log("Current custom color", starColor);
+    //     console.log("Current custom corona", starCorona);
+    //     console.log("Current boosts status", boost);
+    //     console.log("Current boost factor", boostPower);
+    //     console.log("Current powerup", powerUp);
+    // }
 
     let maxDistance = 0;
 

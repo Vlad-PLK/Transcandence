@@ -6,6 +6,7 @@ import takeData from './takeData';
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next"; // Import useTranslation
 import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
+import { GameContext } from './GameContext';
 
 function RegisterModal() {
     const { t } = useTranslation();
@@ -15,6 +16,7 @@ function RegisterModal() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [err, setError] = useState('');
     const {setUserData} = useContext(UserDataContext);
+    const {setGameData} = useContext(GameContext);
     const [msg, setMsg] = useState('');
     const clearForm = () => {
         setUsername('');
@@ -30,8 +32,14 @@ function RegisterModal() {
             const response = await api.post('api/users/user/token/', { username, password });
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-			console.log(response.data);
 			takeData(setUserData);
+            api.get('api/update-game-settings/')
+			.then(response => {
+				setGameData(response.data);
+			})
+			.catch(error => {
+				console.log('Error:', error);
+			});
             setUsername('');
             setPassword('');
 		} catch (error) {

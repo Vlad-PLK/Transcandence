@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { GameContext } from "./GameContext";
 import { useTranslation } from 'react-i18next';
 import api from "./api";
@@ -7,7 +7,7 @@ function GameSettingsModal() {
     const { gameData, setGameData } = useContext(GameContext);
     const { t } = useTranslation();
 
-    const [selectedStar, setSelectedStar] = useState(gameData.starFlag);
+    const [selectedStar, setSelectedStar] = useState(gameData.startFlag);
     const [selectedSize, setSelectedSize] = useState(gameData.customStarSize);
     const [selectedColor, setSelectedColor] = useState(gameData.customStarColor);
     const [selectedIntensity, setSelectedIntensity] = useState(gameData.customStarIntensity);
@@ -21,11 +21,10 @@ function GameSettingsModal() {
 
     const handleChange = (event) => {
         const star = event.target.value;
-        console.log(star);
         setSelectedStar(star);
         setGameData(prevState => ({
             ...prevState,
-            starFlag: star,
+            startFlag: star,
         }));
     };
 
@@ -119,11 +118,11 @@ function GameSettingsModal() {
         }));
       };
 
-    const save_setttings = () => {
+    const save_setttings = async() => {
         //send request to back to save settings for the user//
-        api.patch('api/update-game-settings/', 
+        await api.patch('api/update-game-settings/', 
             {
-                starFlag: selectedStar,
+                startFlag: selectedStar,
                 gargantuaSize: selectedBHSize,
                 gargantuaColor: selectedBHColor,
                 customStarSize: selectedSize,
@@ -141,17 +140,18 @@ function GameSettingsModal() {
         }).catch(error => {
             console.log(error);
         })
-        console.log(gameData);
-    }
-    const cancel_setttings = () => {
-        //reset all selector to the previous state//
-        console.log(gameData);
     }
     const default_setttings = async() => {
         //reset all selector to default value//
         try
         {
-            await api.put('api/update-game-settings/');
+            await api.put('api/update-game-settings/')
+            .then(response => {
+                setGameData(response.data);
+            })
+            .catch(error => {
+                console.log('Error:', error);
+            });
         }
         catch(error)
         {
@@ -170,7 +170,7 @@ function GameSettingsModal() {
                         <div className="modal-body p-5 pt-0">
                             <div>
                                 <h5>{t('gameSettings.selectStar')}</h5>
-                                <select className="form-select" value={gameData.starFlag} onChange={handleChange}>
+                                <select className="form-select" value={gameData.startFlag} onChange={handleChange}>
                                     <option value="0">{t('gameSettings.sun')}</option>
                                     <option value="1">{t('gameSettings.whiteDwarf')}</option>
                                     <option value="2">{t('gameSettings.redGiant')}</option>
@@ -178,7 +178,7 @@ function GameSettingsModal() {
                                     <option value="4">{t('gameSettings.custom')}</option>
                                 </select>
 
-                                {gameData.starFlag === "3" && (
+                                {gameData.startFlag === "3" && (
                                     <>
                                         <h5 className="pt-3">{t('gameSettings.selectSize')}</h5>
                                         <div className="form-check">
@@ -187,7 +187,7 @@ function GameSettingsModal() {
                                                 className="form-check-input"
                                                 id="smallSize"
                                                 name="gargantuaSize"
-                                                value="1.0"
+                                                value="1"
                                                 onChange={handleBlackHoleSizeChange}
                                                 checked={selectedBHSize === "1"}
                                             />
@@ -247,7 +247,7 @@ function GameSettingsModal() {
                                     </>
                                 )}
 
-                                {gameData.starFlag === "4" && (
+                                {gameData.startFlag === "4" && (
                                     <>
                                         <div className="pt-3">
                                             <label htmlFor="customRange" className="form-label">{t('gameSettings.selectSize')} {selectedSize}</label>
@@ -335,7 +335,6 @@ function GameSettingsModal() {
 
                             <div className="d-flex flex-row pt-3">
                                 <button className="btn btn-md btn-success me-2" onClick={save_setttings}>{t('gameSettings.save')}</button>
-                                <button className="btn btn-md btn-danger me-2" onClick={cancel_setttings}>{t('gameSettings.cancel')}</button>
                                 <button className="btn btn-md btn-warning" onClick={default_setttings}>{t('gameSettings.default')}</button>
                             </div>
                         </div>

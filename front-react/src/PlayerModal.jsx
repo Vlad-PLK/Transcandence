@@ -20,7 +20,6 @@ function PlayerModal() {
         try
         {
             const response = await api.post('api/get-user-id/', {username});
-            console.log(response.data);
             setGuestData(prevState => ({
                 ...prevState,
                 guestNickname: username,

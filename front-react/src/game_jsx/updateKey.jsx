@@ -136,7 +136,6 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
         {
             if (!cameraKeyIsPressed)
             {
-                console.log(cameraPosition);
                 if (cameraPosition > 4)
                     cameraPosition = 0;
                 if (cameraPosition == 0)
