@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'gameinfo',
     'friends',
     'channels',
+    'tournaments'
 ]
 
 ASGI_APPLICATION = 'backend.asgi.application'
