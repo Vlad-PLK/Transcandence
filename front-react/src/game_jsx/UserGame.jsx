@@ -284,7 +284,7 @@ function checkCollision(scene, sphere, sphereGeometry,
         player2Streak = 0;
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
         shockWave(scene, contactPoint, planeGeometry);
-        player1Score += 1;
+        player2Score += 1;
         if (scoreFlag == 1)
         {
             player1Streak += 1;
@@ -303,7 +303,7 @@ function checkCollision(scene, sphere, sphereGeometry,
         player1Streak = 0;
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
         shockWave(scene, contactPoint, planeGeometry);
-        player2Score += 1;
+        player1Score += 1;
         if (scoreFlag == 2)
         {
             player2Streak += 1;
