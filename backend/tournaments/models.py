@@ -7,6 +7,7 @@ User = get_user_model()
 class Tournament(models.Model):
     name = models.CharField(max_length=255)
     creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    winner = models.CharField(max_length=255, blank=True, null=True)
     
     def __str__(self):
         return f'{self.name}'
@@ -23,3 +24,6 @@ class TournamentMatch(models.Model):
     player1 = models.ForeignKey(Participant, on_delete=models.CASCADE, related_name='player1_matches')
     player2 = models.ForeignKey(Participant, on_delete=models.CASCADE, related_name='player2_matches')
     winner = models.ForeignKey(Participant, null=True, blank=True, on_delete=models.SET_NULL, related_name='won_matches')
+    player1_goals = models.IntegerField(default=0)
+    player2_goals = models.IntegerField(default=0)
+    round = models.IntegerField(default=1)
