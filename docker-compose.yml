@@ -28,9 +28,6 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      #device: '/home/l1mpoln/app/volumes'
-      device: '/Users/macbook/volumes/'
-      #device: '/home/vpolojie/volumes/'
-      #device: '/home/tvincile/volumes_Main'
+      device: '${VOLUME_PATH}'
       
     
