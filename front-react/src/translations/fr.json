@@ -43,7 +43,9 @@
         "enableStreakPower": "Activer 'Remontada'",
         "save": "SAUVEGARDER",
         "cancel": "ANNULER",
-        "default": "PAR DEFAUT"
+        "default": "PAR DEFAULT",
+        "save_msg": "Nouveaux parametres de jeu sauvegardes !",
+        "default_msg": "Parametres reinitialises !"
       },
       "localGame":
       {

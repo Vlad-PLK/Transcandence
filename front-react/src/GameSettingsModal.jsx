@@ -5,6 +5,7 @@ import api from "./api";
 
 function GameSettingsModal() {
     const { gameData, setGameData } = useContext(GameContext);
+    const [msg, setMsg] = useState(null);
     const { t } = useTranslation();
 
     const handleChange = (event) => {
@@ -102,7 +103,8 @@ function GameSettingsModal() {
                 gameDuration: 20,
             }
         ).then(response => {
-            console.log(response);
+            setMsg('');
+            setMsg(t('gameSettings.save_msg'));
         }).catch(error => {
             console.log(error);
         })
@@ -114,6 +116,8 @@ function GameSettingsModal() {
             await api.put('api/update-game-settings/')
             .then(response => {
                 setGameData(response.data);
+                setMsg('');
+                setMsg(t('gameSettings.default_msg'));
             })
             .catch(error => {
                 console.log('Error:', error);
@@ -125,13 +129,16 @@ function GameSettingsModal() {
         }
     }
 
+    const reset_msg = () => {
+        setMsg('');
+    }
     return (
         <>
             <div className="modal fade" id="gameSettings" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
                 <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div className="modal-content rounded-4 shadow">
                         <div className="modal-header p-5 pb-4 border-bottom-0">
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={reset_msg}></button>
                         </div>
                         {gameData &&
                         <div className="modal-body p-5 pt-0">
@@ -304,6 +311,7 @@ function GameSettingsModal() {
                                 <button className="btn btn-md btn-success me-2" onClick={save_setttings}>{t('gameSettings.save')}</button>
                                 <button className="btn btn-md btn-warning" onClick={default_setttings}>{t('gameSettings.default')}</button>
                             </div>
+                            {msg && <p className="mt-2 text-success">{msg}</p>}
                         </div>}
                     </div>
                 </div>

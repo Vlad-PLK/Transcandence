@@ -49,7 +49,9 @@
         "enableStreakPower": "Enable streak power",
         "save": "SAVE",
         "cancel": "CANCEL",
-        "default": "DEFAULT"
+        "default": "DEFAULT",
+        "save_msg": "New game settings added !",
+        "default_msg": "Game Settings back to default !"
       },
     "localGame":
     {
