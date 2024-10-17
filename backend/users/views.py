@@ -2,7 +2,9 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .serializers import UserSerializer, UsernameUpdateSerializer, ChangePasswordSerializer, CustomTokenObtainPairSerializer
+from .serializers import (UserSerializer, UsernameUpdateSerializer, 
+                         ChangePasswordSerializer, CustomTokenObtainPairSerializer, 
+                         Get2FAStatusSerializer)
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import permissions
 from .models import CustomUser
@@ -83,9 +85,8 @@ class Enable2FAView(APIView):
         otp_code = totp.now()
 
         send_mail(
-            'Двухфакторная аутентификация включена',
-            f'Двухфакторная аутентификация была включена для вашего аккаунта. '
-            f'Ваш текущий OTP-код: {otp_code}',
+            '2FA is enabled now',
+            f'2FA is now ebabled for ur account!'
             'from@example.com',
             [user.email],
         )
@@ -131,4 +132,13 @@ class Disable2FAView(APIView):
 
         return Response({'message': '2Fa was disabled'}, status=status.HTTP_200_OK)
 
-        
+
+class Get2FAStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        serializer = Get2FAStatusSerializer(user)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
