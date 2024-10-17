@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import AvatarUploadView, ChangePasswordView, CreateUserView, UsernameUpdateView, CustomTokenObtainPairView, Enable2FAView
+from .views import (AvatarUploadView, ChangePasswordView, CreateUserView, UsernameUpdateView, 
+                    CustomTokenObtainPairView, Enable2FAView, Disable2FAView)
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -10,4 +11,5 @@ urlpatterns = [
     path('users/user/avatar-upload/', AvatarUploadView.as_view(), name='avatar-upload'),
     path('users/user/change-password/', ChangePasswordView.as_view(), name='change-password'),
     path('users/user/enable-2fa/', Enable2FAView.as_view(), name='enable_2fa'),
+    path('users/user/disable-2fa/', Disable2FAView.as_view(), name='disable_2fa'),
 ]

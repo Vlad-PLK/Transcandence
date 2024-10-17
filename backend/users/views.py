@@ -92,9 +92,7 @@ class Enable2FAView(APIView):
 
         return Response(
             { 
-                "message": "Двухфакторная аутентификация теперь включена.",
-                "secret_key": user.secret_key,
-                "otp_code": otp_code 
+                "message": "2Fa is now enabled.",
             },
             status=status.HTTP_200_OK
         )
@@ -114,3 +112,23 @@ class CustomTokenObtainPairView(APIView):
             return TokenObtainPairView.as_view()(http_request)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Disable2FAView(APIView):
+    permissions_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+
+        if user.is_2fa_enabled == False:
+            return Response({'error': '2Fa is not enabled'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if user.secret_key:
+            user.secret_key = ""
+        
+        user.is_2fa_enabled = False
+        user.save()
+
+        return Response({'message': '2Fa was disabled'}, status=status.HTTP_200_OK)
+
+        
