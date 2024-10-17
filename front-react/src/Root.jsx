@@ -13,7 +13,7 @@ function Root({children}){
   const [userData, setUserData] = useState(null);
 	const [guestData, setGuestData] = useState({nickname: 'nickname', id: 6, guestNickname: 'guest', isGuest: true});
 	const [userStats, setUserStats] = useState(null);
-  const [TwoFA, setTwoFA] = useState({activated: false});
+  const [TwoFA, setTwoFA] = useState(null);
   const {i18n: {changeLanguage} } = useTranslation();
   const [gameData, setGameData] = useState(null);
   const [isUserReady, setIsUserReady] = useState(false);

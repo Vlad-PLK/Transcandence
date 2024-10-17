@@ -160,5 +160,6 @@
             "restartButton": "Bouton pour les statistiques du tournoi"
         },
         "winnerCrown": "👑"
-    }
+    },
+    "two_fa": "2FA by email : "
 }

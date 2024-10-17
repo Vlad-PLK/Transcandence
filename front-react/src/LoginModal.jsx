@@ -29,6 +29,7 @@ function LoginModal()
         e.preventDefault();
 		cleanForm();
         try {
+			console.log(TwoFA);
 			localStorage.removeItem(ACCESS_TOKEN);
 			localStorage.removeItem(REFRESH_TOKEN);
             const response = await api.post('api/users/user/token/', { username, password });
@@ -74,7 +75,7 @@ function LoginModal()
         		        <input type="password" className="form-control rounded-3" id="passwordLogin" placeholder={t('password')} autoComplete='password' value={password} onChange={(e) => setPassword(e.target.value)}/>
         		        <label htmlFor="passwordLogin">{t('password')}</label>
         		      </div>
-					  	{TwoFA && TwoFA.activated == true ?
+					  	{TwoFA == 1 ?
         		      		<button className="w-90 mt-2 btn btn-lg rounded-3 btn-primary" data-bs-toggle="modal" data-bs-target="#twofaModal" onClick={send_otp}>{t('login_login')}</button>
 						:
 						<>

@@ -5,6 +5,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
 import { useNavigate } from 'react-router-dom';
 import takeData from './takeData';
 import { UserDataContext } from './UserDataContext';
+import { TwoFaContext } from './TwoFaContext';
 
 function TwoFAModal({username, password}) 
 {
@@ -12,6 +13,7 @@ function TwoFAModal({username, password})
 	const [errorLog, setLogError] = useState('');
 	const navigate = useNavigate();
     const [otp_code, setCode] = useState('');
+    const {TwoFA, setTwoFA} = useContext(TwoFaContext);
     const inputRefs = useRef([]);
 	const { setUserData } = useContext(UserDataContext);
 
@@ -29,13 +31,14 @@ function TwoFAModal({username, password})
     const send_otp = async(e) => {
         e.preventDefault();
         try {
+            console.log(TwoFA)
 			localStorage.removeItem(ACCESS_TOKEN);
 			localStorage.removeItem(REFRESH_TOKEN);
             const response = await api.post('api/users/user/token/', { username, password, otp_code });
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
 			takeData(setUserData);
-			navigate("userPage/");
+            navigate("userPage/");
 		} catch (error) {
 			setLogError("Invalid 2FA code please try again");
         }

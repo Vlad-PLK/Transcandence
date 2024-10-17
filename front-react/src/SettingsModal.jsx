@@ -9,7 +9,7 @@ import api from './api';
 function SettingsModal() {
     const { userData, setUserData } = useContext(UserDataContext);
     const { TwoFA, setTwoFA } = useContext(TwoFaContext);
-    const [isTwoFAEnabled, setIsTwoFAEnabled] = useState(false);
+    const [isTwoFAEnabled, setIsTwoFAEnabled] = useState(0);
     const [logError, setLogError] = useState('');
     const [errorAvatar, setErrorAvatar] = useState('');
     const [errorNick, setErrorNick] = useState('');
@@ -125,13 +125,15 @@ function SettingsModal() {
         try {
             let response;
             if (isChecked) {    
-                TwoFA.activated = true;
-                console.log(TwoFA);
+                setTwoFA(1);
                 response = await api.post('api/users/user/enable-2fa/');
                 console.log(response.data);
+                console.log(TwoFA);
             }
             else {
-                TwoFA.activated = false;
+                setTwoFA(2);
+                response = await api.post('api/users/user/disable-2fa/');
+                console.log(response.data);
                 console.log(TwoFA);
             }
 		} catch (error) {
@@ -140,8 +142,11 @@ function SettingsModal() {
         }
     }
     useEffect(() => {
-        setIsTwoFAEnabled(TwoFA.activated);
-    }, [TwoFA.activated])
+        if (TwoFA == 1)
+            setIsTwoFAEnabled(1);
+        else if (TwoFA == 2)
+            setIsTwoFAEnabled(0);
+    }, [TwoFA])
     return (
         <>
             <div className="modal fade" id="UserSettingsModal" tabIndex="-1" style={{ fontFamily: 'cyber4' }}>
@@ -153,7 +158,14 @@ function SettingsModal() {
                         </div>
                         <div className="form-check form-switch ms-5 mb-3" style={{transform: "scale(1.2)", transformOrigin: "top left"}}>
                                 <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked={isTwoFAEnabled} onChange={handle2FA}/>
-                                <label className="form-check-label" htmlFor="flexSwitchCheckChecked">{t('two_fa')}</label>
+                                <label className="form-check-label" htmlFor="flexSwitchCheckChecked">
+                                    {t('two_fa')}
+                                    {isTwoFAEnabled == 1 ? 
+                                    <span className='text-success'>Enabled</span>
+                                     :
+                                    <span className='text-danger'>Disabled</span>
+                                    }
+                                </label>
                         </div>
                         {userData && <div className="modal-body p-5 pt-0">
                             <p>{t('userSettings.changeAvatar')}</p>
