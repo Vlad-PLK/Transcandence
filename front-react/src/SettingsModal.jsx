@@ -23,6 +23,18 @@ function SettingsModal() {
     const [selectedFile, setSelectedFile] = useState(null);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        api.get('api/users/user/status-2fa/')
+        .then(response => {
+            setTwoFA(response.data.is_2fa_enabled);
+            console.log(response.data);
+        })
+        .catch(error => {
+            console.log('Error:', error);
+          // alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+        });
+    }, [])
+
     const clearNick = () => {
         document.getElementById('paramUsername-change').value = '';
         setMessageNick('');
@@ -123,17 +135,14 @@ function SettingsModal() {
     const handle2FA = async (e) => {
         const isChecked = e.target.checked;
         try {
-            let response;
             if (isChecked) {    
-                setTwoFA(1);
-                response = await api.post('api/users/user/enable-2fa/');
-                console.log(response.data);
+                setTwoFA(true);
+                await api.post('api/users/user/enable-2fa/');
                 console.log(TwoFA);
             }
             else {
-                setTwoFA(2);
-                response = await api.post('api/users/user/disable-2fa/');
-                console.log(response.data);
+                setTwoFA(false);
+                await api.post('api/users/user/disable-2fa/');
                 console.log(TwoFA);
             }
 		} catch (error) {
@@ -142,9 +151,9 @@ function SettingsModal() {
         }
     }
     useEffect(() => {
-        if (TwoFA == 1)
+        if (TwoFA == true)
             setIsTwoFAEnabled(1);
-        else if (TwoFA == 2)
+        else if (TwoFA == false)
             setIsTwoFAEnabled(0);
     }, [TwoFA])
     return (

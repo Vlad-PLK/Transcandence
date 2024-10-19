@@ -15,21 +15,56 @@ function LoginModal()
 	const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 	const [errorLog, setLogError] = useState('');
-	const { TwoFA, setTwoFA } = useContext(TwoFaContext);
 	const { setUserData } = useContext(UserDataContext);
 	const { gameData, setGameData } = useContext(GameContext);
+	const [show2FA, setShow2FA] = useState(false);
+	const {TwoFA, setTwoFA} = useContext(TwoFaContext);
+	const [otp_code, setCode] = useState('');
+    const inputRefs = useRef([]);
 	const navigate = useNavigate();
 
 	const cleanForm = () => {
 		document.getElementById('usernameLogin').value = '';
 		document.getElementById('passwordLogin').value = '';
 	}
+	const handleChange = (event, index) => {
+        const newCode = otp_code.split('');
+        newCode[index] = event.target.value;
+        setCode(newCode.join(''));
+
+        if (event.target.value && index < 5){
+            inputRefs.current[index + 1].focus();
+        }
+    };
+
+	const send_otp = async(e) => {
+        e.preventDefault();
+        try {
+			localStorage.removeItem(ACCESS_TOKEN);
+			localStorage.removeItem(REFRESH_TOKEN);
+            const response = await api.post('api/users/user/token/', { username, password, otp_code });
+			localStorage.setItem(ACCESS_TOKEN, response.data.access);
+			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
+			takeData(setUserData);
+			setTwoFA(true);
+			api.get('api/update-game-settings/')
+			.then(response => {
+				setGameData(response.data);
+			})
+			.catch(error => {
+				console.log('Error:', error);
+			});
+            navigate("userPage/");
+		} catch (error) {
+			console.log(error);
+			setLogError("Invalid 2FA code please try again");
+        }
+    }
 
     const loginbutton = async (e) => {
         e.preventDefault();
 		cleanForm();
         try {
-			console.log(TwoFA);
 			localStorage.removeItem(ACCESS_TOKEN);
 			localStorage.removeItem(REFRESH_TOKEN);
             const response = await api.post('api/users/user/token/', { username, password });
@@ -48,15 +83,20 @@ function LoginModal()
             setPassword('');
 		} catch (error) {
 			console.log(error);
-			setUsername('');
-            setPassword('');
-			setLogError(t('login_error'));
+			if (error.response.data.non_field_errors[0] === 'Требуется одноразовый код.') {
+				setShow2FA(true);
+				setLogError('2FA code required');
+			}
+			else
+			{
+				setLogError(t('login_error'));
+				setUsername('');
+            	setPassword('');
+			}
+			console.log(show2FA);
         }
     }
 
-	const send_otp = () => {
-		api.post('api/users/user/token/', {username, password});
-	}
 	return (
 	<>
       	<div className="modal fade" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
@@ -65,31 +105,56 @@ function LoginModal()
         		  <div className="modal-header p-5 pb-4 border-bottom-0">
         		    <h1 className="fw-bold mb-0 fs-4" id="loginModalLabel">{t('welcomeBack')}</h1>
         		    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        		  </div>
-        		  <div className="modal-body p-5 pt-0">
+					{/* <svg className="mb-3 bi bi-file-lock" xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" viewBox="0 0 16 16"> */}
+                            {/* <path d="M8 5a1 1 0 0 1 1 1v1H7V6a1 1 0 0 1 1-1m2 2.076V6a2 2 0 1 0-4 0v1.076c-.54.166-1 .597-1 1.224v2.4c0 .816.781 1.3 1.5 1.3h3c.719 0 1.5-.484 1.5-1.3V8.3c0-.627-.46-1.058-1-1.224M6.105 8.125A.64.64 0 0 1 6.5 8h3a.64.64 0 0 1 .395.125c.085.068.105.133.105.175v2.4c0 .042-.02.107-.105.175A.64.64 0 0 1 9.5 11h-3a.64.64 0 0 1-.395-.125C6.02 10.807 6 10.742 6 10.7V8.3c0-.042.02-.107.105-.175"/> */}
+                            {/* <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1"/> */}
+                    {/* </svg> */}
+				  </div>
+        		  <div className="modal-body p-5 pt-0 pb-4">
         		      <div className="form-floating mb-2">
         		        <input type="text" className="form-control rounded-3" id="usernameLogin" placeholder={t('username')} autoComplete='username' value={username} onChange={(e) => setUsername(e.target.value)}/>
         		        <label htmlFor="usernameLogin">{t('username')}</label>
         		      </div>
-        		      <div className="form-floating mb-2">
+        		      <div className="form-floating">
         		        <input type="password" className="form-control rounded-3" id="passwordLogin" placeholder={t('password')} autoComplete='password' value={password} onChange={(e) => setPassword(e.target.value)}/>
         		        <label htmlFor="passwordLogin">{t('password')}</label>
         		      </div>
-					  	{TwoFA == 1 ?
-        		      		<button className="w-90 mt-2 btn btn-lg rounded-3 btn-primary" data-bs-toggle="modal" data-bs-target="#twofaModal" onClick={send_otp}>{t('login_login')}</button>
-						:
-						<>
-        		      		<button className="w-90 mt-2 btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton}>{t('login_login')}</button>
-        		      		{errorLog && <p className="mt-2 text-danger">{errorLog}</p>}
-						</>
-						}
         		  	 </div>
+					 {show2FA == true ?
+					 <>
+					 <div className="row pt-2">
+					 {[...Array(6)].map((_, index) => (
+						 <div className="col" key={index}>
+							 <input
+								 type="text"
+								 className="form-control text-center py-3"
+								 maxLength="1"
+								 autoFocus={index === 0}
+								 value={otp_code.charAt(index)}
+								 onChange={(event) => handleChange(event, index)}
+								 ref={(el) => inputRefs.current[index] = el}
+							 />
+						 </div>
+					 ))}
+				 	 </div>
+					 <div className="d-flex flex-column align-items-center">
+					 <button className="btn btn-success btn-lg mt-4 align-items-center" data-bs-dismiss="modal" onClick={send_otp}>Verify</button>
+					 {errorLog ? <p className="mt-2 text-danger">{errorLog}</p> : null}
+				 	 </div>
+					</>
+					:
+					<>
+					 <div className="d-flex flex-column align-items-center mb-4">
+					<button className="w-90 btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton}>{t('login_login')}</button>
+        		    {errorLog ? <p className="mt-2 text-danger">{errorLog}</p> : null}
+					</div>
+					</>
+					}
         		</div>
         	</div>
 		</div>
-		<TwoFAModal username={username} password={password}/>
 	</>
 	);
-};
+}
 
 export default LoginModal;

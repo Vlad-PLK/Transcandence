@@ -7,11 +7,13 @@ import TranslationSelect from "./TranslationSelect";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import SettingsModal from "./SettingsModal";
+import { TwoFaContext } from "./TwoFaContext";
 
 function UserSettings()
 {
     const {userData, setUserData} = useContext(UserDataContext);
-    const {t} = useTranslation();
+    const {TwoFA, setTwoFA} = useContext(TwoFaContext);
+	const {t} = useTranslation();
 	const navigate = useNavigate();
     const main_image = {
 		backgroundImage: `url('/game_stats.jpg')`,
@@ -23,6 +25,22 @@ function UserSettings()
 		localStorage.clear();
 		navigate("/");
 	}
+
+	const check_2FA = async() => {
+		try{
+		  await api.get('api/users/user/status-2fa/')
+		  .then(response => {
+			  setTwoFA(response.data.is_2fa_enabled);
+			  console.log(response.data);
+		  })
+		  .catch(error => {
+			  console.log('Error:', error);
+			// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+		  });
+		}catch(error){
+		  console.log(error);}
+		}
+
     return (
         <>
             <>
@@ -40,7 +58,7 @@ function UserSettings()
 								<span className="visually-hidden">Toggle Dropstart</span>
 							</button>
 							<ul className="dropdown-menu opacity-50" style={{fontSize:"12px",textAlign:"center", minWidth:"5rem"}}>
-								<a className="dropdown-item" href="" data-bs-toggle="modal" data-bs-target="#UserSettingsModal">{t('dropdown.settings')}</a>
+								<button className="dropdown-item" data-bs-toggle="modal" data-bs-target="#UserSettingsModal">{t('dropdown.settings')}</button>
 								<Link to={`../userFriends`} className="dropdown-item">{t('dropdown.friends')}</Link>
 								<hr className="dropdown-divider"/>
 								<button className="dropdown-item" onClick={disconnect}>{t('dropdown.disconnect')}</button>

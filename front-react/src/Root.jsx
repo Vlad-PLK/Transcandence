@@ -17,6 +17,7 @@ function Root({children}){
   const {i18n: {changeLanguage} } = useTranslation();
   const [gameData, setGameData] = useState(null);
   const [isUserReady, setIsUserReady] = useState(false);
+  
   useEffect(() => {
     if (localStorage.getItem("language") != null)
       changeLanguage(localStorage.getItem("language"));
@@ -27,7 +28,10 @@ function Root({children}){
       if (!token)
           setIsUserReady(true);
       else
-          takeData(setUserData, setIsUserReady);
+      {
+        takeData(setUserData, setIsUserReady);
+        //check_2FA();
+      }
     }
   }, [isUserReady])
 

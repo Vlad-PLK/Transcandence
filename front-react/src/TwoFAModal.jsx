@@ -17,6 +17,17 @@ function TwoFAModal({username, password})
     const inputRefs = useRef([]);
 	const { setUserData } = useContext(UserDataContext);
 
+    const check_2FA = () => {
+      api.get('api/users/user/status-2fa/')
+      .then(response => {
+          setTwoFA(response.data.is_2fa_enabled);
+          console.log(response.data);
+      })
+      .catch(error => {
+          console.log('Error:', error);
+        // alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+      });
+    }
 
     const handleChange = (event, index) => {
         const newCode = otp_code.split('');
@@ -38,6 +49,7 @@ function TwoFAModal({username, password})
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
 			takeData(setUserData);
+            //check_2FA();
             navigate("userPage/");
 		} catch (error) {
 			setLogError("Invalid 2FA code please try again");
@@ -46,7 +58,7 @@ function TwoFAModal({username, password})
 
     return (
         <>
-        <div className="modal fade" id="twofaModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
+        <div className="modal show" id="twofaModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
             <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div className="modal-content rounded-4 shadow">
                     <div className="modal-header d-flex flex-column p-5 pb-4 border-bottom-0">
