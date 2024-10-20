@@ -14,6 +14,9 @@ import MultiplayerModal from "./MultiplayerModal";
 import { GuestDataContext } from "./GuestDataContext";
 import { createContext } from "react";
 import { color } from "three/examples/jsm/nodes/Nodes.js";
+import WatchTournamentModal from "./WatchTournamentModal";
+import CreateTournamentModal from "./CreateTournamentModal";
+import api from "./api";
 
 function UserGameSetup()
 {
@@ -80,8 +83,8 @@ function UserGameSetup()
     		</div>
             <div className="d-flex flex-column mt-4" style={buttons_style}>
 				<button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#localGame" style={{color: '#6B3EB8'}}>{t('local')}</button>
-				<button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#localGame" style={{color: '#A337C7'}}>{t('join_tournament')}</button>
-                <button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#localGame" style={{color: '#FF29DF'}}>{t('create_tournament')}</button>
+				<button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#tournamentWModal" style={{color: '#A337C7'}}>{t('join_tournament')}</button>
+                <button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#tournamentCModal" style={{color: '#FF29DF'}}>{t('create_tournament')}</button>
             </div>
             <div className="" style={{position: 'absolute', top: '20%', left: '51%', transform: 'translate(-50%, -50%)',fontFamily: 'cyber4'}}>
                 <button type="button" className="btn btn-lg rounded-3 me-4 border-0" style={settings_button} data-bs-toggle="modal" data-bs-target="#gameSettings">{t('game_settings')}</button>
@@ -93,6 +96,8 @@ function UserGameSetup()
             <MultiplayerModal/>
             <GameSettingsModal/>
 			<SettingsModal/>
+			<CreateTournamentModal/>
+			<WatchTournamentModal/>
 		</>
     )
 }

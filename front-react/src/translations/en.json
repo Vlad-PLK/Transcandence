@@ -144,10 +144,12 @@
     "moreDetails": "For more details, click here",
     "play_game": "Start a new game now !",
     "local": "LOCAL GAME",
-    "join_tournament": "JOIN TOURNAMENT",
+    "join_tournament": "WATCH TOURNAMENT",
     "create_tournament": "CREATE TOURNAMENT",
     "multiplayer": "MULTIPLAYER",
     "game_settings": "GAME SETTINGS",
+    "search_tournament": "Search Tournament",
+    "tournamentNotFound": "Tournament not found",
 
     "gameEnd":
     {
@@ -167,8 +169,15 @@
     "tournament":
     {
         "scoreboardTitle": "Tournament Scoreboard",
-        "backButton": "Back"
-    }
+        "backButton": "Back",
+        "List": "Tournament List",
+        "name": "Tournament Name",
+        "noTournament": "No tournament available",
+        "watch": "Watch",
+        "new": "New Tournament",
+        "creator" : "Creator",
+        "placeHolder" : "Tournament Name",
+        "users": "Users"
     },
     "two_fa": "2FA by email : "
 }

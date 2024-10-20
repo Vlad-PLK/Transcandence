@@ -144,7 +144,7 @@
     "settings": "Parametres",
     "play_game": "Lancer une nouvelle partie !",
     "local": "JOUER EN LOCAL",
-    "join_tournament": "REJOINDRE UN TOURNOI",
+    "join_tournament": "REGARDER LES TOURNOIS",
     "create_tournament": "CREER UN TOURNOI",
     "multiplayer": "MULTIJOUEUR",
     "game_settings": "PARAMETRES DU JEU",
@@ -162,8 +162,7 @@
         },
         "winnerCrown": "👑"
     },
-    "two_fa": "2FA by email : "
-    },
+    "two_fa": "2FA by email : ",
     "tournament":
     {
         "scoreboardTitle": "Tableau des scores",
