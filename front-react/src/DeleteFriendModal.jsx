@@ -74,14 +74,6 @@ function DeleteFriendModal({ toggleNotFriend }) {
                             ) : (
                                 <></>
                             )}
-						{/* {userData && <form onSubmit={deleteFriend}> */}
-        		      {/* <div className="form-floating mb-2"> */}
-        		        {/* <input type="text" className="form-control rounded-3" id="username" placeholder='Username' autoComplete='username' value={friend} onChange={(e) => setFriend(e.target.value)}/> */}
-        		        {/* <label htmlFor="username">Username</label> */}
-        		      {/* </div> */}
-        		      {/* <button className="w-90 mt-2 btn btn-lg rounded-3 btn-danger" type="submit" data-bs-dismiss="modal">We're not friends anymore !</button> */}
-        		      {/* {error && <p className="text-danger">{error}</p>} */}
-        		      {/* </form>} */}
                         </div>
                     </div>
                 </div>

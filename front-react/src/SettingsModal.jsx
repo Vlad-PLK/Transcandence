@@ -27,7 +27,7 @@ function SettingsModal() {
         api.get('api/users/user/status-2fa/')
         .then(response => {
             setTwoFA(response.data.is_2fa_enabled);
-            console.log(response.data);
+            //console.log(response.data);
         })
         .catch(error => {
             console.log('Error:', error);

@@ -1,8 +1,26 @@
 import './ChatButton.css'
+import React, { useContext, useEffect, useState } from 'react';
+import api from "./api";
+import { UserDataContext } from './UserDataContext';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 function ChatButton(){
+  const [userFriends, setUserFriends] = useState([]);
+  const { userData } = useContext(UserDataContext);
+
   const startSocket = () => {
-      const socket = new WebSocket("ws://localhost:8000/ws/chat/sos/");
+      if (userData) {
+      api.get('api/friends/friend-list/')
+          .then(response => {
+              setUserFriends(response.data);
+          })
+          .catch(error => {
+              console.log('Error:', error);
+      // alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+          });
+      }
+      const socket = new WebSocket("ws://127.0.0.1:8000/ws/chat/sos/");
 
 			// Connection opened
 			socket.addEventListener("open", event => {
