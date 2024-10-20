@@ -6,7 +6,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.db.models import Q
-
+from users.models import CustomUser
+from gameinfo.models import PlayerStats
+from gameinfo.serializers import PlayerStatsSerializer
+from users.serializers import UserSerializer
 
 class FriendRequestCreateView(generics.CreateAPIView):
     serializer_class = FriendRequestSerializer
@@ -85,3 +88,20 @@ class DeleteFriendshipView(APIView):
         
         except Friendship.DoesNotExist:
             return Response({'error': 'Friend request not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class GetFriendProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        friend = CustomUser.objects.get(pk=pk)
+        friend_stats = PlayerStats.objects.get(player=friend)
+        friend_stats_serializer = PlayerStatsSerializer(friend_stats)
+        friend_profile_serializer = UserSerializer(friend)
+        
+        combined_data = {
+            'profile_data': friend_profile_serializer.data,
+            'profile_stats': friend_stats_serializer.data
+        }
+    
+        return Response(combined_data, status=status.HTTP_200_OK)
