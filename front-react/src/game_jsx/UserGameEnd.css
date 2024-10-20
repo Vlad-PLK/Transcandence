@@ -1,0 +1,85 @@
+/* .endgame-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #1c1c1c;
+} */
+
+.endgame-content {
+    text-align: center;
+    color: white;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.endgame-title {
+    font-size: 72px;
+    margin-bottom: 20px;
+}
+
+.endgame-thanks {
+    font-size: 24px;
+    margin-bottom: 40px;
+}
+
+.scoreboard {
+    margin-bottom: 30px;
+}
+
+.score-table {
+    width: 50%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+.score-table th, .score-table td {
+    border: 2px solid white;
+    padding: 15px;
+    text-align: center;
+    font-size: 24px;
+}
+
+.score-table th {
+    background-color: #333;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.score-table td {
+    background-color: #444;
+    position: relative;
+}
+
+.winner-row td {
+    background-color: gold;
+    color: black;
+}
+
+.crown {
+    margin-right: 10px;
+    font-size: 24px;
+}
+
+.restart-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.restart-btn:hover {
+    background-color: #45a049;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
