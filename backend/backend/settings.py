@@ -90,6 +90,9 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # URL вашего фронтенда
 ]
 
+ALLOWED_HOSTS = ['localhost:3000']
+
+
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
