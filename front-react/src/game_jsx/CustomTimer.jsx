@@ -15,7 +15,7 @@ const ConvertTime = (time) =>
 		return (minutes + ':' + secondes);
 	}
 
-function CustomTimer({seconds, player1, player1_nick, player2, player2_nick, player1_score, player2_score, isGuest})
+function CustomTimer({flag, seconds, player1, player1_nick, player2, player2_nick, player1_score, player2_score, isGuest})
 {
 	const [count, setCount] = useState(seconds);
 	const timerId = useRef();
@@ -46,8 +46,11 @@ function CustomTimer({seconds, player1, player1_nick, player2, player2_nick, pla
 				replace: true,
 				state:
 				{
-					player1: player1_nick,
-					player2: player2_nick,
+					flag: 1,
+					player1: player1,
+					player1_nick: player1_nick,
+					player2: player2,
+					player2_nick: player2_nick,
 					player1_score: player1_score,
 					player2_score: player2_score
 				}

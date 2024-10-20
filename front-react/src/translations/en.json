@@ -158,9 +158,17 @@
             "player": "Player",
             "score": "Score",
             "scoresUnavailable": "Scores unavailable",
-            "restartButton": "Button for tournament stats"
+            "restartButton": "Restart",
+            "newGameButton": "New game",
+            "tournamentStatsButton": "Tournament stats"
         },
         "winnerCrown": "👑"
+    },
+    "tournament":
+    {
+        "scoreboardTitle": "Tournament Scoreboard",
+        "backButton": "Back"
+    }
     },
     "two_fa": "2FA by email : "
 }

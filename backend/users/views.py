@@ -71,7 +71,7 @@ class Enable2FAView(APIView):
         
         if user.is_2fa_enabled:
             return Response(
-                {"message": "Двухфакторная аутентификация уже включена."},
+                {"message": "2Fa is already enalbed"},
                 status=status.HTTP_400_BAD_REQUEST
             )
         

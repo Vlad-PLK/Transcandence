@@ -1,0 +1,87 @@
+.player-column {
+    width: 200px; /* Fixed width for each column */
+}
+
+.left-column {
+    position: absolute; /* Align to the left */
+    left: 0;
+}
+
+.right-column {
+    position: absolute; /* Align to the right */
+    right: 0;
+}
+
+.semifinals {
+    position: absolute; /* Align semifinals with respect to the parent */
+}
+
+.semi-player-box {
+    margin-top: 45px;
+}
+
+.semifinals.left-column {
+    left: calc(35% - 250px); /* Centered with respect to the quarterfinals on the left */
+}
+
+.semifinals.right-column {
+    left: calc(65% + 50px); /* Centered with respect to the quarterfinals on the right */
+}
+
+.finals {
+    position: absolute; /* Align semifinals with respect to the parent */
+}
+
+.finals-player-box {
+    margin-top: 175px;
+}
+
+.finals.left-column {
+    left: calc(50% - 230px); /* Centered with respect to the quarterfinals on the left */
+}
+
+.finals.right-column {
+    left: calc(50% + 30px); /* Centered with respect to the quarterfinals on the right */
+}
+
+.player-group {
+    display: flex;
+    flex-direction: column; /* Stack player boxes vertically */
+}
+
+.quarter-spacer {
+    height: 100px; /* Adjust the height as needed for vertical spacing */
+}
+
+.semi-spacer {
+    height: 10px; /* Adjust the height as needed for vertical spacing */
+}
+
+.img-fluid {
+    max-width: 150px;
+    height: auto;
+}
+
+.quarter-vs-label {
+    color: lightcoral; /* Light red color */
+    font-size: 1.5rem; /* Adjust size as needed */
+    text-align: center; /* Center the text */
+    margin: 10px 0; /* Add some spacing */
+}
+
+.semi-vs-label {
+    color: lightcoral; /* Light red color */
+    font-size: 5.5rem; /* Adjust size as needed */
+    text-align: center; /* Center the text */
+    margin-top: 30px;
+}
+
+.finals-vs-label {
+    font-size: 25px; /* Adjust font size as needed */
+    color: lightcoral; /* Set to a light red color */
+    display: flex; /* Enable flexbox */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    margin: 186px 48.7%; /* Adjust horizontal spacing as needed */
+}
+
