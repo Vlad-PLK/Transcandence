@@ -284,7 +284,7 @@ function checkCollision(scene, sphere, sphereGeometry,
         player2Streak = 0;
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
         shockWave(scene, contactPoint, planeGeometry);
-        player1Score += 1;
+        player2Score += 1;
         if (scoreFlag == 1)
         {
             player1Streak += 1;
@@ -303,7 +303,7 @@ function checkCollision(scene, sphere, sphereGeometry,
         player1Streak = 0;
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
         shockWave(scene, contactPoint, planeGeometry);
-        player2Score += 1;
+        player1Score += 1;
         if (scoreFlag == 2)
         {
             player2Streak += 1;
@@ -416,7 +416,7 @@ function UserGame()
     // SETTINGS
     // if (!gameData)
     //     return;
-    const starType = gameData.starFlag;
+    const starType = gameData.startFlag;
     let BHsize, sizeChecker, BHcolor, BHintensity;
     let starRadius, starIntensity, starColor, starCorona;
 
@@ -443,21 +443,21 @@ function UserGame()
 
     const powerUp = gameData.powerEnabled;
 
-    // TESTING SETTINGS
+    // // TESTING SETTINGS
 
-    if (gameData)
-    {
-        console.log("Current Star FLAG", starType);
-        console.log("Current size BH", BHsize);
-        console.log("Current color BH", BHcolor);
-        console.log("Current custom size", starRadius);
-        console.log("Current custom intensity", starIntensity);
-        console.log("Current custom color", starColor);
-        console.log("Current custom corona", starCorona);
-        console.log("Current boosts status", boost);
-        console.log("Current boost factor", boostPower);
-        console.log("Current powerup", powerUp);
-    }
+    // if (gameData)
+    // {
+    //     console.log("Current Star FLAG", starType);
+    //     console.log("Current size BH", BHsize);
+    //     console.log("Current color BH", BHcolor);
+    //     console.log("Current custom size", starRadius);
+    //     console.log("Current custom intensity", starIntensity);
+    //     console.log("Current custom color", starColor);
+    //     console.log("Current custom corona", starCorona);
+    //     console.log("Current boosts status", boost);
+    //     console.log("Current boost factor", boostPower);
+    //     console.log("Current powerup", powerUp);
+    // }
 
     let maxDistance = 0;
 
@@ -790,24 +790,21 @@ function UserGame()
             }
         }
         window.removeEventListener('resize', onWindowResize);
-        //document.removeEventListener('keydown', handleKeyDown);
-        //document.removeEventListener('keyup', handleKeyUp);
         if (rendererRef.current) {
             rendererRef.current.dispose();
         }
         if (mountRef.current){
             mountRef.current.removeChild(rendererRef.current.domElement);
         }
-      // Cleanup Three.js objects and event listeners
     };
-    }, [setScoreP1, setScoreP2]); // Empty dependency array to run effect only once
+    }, [setScoreP1, setScoreP2]);
 
   return (
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
         {<div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
         <CustomTimer 
-                seconds={7} 
+                seconds={20} 
                 player1={userData.id} 
                 player1_nick={userData.username}
                 player2={guestData.id} 

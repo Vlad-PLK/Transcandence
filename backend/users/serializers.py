@@ -64,3 +64,9 @@ class CustomTokenObtainPairSerializer(serializers.Serializer):
                 raise serializers.ValidationError("Неверный одноразовый код.")
 
         return user
+
+
+class Get2FAStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['is_2fa_enabled']

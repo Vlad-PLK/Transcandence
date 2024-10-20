@@ -1,0 +1,149 @@
+from rest_framework import generics
+from gameinfo.models import PlayerStats
+from .models import Tournament, Participant, TournamentMatch
+from .serializers import TournamentSerializer, ParticipantSerializer, TournamentMatchSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .utils import update_match_stats
+import random
+from django.db import models
+from rest_framework import status
+
+class CreateTournamentView(generics.CreateAPIView):
+    queryset = Tournament.objects.all()
+    serializer_class = TournamentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+
+class ListTournamentsView(generics.ListAPIView):
+    serializer_class = TournamentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Tournament.objects.filter(creator=self.request.user)
+
+class AddParticipantView(generics.CreateAPIView):
+    queryset = Participant.objects.all()
+    serializer_class = ParticipantSerializer
+    permission_classes = [IsAuthenticated]
+
+class ShuffleParticipantsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        tournament = Tournament.objects.get(pk=pk)
+        participants = list(tournament.participants.all())
+        random.shuffle(participants)
+
+        matches = []
+        for i in range(0, len(participants), 2):
+            if i + 1 < len(participants):
+                match = TournamentMatch.objects.create(
+                    tournament=tournament,
+                    player1=participants[i],
+                    player2=participants[i+1]
+                )
+                matches.append(match)
+
+        return Response({'status': 'Participants shuffled and matches created!'})
+
+class AdvanceToNextRoundView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        tournament = Tournament.objects.get(pk=pk)
+
+        current_round = request.data.get('round', 1)
+
+        matches = TournamentMatch.objects.filter(tournament=tournament, round=current_round)
+        winners = [match.winner for match in matches if match.winner]
+
+        if len(winners) != len(matches):
+            return Response({'error': 'Not all matches are finished'}, status=400)
+
+        next_round = current_round + 1
+        if len(winners) < 2:
+            return Response({'error': 'Not enough players for the next round'}, status=400)
+
+        random.shuffle(winners)
+
+        for i in range(0, len(winners), 2):
+            if i + 1 < len(winners):
+                TournamentMatch.objects.create(
+                    tournament=tournament,
+                    player1=winners[i],
+                    player2=winners[i + 1],
+                    round=next_round
+                )
+
+        return Response({'status': f'Round {next_round} matches created!'})
+
+
+class MatchResultView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, match_id):
+        try:
+            match = TournamentMatch.objects.get(pk=match_id)
+        except TournamentMatch.DoesNotExist:
+            return Response({'error': 'Match not found'}, status=404)
+
+        match.player1_goals = request.data.get('player1_goals')
+        match.player2_goals = request.data.get('player2_goals')
+
+        if match.player1_goals > match.player2_goals:
+            match.winner = match.player1 
+            if match.round == 3:
+                tournament = match.tournament
+                tournament.winner = match.player1.nickname
+                tournament.save()
+        if match.player2_goals > match.player1_goals:
+            match.winner = match.player2
+            if match.round == 3:
+                tournament = match.tournament
+                tournament.winner = match.player2.nickname
+                tournament.save()
+
+        match.save()
+        update_match_stats(match)
+        return Response({'status': 'Match result and stats updated successfully!'})
+
+
+class GetMatchesToPlayView(APIView):
+    """
+    Вью для получения списка матчей текущего раунда, которые еще не сыграны.
+    """
+    def get_current_round(self, tournament):
+        max_round_with_unfinished_matches = TournamentMatch.objects.filter(
+            tournament=tournament, 
+            winner__isnull=True 
+        ).aggregate(max_round=models.Max('round'))['max_round']
+        
+        return max_round_with_unfinished_matches if max_round_with_unfinished_matches else 1
+
+    def get_matches_to_play(self, tournament):
+        current_round = self.get_current_round(tournament)
+        
+        matches_to_play = TournamentMatch.objects.filter(
+            tournament=tournament,
+            round=current_round,
+            winner__isnull=True  
+        )
+        
+        return matches_to_play
+
+    def get(self, request, pk):
+        try:
+            tournament = Tournament.objects.get(id=pk)
+            
+            matches_to_play = self.get_matches_to_play(tournament)
+            
+            serializer = TournamentMatchSerializer(matches_to_play, many=True)
+            
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        except Tournament.DoesNotExist:
+            return Response({'error': 'Tournament not found'}, status=status.HTTP_404_NOT_FOUND)

@@ -3,6 +3,8 @@
     "main.title": "42",
     "login": "Login",
     "signup": "Take me there!",
+    "login_error": "The provided credentials are wrong",
+    "draw_result": "Draw",
     "register": {
         "title": "Create your account now!",
         "username": "Username",
@@ -47,7 +49,9 @@
         "enableStreakPower": "Enable streak power",
         "save": "SAVE",
         "cancel": "CANCEL",
-        "default": "DEFAULT"
+        "default": "DEFAULT",
+        "save_msg": "New game settings added !",
+        "default_msg": "Game Settings back to default !"
       },
     "localGame":
     {
@@ -165,4 +169,6 @@
         "scoreboardTitle": "Tournament Scoreboard",
         "backButton": "Back"
     }
+    },
+    "two_fa": "2FA by email : "
 }

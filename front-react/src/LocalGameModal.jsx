@@ -1,43 +1,13 @@
 import { useContext } from "react";
 import { UserDataContext } from "./UserDataContext";
-import { useNavigate } from "react-router-dom";
-import { GameContext } from "./GameContext";
 import GuestModal from "./GuestModal";
 import PlayerModal from "./PlayerModal";
-import api from "./api";
 import { useTranslation } from 'react-i18next';
 
 function LocalGameModal() {
     const { t } = useTranslation();
     
     const { userData } = useContext(UserDataContext);
-    const navigate = useNavigate();
-
-    const launchGame = () => {
-        api.get("api/get-user-id/", {
-            params: {
-                username: "vlad_plk"
-            }
-        })
-        .then(response => {
-            console.log(response);
-            //setGuestData(prevState => ({
-            //	...prevState,
-            //	guestNickname: username,
-            //	nickname: username,
-            //	id: response.id,
-            //	isGuest: false
-            //}));
-            //navigate("/userGameWindow/"); 
-        })
-        .catch(error => {
-            console.log('Error:', error);
-        });
-    };
-
-    const startGame = () => {
-        navigate("/userGameWindow/");
-    };
 
     return (
         <>
@@ -61,9 +31,6 @@ function LocalGameModal() {
                                         <button className="ms-2 btn btn-sm btn-danger" style={{ color: "#000" }} data-bs-toggle="modal" data-bs-target="#playerModal">{t('login')}</button> 
                                     </div>
                                 </div>
-                            </div>
-                            <div className="d-flex justify-content-center mt-3">
-                                <button className="btn btn-sm rounded-3 btn-dark" type="submit" data-bs-dismiss="modal" onClick={launchGame}>{t('localGame.startTheGame')}</button> 
                             </div>
                         </div>
                     </div>

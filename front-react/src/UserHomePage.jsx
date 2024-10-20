@@ -9,65 +9,21 @@ import './customFonts.css';
 import SettingsModal from "./SettingsModal";
 import { useNavigate } from "react-router-dom";
 import api from "./api";
+import { GameContext } from "./GameContext";
+import ChatButton from "./ChatButton";
+import ChatWindow from "./ChatWindow";
 
 function UserHomePage() {
 	const { userData, setUserData } = useContext(UserDataContext);
-	const { userStats, setUserStats } = useContext(UserStatsContext);
+	const { setUserStats } = useContext(UserStatsContext);
+	const { setGameData } = useContext(GameContext);
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const [parent, setParent] = useState(null);
 	const main_image = {
 		backgroundImage: `url('/cyber4.jpg')`,
 		backgroundSize: 'cover',
 		backgroundPosition: 'center',
 	};
-	const boxRef = useRef(null);
-	const containerRef = useRef(null);
-	const isClicked = useRef(false);
-	const coords = useRef({
-		startX: 0,
-		startY: 0,
-		lastX: 0,
-		lastY: 0
-	});
-	useEffect(() => {
-		if (!boxRef.current || !containerRef.current) return;
-
-		const box = boxRef.current;
-		const container = containerRef.current;
-		const onMouseDown = (e) => {
-			isClicked.current = true;
-			coords.current.startX = e.clientX;
-			coords.current.startY = e.clientY;
-		}
-		const onMouseUp = (e) => {
-			isClicked.current = false;
-			coords.current.lastX = box.offsetLeft;
-			coords.current.lastY = box.offsetTop;
-		}
-		const onMouseMove = (e) => {
-			if (!isClicked.current) return;
-
-			const nextX = e.clientX - coords.current.startX + coords.current.lastX;
-			const nextY = e.clientY - coords.current.startY + coords.current.lastY;
-
-			box.style.top = `${nextY}px`;
-			box.style.left = `${nextX}px`;
-		}
-		box.addEventListener('mousedown', onMouseDown);
-		box.addEventListener('mouseup', onMouseUp);
-		container.addEventListener("mousemove", onMouseMove);
-		container.addEventListener("mouseleave", onMouseUp);
-
-		const cleanup = () => {
-			box.removeEventListener('mousedown', onMouseDown);
-			box.removeEventListener('mouseup', onMouseUp);
-			container.removeEventListener('mousemove', onMouseMove);
-			container.removeEventListener('mouseleave', onMouseUp);
-		}
-		return cleanup;
-
-	}, [])
 	useEffect(() => {
 		if (userData == null)
 			navigate("/");
@@ -92,9 +48,19 @@ function UserHomePage() {
 		}
 		navigate('../userSettings');
 	}
-	function handleDragEnd(event) {
-		const { over } = event;
-		setParent(over ? over.id : null);
+	const game_setup = async(e) => {
+		try{
+			await api.get('api/update-game-settings/')
+			.then(response => {
+				setGameData(response.data);
+				navigate('../userGameSetup/')
+			})
+			.catch(error => {
+				console.log('Error:', error);
+			});
+		}catch(error){
+			console.log(error);
+		}	
 	}
 	return (
 		<>
@@ -133,7 +99,11 @@ function UserHomePage() {
 					</div>
 				</header>
 				<div className="opacity-75" style={{ position: 'absolute', top: '50%', left: '51%', transform: 'translate(-50%, -50%)', fontFamily: 'cyber4' }}>
-					<Link to={`../userGameSetup/`} type="button" className="btn btn-dark rounded-3 me-2">{t('play_game')}</Link>
+					<button type="button" className="btn btn-dark rounded-3 me-2" onClick={game_setup}>{t('play_game')}</button>
+				</div>
+				<div className="">
+					<ChatButton/>
+					<ChatWindow/>
 				</div>
 			</div>
 			<SettingsModal />

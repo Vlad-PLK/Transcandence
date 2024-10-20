@@ -2,6 +2,8 @@
     "title": "Transcendance",
     "login": "Se connecter",
     "signup": "S'inscrire",
+    "login_error": "Les donnees saisies sont incorrectes !",
+    "draw_result": "Egalite",
     "register": {
         "title": "Creez votre compte maintenant!",
         "username": "Nom d'utilisateur",
@@ -41,7 +43,9 @@
         "enableStreakPower": "Activer 'Remontada'",
         "save": "SAUVEGARDER",
         "cancel": "ANNULER",
-        "default": "PAR DEFAUT"
+        "default": "PAR DEFAULT",
+        "save_msg": "Nouveaux parametres de jeu sauvegardes !",
+        "default_msg": "Parametres reinitialises !"
       },
       "localGame":
       {
@@ -157,6 +161,8 @@
             "newGameButton": "Nouvelle partie"
         },
         "winnerCrown": "👑"
+    },
+    "two_fa": "2FA by email : "
     },
     "tournament":
     {

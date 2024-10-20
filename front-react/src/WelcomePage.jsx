@@ -11,18 +11,20 @@ import UserHomePage from "./UserHomePage";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "./constants";
 import { UserConnectContext } from "./UserConnectContext";
 import { userData } from "three/examples/jsm/nodes/Nodes.js";
+import { TwoFaContext } from "./TwoFaContext";
+import api from "./api";
 
 function WelcomePage()
 {
   const { t } = useTranslation();
   const {navigate} = useNavigate();
   const {userData} = useContext(UserDataContext);
+  const {TwoFA, setTwoFA} = useContext(TwoFaContext);
   const main_image = {
 		backgroundImage: `url('/cyberpunk1.jpg')`,
 		backgroundSize: 'cover', // Adjust background size as needed
 		backgroundPosition: 'center', // Adjust background position as needed
 	};
-
 	return (
     <>
     {userData == null ?	

@@ -2,7 +2,9 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .serializers import UserSerializer, UsernameUpdateSerializer, ChangePasswordSerializer, CustomTokenObtainPairSerializer
+from .serializers import (UserSerializer, UsernameUpdateSerializer, 
+                         ChangePasswordSerializer, CustomTokenObtainPairSerializer, 
+                         Get2FAStatusSerializer)
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import permissions
 from .models import CustomUser
@@ -69,7 +71,7 @@ class Enable2FAView(APIView):
         
         if user.is_2fa_enabled:
             return Response(
-                {"message": "Двухфакторная аутентификация уже включена."},
+                {"message": "2Fa is already enalbed"},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
@@ -83,18 +85,15 @@ class Enable2FAView(APIView):
         otp_code = totp.now()
 
         send_mail(
-            'Двухфакторная аутентификация включена',
-            f'Двухфакторная аутентификация была включена для вашего аккаунта. '
-            f'Ваш текущий OTP-код: {otp_code}',
+            '2FA is enabled now',
+            f'2FA is now ebabled for ur account!'
             'from@example.com',
             [user.email],
         )
 
         return Response(
             { 
-                "message": "Двухфакторная аутентификация теперь включена.",
-                "secret_key": user.secret_key,
-                "otp_code": otp_code 
+                "message": "2Fa is now enabled.",
             },
             status=status.HTTP_200_OK
         )
@@ -114,3 +113,32 @@ class CustomTokenObtainPairView(APIView):
             return TokenObtainPairView.as_view()(http_request)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Disable2FAView(APIView):
+    permissions_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+
+        if user.is_2fa_enabled == False:
+            return Response({'error': '2Fa is not enabled'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if user.secret_key:
+            user.secret_key = ""
+        
+        user.is_2fa_enabled = False
+        user.save()
+
+        return Response({'message': '2Fa was disabled'}, status=status.HTTP_200_OK)
+
+
+class Get2FAStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        serializer = Get2FAStatusSerializer(user)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

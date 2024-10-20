@@ -14,8 +14,8 @@ def generate_otp(user):
     totp = pyotp.TOTP(user.secret_key)
     otp_code = totp.now()
     send_mail(
-        'Ваш код для входа',
-        f'Ваш код для двухфакторной аутентификации: {otp_code}',
+        'Your 2fa code',
+        f'Your 2Fa code: {otp_code}',
         'from@example.com',
         [user.email],
     )

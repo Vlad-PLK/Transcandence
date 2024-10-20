@@ -1,173 +1,150 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { GameContext } from "./GameContext";
 import { useTranslation } from 'react-i18next';
+import api from "./api";
 
 function GameSettingsModal() {
     const { gameData, setGameData } = useContext(GameContext);
+    const [msg, setMsg] = useState(null);
     const { t } = useTranslation();
 
-    const [selectedStar, setSelectedStar] = useState(gameData.starFlag || 0);
-    const [selectedSize, setSelectedSize] = useState(gameData.customStarSize || 1);
-    const [selectedColor, setSelectedColor] = useState(gameData.customStarColor || "#DC1010");
-    const [selectedIntensity, setSelectedIntensity] = useState(gameData.customStarIntensity || 1);
-    const [selectedCorona, setSelectedCorona] = useState(gameData.customCoronaType || 0);
-    const [selectedBHSize, setSelectedBHSize] = useState(gameData.gargantuaSize || 2);
-    const [selectedBHIntensity, setSelectedBHIntensity] = useState(gameData.gargantuaIntensity || 1);
-    const [selectedBHColor, setSelectedBHColor] = useState(gameData.gargantuaColor || "#c5e0e2");
-    const [selectedBoost, setSelectedBoost] = useState(gameData.boostsEnabled || 0);
-    const [selectedBoostFactor, setSelectedBoostFactor] = useState(gameData.boostFactor || 1);
-    const [selectedPower, setSelectedPower] = useState(gameData.powerEnabled || 0);
-
     const handleChange = (event) => {
-        const star = event.target.value;
-        console.log(star);
-        setSelectedStar(star);
         setGameData(prevState => ({
             ...prevState,
-            starFlag: star,
+            startFlag: event.target.value,
         }));
     };
 
     const handleBlackHoleSizeChange = (event) => {
-        const newBHSize = event.target.value;
-        setSelectedBHSize(newBHSize);
         setGameData(prevState => ({
             ...prevState,
-            gargantuaSize: newBHSize,
+            gargantuaSize: event.target.value,
         }));
     };
 
     const handleGargantuaColorChange = (event) => {
-        const newBHColor = event.target.value;
-        setSelectedBHColor(newBHColor);
         setGameData(prevState => ({
             ...prevState,
-            gargantuaColor: newBHColor,
+            gargantuaColor: event.target.value,
         }));
     };
 
     const handleGargantuaIntensityChange = (event) => {
-        const newBHIntensity = event.target.value;
-        setSelectedBHIntensity(newBHIntensity);
         setGameData(prevState => ({
             ...prevState,
-            gargantuaIntensity: newBHIntensity,
+            gargantuaIntensity: event.target.value,
         }));
     };
 
     const handleCustomSizeChange = (event) => {
-        const newSize = event.target.value;
-        setSelectedSize(newSize);
         setGameData(prevState => ({
             ...prevState,
-            customStarSize: newSize,
+            customStarSize: event.target.value,
         }));
     };
 
     const handleCustomColorChange = (event) => {
-        const newColor = event.target.value;
-        setSelectedColor(newColor);
         setGameData(prevState => ({
             ...prevState,
-            customStarColor: newColor,
+            customStarColor: event.target.value,
         }));
     };
 
     const handleCustomCoronaType = (event) => {
-        const newCorona = event.target.value;
-        setSelectedCorona(newCorona);
         setGameData(prevState => ({
             ...prevState,
-            customCoronaType: newCorona,
+            customCoronaType: event.target.value,
         }));
     };
 
     const handleCustomIntensityChange = (event) => {
-        const newIntensity = event.target.value;
-        setSelectedIntensity(newIntensity);
         setGameData(prevState => ({
             ...prevState,
-            customStarIntensity: newIntensity,
+            customStarIntensity: event.target.value,
         }));
     };
 
     const handleBoostChange = (event) => {
-        const newBoost = event.target.value;
-        setSelectedBoost(newBoost);
         setGameData(prevState => ({
           ...prevState,
-          boostsEnabled: newBoost,
+          boostsEnabled: event.target.value,
         }));
       };
 
     const handleBoostFactorChange = (event) => {
-        const newBoostFactor = event.target.value;
-        setSelectedBoostFactor(newBoostFactor);
         setGameData(prevState => ({
             ...prevState,
-            boostFactor: newBoostFactor,
+            boostFactor: event.target.value,
         }));
     };
 
     const handlePowerChange = (event) => {
-        const newPower = event.target.value;
-        setSelectedPower(newPower);
         setGameData(prevState => ({
           ...prevState,
-          powerEnabled: newPower,
+          powerEnabled: event.target.value,
         }));
       };
 
-    const save_setttings = () => {
+    const save_setttings = async() => {
         //send request to back to save settings for the user//
-        console.log(gameData);
+        await api.patch('api/update-game-settings/', 
+            {
+                startFlag: gameData.startFlag,
+                gargantuaSize: gameData.gargantuaSize,
+                gargantuaColor: gameData.gargantuaColor,
+                customStarSize: gameData.customStarSize,
+                gargantuaIntensity: gameData.gargantuaIntensity,
+                customStarColor: gameData.customStarColor,
+                customCoronaType: gameData.customCoronaType,
+                customStarIntensity: gameData.customStarIntensity,
+                boostsEnabled: gameData.boostsEnabled,
+                boostFactor: gameData.boostFactor,
+                powerEnabled: gameData.powerEnabled,
+                gameDuration: 20,
+            }
+        ).then(response => {
+            setMsg('');
+            setMsg(t('gameSettings.save_msg'));
+        }).catch(error => {
+            console.log(error);
+        })
     }
-    const cancel_setttings = () => {
-        //reset all selector to the previous state//
-        console.log(gameData);
-    }
-    const default_setttings = () => {
+    const default_setttings = async() => {
         //reset all selector to default value//
-        setSelectedStar(0);
-        setSelectedBHSize(2.0);
-        setSelectedBHColor("#c5e0e2");
-        setSelectedBHIntensity(1.0);
-        setSelectedSize(4);
-        setSelectedColor("#DC1010");
-        setSelectedCorona(0);
-        setSelectedIntensity(4);
-        setSelectedBoost(0);
-        setSelectedBoostFactor(1);
-        setSelectedPower(0);
-        setGameData(prevState => ({
-            ...prevState,
-            starFlag:0,
-            gargantuaSize:2.0,
-            gargantuaColor:"#c5e0e2",
-            gargantuaIntensity:1.0,
-            customStarSize:4,
-            customStarColor:"#DC1010",
-            customCoronaType:0,
-            customStarIntensity:4,
-            boostsEnabled:0,
-            boostFactor:1,
-            powerEnabled:0,
-            gameDuration:10,
-          }));
+        try
+        {
+            await api.put('api/update-game-settings/')
+            .then(response => {
+                setGameData(response.data);
+                setMsg('');
+                setMsg(t('gameSettings.default_msg'));
+            })
+            .catch(error => {
+                console.log('Error:', error);
+            });
+        }
+        catch(error)
+        {
+            console.log(error);
+        }
     }
 
+    const reset_msg = () => {
+        setMsg('');
+    }
     return (
         <>
             <div className="modal fade" id="gameSettings" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
                 <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div className="modal-content rounded-4 shadow">
                         <div className="modal-header p-5 pb-4 border-bottom-0">
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={reset_msg}></button>
                         </div>
+                        {gameData &&
                         <div className="modal-body p-5 pt-0">
                             <div>
                                 <h5>{t('gameSettings.selectStar')}</h5>
-                                <select className="form-select" value={selectedStar} onChange={handleChange}>
+                                <select className="form-select" value={gameData.startFlag} onChange={handleChange}>
                                     <option value="0">{t('gameSettings.sun')}</option>
                                     <option value="1">{t('gameSettings.whiteDwarf')}</option>
                                     <option value="2">{t('gameSettings.redGiant')}</option>
@@ -175,7 +152,7 @@ function GameSettingsModal() {
                                     <option value="4">{t('gameSettings.custom')}</option>
                                 </select>
 
-                                {gameData.starFlag === "3" && (
+                                {gameData.startFlag === "3" && (
                                     <>
                                         <h5 className="pt-3">{t('gameSettings.selectSize')}</h5>
                                         <div className="form-check">
@@ -184,9 +161,9 @@ function GameSettingsModal() {
                                                 className="form-check-input"
                                                 id="smallSize"
                                                 name="gargantuaSize"
-                                                value="1.0"
+                                                value="1"
                                                 onChange={handleBlackHoleSizeChange}
-                                                checked={selectedBHSize === "1.0"}
+                                                checked={gameData.gargantuaSize === "1"}
                                             />
                                             <label className="form-check-label" htmlFor="smallSize">{t('gameSettings.small')}</label>
                                         </div>
@@ -196,9 +173,9 @@ function GameSettingsModal() {
                                                 className="form-check-input"
                                                 id="intermediateSize"
                                                 name="gargantuaSize"
-                                                value="2.0"
+                                                value="2"
                                                 onChange={handleBlackHoleSizeChange}
-                                                checked={selectedBHSize === "2.0"}
+                                                checked={gameData.gargantuaSize === "2"}
                                             />
                                             <label className="form-check-label" htmlFor="intermediateSize">{t('gameSettings.intermediate')}</label>
                                         </div>
@@ -208,9 +185,9 @@ function GameSettingsModal() {
                                                 className="form-check-input"
                                                 id="bigSize"
                                                 name="gargantuaSize"
-                                                value="3.0"
+                                                value="3"
                                                 onChange={handleBlackHoleSizeChange}
-                                                checked={selectedBHSize === "3.0"}
+                                                checked={gameData.gargantuaSize === "3"}
                                             />
                                             <label className="form-check-label" htmlFor="bigSize">{t('gameSettings.big')}</label>
                                         </div>
@@ -222,14 +199,14 @@ function GameSettingsModal() {
                                                 type="color"
                                                 className="form-control form-control-color"
                                                 id="gargantuaColor"
-                                                value={selectedBHColor}
+                                                value={gameData.gargantuaColor}
                                                 onChange={handleGargantuaColorChange}
                                                 title={t('gameSettings.pickColor')}
                                             />
                                         </form>
 
                                         <div className="pt-3">
-                                            <label htmlFor="customRange2" className="form-label">{t('gameSettings.intensity')} {selectedBHIntensity}</label>
+                                            <label htmlFor="customRange2" className="form-label">{t('gameSettings.intensity')} {gameData.gargantuaIntensity}</label>
                                             <input
                                                 type="range"
                                                 className="form-range"
@@ -237,17 +214,17 @@ function GameSettingsModal() {
                                                 max="3"
                                                 step="1"
                                                 id="customRange2"
-                                                value={selectedBHIntensity}
+                                                value={gameData.gargantuaIntensity}
                                                 onChange={handleGargantuaIntensityChange}
                                             />
                                         </div>
                                     </>
                                 )}
 
-                                {gameData.starFlag === "4" && (
+                                {gameData.startFlag === "4" && (
                                     <>
                                         <div className="pt-3">
-                                            <label htmlFor="customRange" className="form-label">{t('gameSettings.selectSize')} {selectedSize}</label>
+                                            <label htmlFor="customRange" className="form-label">{t('gameSettings.selectSize')} {gameData.customStarSize}</label>
                                             <input
                                                 type="range"
                                                 className="form-range"
@@ -255,7 +232,7 @@ function GameSettingsModal() {
                                                 max="8"
                                                 step="1"
                                                 id="customRange"
-                                                value={selectedSize}
+                                                value={gameData.customStarSize}
                                                 onChange={handleCustomSizeChange}
                                             />    
                                         </div>
@@ -268,7 +245,7 @@ function GameSettingsModal() {
                                                     type="color"
                                                     className="form-control form-control-color"
                                                     id="customColor"
-                                                    value={selectedColor}
+                                                    value={gameData.customStarColor}
                                                     onChange={handleCustomColorChange}
                                                     title={t('gameSettings.pickColor')}
                                                 />
@@ -276,7 +253,7 @@ function GameSettingsModal() {
                                         </div>
 
                                         <div className="pt-3">
-                                            <label htmlFor="customRange1" className="form-label">{t('gameSettings.intensity')} {selectedIntensity}</label>
+                                            <label htmlFor="customRange1" className="form-label">{t('gameSettings.intensity')} {gameData.customStarIntensity}</label>
                                             <input
                                                 type="range"
                                                 className="form-range"
@@ -284,13 +261,13 @@ function GameSettingsModal() {
                                                 max="8"
                                                 step="1"
                                                 id="customRange1"
-                                                value={selectedIntensity}
+                                                value={gameData.customStarIntensity}
                                                 onChange={handleCustomIntensityChange}
                                             />
                                         </div>
 
                                         <h5>{t('gameSettings.corona')}</h5>
-                                        <select className="form-select" value={selectedCorona} onChange={handleCustomCoronaType}>
+                                        <select className="form-select" value={gameData.customCoronaType} onChange={handleCustomCoronaType}>
                                             <option value="0">{t('gameSettings.noCorona')}</option>
                                             <option value="1">{t('gameSettings.corona1')}</option>
                                             <option value="2">{t('gameSettings.corona2')}</option>
@@ -301,13 +278,13 @@ function GameSettingsModal() {
 
                             <div className="pt-4">
                                 <h5>{t('gameSettings.addBoosters')}</h5>
-                                <select className="form-select" value={selectedBoost} onChange={handleBoostChange}>
+                                <select className="form-select" value={gameData.boostsEnabled} onChange={handleBoostChange}>
                                     <option value="0">{t('gameSettings.disableBoosters')}</option>
                                     <option value="1">{t('gameSettings.enableBoosters')}</option>
                                 </select>
                                 {gameData.boostsEnabled === "1" && (
                                     <>
-                                        <label htmlFor="customRange2" className="form-label">{t('gameSettings.boosterSpeed')} {selectedBoostFactor}</label>
+                                        <label htmlFor="customRange2" className="form-label">{t('gameSettings.boosterSpeed')} {gameData.boostFactor}</label>
                                         <input
                                             type="range"
                                             className="form-range"
@@ -315,7 +292,7 @@ function GameSettingsModal() {
                                             max="3"
                                             step="1"
                                             id="customRange2"
-                                            value={selectedBoostFactor}
+                                            value={gameData.boostFactor}
                                             onChange={handleBoostFactorChange}
                                         />
                                     </>
@@ -324,7 +301,7 @@ function GameSettingsModal() {
 
                             <div className="pt-4">
                                 <h5>{t('gameSettings.addStreakPower')}</h5>
-                                <select className="form-select" value={selectedPower} onChange={handlePowerChange}>
+                                <select className="form-select" value={gameData.powerEnabled} onChange={handlePowerChange}>
                                     <option value="0">{t('gameSettings.disableStreakPower')}</option>
                                     <option value="1">{t('gameSettings.enableStreakPower')}</option>
                                 </select>
@@ -332,10 +309,10 @@ function GameSettingsModal() {
 
                             <div className="d-flex flex-row pt-3">
                                 <button className="btn btn-md btn-success me-2" onClick={save_setttings}>{t('gameSettings.save')}</button>
-                                <button className="btn btn-md btn-danger me-2" onClick={cancel_setttings}>{t('gameSettings.cancel')}</button>
                                 <button className="btn btn-md btn-warning" onClick={default_setttings}>{t('gameSettings.default')}</button>
                             </div>
-                        </div>
+                            {msg && <p className="mt-2 text-success">{msg}</p>}
+                        </div>}
                     </div>
                 </div>
             </div>
