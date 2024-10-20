@@ -153,8 +153,14 @@
             "player": "Joueur",
             "score": "Score",
             "scoresUnavailable": "Scores indisponibles",
-            "restartButton": "Bouton pour les statistiques du tournoi"
+            "restartButton": "Rejouer",
+            "newGameButton": "Nouvelle partie"
         },
         "winnerCrown": "👑"
+    },
+    "tournament":
+    {
+        "scoreboardTitle": "Tableau des scores",
+        "backButton": "Retour"
     }
 }
