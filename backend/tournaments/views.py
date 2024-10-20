@@ -147,3 +147,18 @@ class GetMatchesToPlayView(APIView):
         
         except Tournament.DoesNotExist:
             return Response({'error': 'Tournament not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class TournamentParticipantsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            tournament = Tournament.objects.get(id=pk)
+        except:
+            return Response({'error': 'Tournament not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        participants = tournament.participants.all()
+        serializer = ParticipantSerializer(participants, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
