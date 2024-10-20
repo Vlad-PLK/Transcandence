@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (CreateTournamentView, ListTournamentsView, AddParticipantView, 
                     ShuffleParticipantsView, AdvanceToNextRoundView, MatchResultView, GetMatchesToPlayView,
-                    TournamentParticipantsView)
+                    TournamentParticipantsView, GetUserTournamentsListView, GetUserTournamentsStatsView)
 
 urlpatterns = [
     path("tournament/create-tournament/", CreateTournamentView.as_view(), name='create-tournament'),
@@ -12,4 +12,6 @@ urlpatterns = [
     path('tournament/match/<int:match_id>/result/', MatchResultView.as_view(), name='match-result-view'),
     path('tournament/<int:pk>/needed-matches/', GetMatchesToPlayView.as_view(), name='needed-matches'),
     path('tournament/<int:pk>/participants/', TournamentParticipantsView.as_view(), name='tournament-participants'),
+    path('tournaments/get-user-tournaments/', GetUserTournamentsListView.as_view(), name='get-user-tournaments'),
+    path('tournamets/<int:pk>/user-tournament-stats/', GetUserTournamentsStatsView.as_view(), name='get-user-tournament-stats')
 ]

@@ -9,6 +9,7 @@ from .utils import update_match_stats
 import random
 from django.db import models
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 
 class CreateTournamentView(generics.CreateAPIView):
     queryset = Tournament.objects.all()
@@ -113,9 +114,6 @@ class MatchResultView(APIView):
 
 
 class GetMatchesToPlayView(APIView):
-    """
-    Вью для получения списка матчей текущего раунда, которые еще не сыграны.
-    """
     def get_current_round(self, tournament):
         max_round_with_unfinished_matches = TournamentMatch.objects.filter(
             tournament=tournament, 
@@ -162,3 +160,71 @@ class TournamentParticipantsView(APIView):
         serializer = ParticipantSerializer(participants, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    
+class GetUserTournamentsListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        nickname = request.user.username
+
+        try:
+            participant = Participant.objects.get(nickname=nickname)
+        except:
+            return Response({"error": "No tournamets was found"})
+        
+        serializer = ParticipantSerializer(participant)
+        return Response(serializer.data)
+    
+
+class GetUserTournamentsStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        # Находим турнир
+        participant_nickname = request.user.username
+        tournament = get_object_or_404(Tournament, pk=pk)
+
+        # Находим участника по нику и турниру
+        participant = get_object_or_404(Participant, tournament=tournament, nickname=participant_nickname)
+
+        # Получаем все матчи, где участник играл
+        matches_as_player1 = TournamentMatch.objects.filter(tournament=tournament, player1=participant)
+        matches_as_player2 = TournamentMatch.objects.filter(tournament=tournament, player2=participant)
+
+        # Считаем статистику
+        total_goals = sum(match.player1_goals for match in matches_as_player1) + sum(match.player2_goals for match in matches_as_player2)
+        wins = TournamentMatch.objects.filter(tournament=tournament, winner=participant).count()
+        losses = matches_as_player1.count() + matches_as_player2.count() - wins
+        matches = []
+
+        for match in matches_as_player1:
+            matches.append({
+                'player1': match.player1.nickname,
+                'player2': match.player2.nickname,
+                'player1_goals': match.player1_goals,
+                'player2_goals': match.player2_goals,
+                'winner': match.winner.nickname if match.winner else None,
+                'round': match.round
+            })
+
+        for match in matches_as_player2:
+            matches.append({
+                'player1': match.player1.nickname,
+                'player2': match.player2.nickname,
+                'player1_goals': match.player1_goals,
+                'player2_goals': match.player2_goals,
+                'winner': match.winner.nickname if match.winner else None,
+                'round': match.round
+            })
+
+        stats = {
+            'nickname': participant.nickname,
+            'total_goals': total_goals,
+            'wins': wins,
+            'losses': losses,
+            'matches': matches
+        }
+
+
+        return Response(stats)
