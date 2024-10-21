@@ -177,6 +177,7 @@
         "new": "New Tournament",
         "creator" : "Creator",
         "placeHolder" : "Tournament Name",
+        "placeHolderSearch": "Unfinished Tournament Name",
         "users": "Users"
     },
     "two_fa": "2FA by email : "

@@ -2,9 +2,10 @@ import axios from "axios";
 import { ACCESS_TOKEN } from "./constants";
 
 const api = axios.create({
-  baseUrl: "https://"+window.location.host+"/"
+  baseURL: "http://localhost:8000/"
 
 });
+
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem(ACCESS_TOKEN);

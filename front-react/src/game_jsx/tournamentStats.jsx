@@ -1,13 +1,61 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './tournamentStats.css';
+import api from '../api';
 
 function TournamentStats() {
     const navigate = useNavigate();
     const { t } = useTranslation();
-    const { winner } = location.state || {};
+    // const { winner } = location.state || {};
+    const location = useLocation();
+    const { tournamentID } = location.state || {};
+    const [tournamentArray, setTournamentArray] = useState();
+	const [playerList, setPlayerList] = useState([]);
+	const [tournamentName, setTournamentName] = useState('');
+	const [matchList, setMatchList] = useState([]);
+
+
+    useEffect(() => {
+        try{
+        console.log(tournamentID);
+		api.get('api/tournament/list-tournaments/')
+		.then(response => {
+			for (let i = 0; i < response.data.length; i++) {
+				if (response.data[i].id == tournamentID) {
+					setTournamentArray(response.data[i]);
+					setTournamentName(response.data[i].name);
+					const url = `api/tournament/${tournamentID}/participants/`;
+					api.get(url)
+					.then(response => {
+                        console.log(response.data);
+						setPlayerList(response.data);
+					  })
+					.catch(error => {
+						console.log('Error:', error);
+						// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+					});
+                    const url2 = `api/tournament/${tournamentID}/needed-matches/`;
+					api.get(url2)
+                    .then(response => {
+						setMatchList(response.data);
+					  })
+					.catch(error => {
+						console.log('Error:', error);
+						// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+					});
+				}
+			}
+		})
+		.catch(error => {
+			console.log('Error:', error);
+		})
+        }catch(error)
+        {
+            console.log(error);
+        }
+    }, [])
 
     const containerStyle = {
         backgroundImage: `url(../../public/scoreBackground.jpg)`,
@@ -35,44 +83,42 @@ function TournamentStats() {
         navigate("/userGameSetup");
     };
 
-    const renderPlayerBox = (player, index) => {
+    const renderPlayerBox = (nickname, index) => {
         return (
             <div key={index} className="player-box p-3 mb-2 bg-light border rounded text-center">
-                <div className="player-name">{player.name}</div>
+                <div className="player-name">{nickname}</div>
             </div>
         );
     };
 
     const renderQuarterfinals = () => {
-        const leftSidePlayers = players.slice(0, 4);
-        const rightSidePlayers = players.slice(4, 8);
     
         return (
             <div className="d-flex justify-content-between w-100">
                 <div className="player-column left-column">
                     <div className="player-group">
-                        {renderPlayerBox(leftSidePlayers[0], 0)}
+                        {renderPlayerBox(playerList[0].id, 0)}
                         <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(leftSidePlayers[1], 1)}
+                        {renderPlayerBox(playerList[1].id, 1)}
                     </div>
                     <div className="quarter-spacer "></div>
                     <div className="player-group">
-                        {renderPlayerBox(leftSidePlayers[2], 2)}
+                        {renderPlayerBox(playerList[2].id, 2)}
                         <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(leftSidePlayers[3], 3)}
+                        {renderPlayerBox(playerList[3].id, 3)}
                     </div>
                 </div>
                 <div className="player-column right-column">
                     <div className="player-group">
-                        {renderPlayerBox(rightSidePlayers[0], 4)}
+                        {renderPlayerBox(playerList[4].id, 4)}
                         <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(rightSidePlayers[1], 5)}
+                        {renderPlayerBox(playerList[5].id, 5)}
                     </div>
                     <div className="quarter-spacer "></div>
                     <div className="player-group">
-                        {renderPlayerBox(rightSidePlayers[2], 6)}
+                        {renderPlayerBox(playerList[6].id, 6)}
                         <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(rightSidePlayers[3], 7)}
+                        {renderPlayerBox(playerList[7].id, 7)}
                     </div>
                 </div>
             </div>

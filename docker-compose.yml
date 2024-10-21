@@ -4,23 +4,23 @@ networks:
 
 services:
 
-  nginx:
-    container_name: nginx
-    build: ./nginx
-    ports:
-      - 1080:80  # Forward HTTP traffic on port 80
-      - 1443:443
-    depends_on:
-      - backend
-      - frontend
-    networks:
-      - transcendance
+  # nginx:
+    # container_name: nginx
+    # build: ./nginx
+    # ports:
+      # - 1080:80  # Forward HTTP traffic on port 80
+      # - 1443:443
+    # depends_on:
+      # - backend
+      # - frontend
+    # networks:
+      # - transcendance
 
   frontend:
     container_name: frontend
     build: ./front-react
     ports:
-      - "3000"
+      - 3000:3000
     volumes:
       - frontend:/app
     depends_on:
@@ -35,7 +35,7 @@ services:
         DOMAIN: ${DOMAIN}
         LISTEN_PORT: ${LISTEN_PORT}
     ports:
-      - "8000"
+      - 8000:8000
     networks:
       - transcendance
     
