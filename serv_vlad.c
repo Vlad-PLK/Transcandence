@@ -6,7 +6,7 @@
 /*   By: vpolojie <vpolojie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 08:04:57 by vpolojie          #+#    #+#             */
-/*   Updated: 2024/09/27 08:55:54 by vpolojie         ###   ########.fr       */
+/*   Updated: 2024/10/16 17:07:06 by vpolojie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void broadcast_client_message(t_client *clients, t_client *sender, int fd) {
 
     sprintf(tmp_msg, "client %d: %s\n", sender->id, sender->msg_buffer);
 
-    broadcast_message(clients, fd, tmp_msg);
+    send_buffer(clients, fd, tmp_msg);
 
     free(tmp_msg);
 }
