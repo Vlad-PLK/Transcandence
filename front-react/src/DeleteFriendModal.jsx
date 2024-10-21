@@ -55,7 +55,7 @@ function DeleteFriendModal({ toggleNotFriend }) {
                                 {isClicked ? t('userFriends.hideFriends') : t('userFriends.showFriends')}
                             </button>
                             {isClicked ? (
-                                userFriends.length > 0 ? (
+                                Array.isArray(userFriends) && userFriends.length > 0 ? (
                                     <ul className="friend-history list-group">
                                         {userFriends.map((friends, index) => (
                                             <li key={index} className="list-group-item">

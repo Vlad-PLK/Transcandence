@@ -87,8 +87,10 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'https://localhost',  # URL вашего фронтенда
+    'https://localhost:1443',  # URL вашего фронтенда
 ]
+
+CSRF_TRUSTED_ORIGINS = ['https://localhost:1443','https://*.127.0.0.1']
 
 ALLOWED_HOSTS = ['*']
 

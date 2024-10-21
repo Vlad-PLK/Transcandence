@@ -25,6 +25,15 @@ function UserHomePage() {
 		backgroundPosition: 'center',
 	};
 	useEffect(() => {
+		api.get('api/player-info/')
+		.then(response => {
+			setUserData(response.data)
+		  })
+		.catch(error => {
+			setUserData(null);
+		  });
+	}, [])
+	useEffect(() => {
 		if (userData == null)
 			navigate("/");
 	}, [userData])

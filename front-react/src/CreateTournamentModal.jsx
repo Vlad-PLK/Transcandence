@@ -169,7 +169,7 @@ function CreateTournamentModal() {
                                 </div>}
 								<div className="mt-2">
 									<p className="fs-4">{t('tournament.users')} : </p>
-									{playerList.length > 0 ?
+									{Array.isArray(playerList) && playerList.length > 0 ?
 										<ul className="players-history list-group">
 											{playerList.map((player, id) => (
 												<li key={id} className="list-group-item">

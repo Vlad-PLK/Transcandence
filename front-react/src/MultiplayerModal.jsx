@@ -6,7 +6,7 @@ function MultiplayerModal() {
 
     return (
         <>
-            <div className="modal fade" id="multiplayerModal" tabIndex="-1" aria-labelledby="multiplayerModalLabel" aria-hidden="true">
+            <div className="modal fade" id="multiplayerModal" tabIndex="-1" aria-labelledby="multiplayerModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
                 <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div className="modal-content rounded-4 shadow">
                         <div className="modal-header p-5 pb-4 border-bottom-0">

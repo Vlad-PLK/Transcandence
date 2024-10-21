@@ -27,7 +27,7 @@ function ChatWindow(){
   				<div className="card card-body">
    					Here's the chat ChatWindow
                         <div className="pt-0">
-                            {userFriends.length > 0 && userData ? (
+                            {Array.isArray(userFriends) && userFriends.length > 0 && userData ? (
                                     <ul className="friend-history list-group">
                                         {userFriends.map((friends, index) => (
                                             <li key={index} className="list-group-item">

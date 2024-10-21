@@ -158,7 +158,7 @@ function UserFriends() {
                             </div>
                             {isVisible && (userFriends.length > 0 ? (
                                 <ul className="friend-history list-group">
-                                    {userFriends.map((friends, index) => (
+                                    {Array.isArray(userFriends) && userFriends.map((friends, index) => (
                                         <li key={index} className="list-group-item">
                                             {friends.user1.id == userData.id ? friends.user2.username : friends.user1.username}
                                         </li>
@@ -177,7 +177,7 @@ function UserFriends() {
                                     {isFr ? t('userFriends.hide') : t('userFriends.show')}
                                 </button>
                             </div>
-                            {isFr && ((userFriendRequest.length > 0 || userFriendRequestSent.length > 0) ? (
+                            {isFr && ((Array.isArray(userFriendRequest) && userFriendRequest.length > 0 || Array.isArray(userFriendRequestSent) && userFriendRequestSent.length > 0) ? (
                                 <ul className="friend-request-history list-group">
                                     {userFriendRequest.map((friendsRequest, index) => (
                                         <li key={index} className="list-group-item">

@@ -41,16 +41,16 @@ function WatchTournamentModal() {
                             <h1 className="fw-bold mb-0 fs-4" id="tournamentWModalLabel">{t('tournament.List')}</h1>
                         </div>
                         <div className="modal-body ps-4 ms-4 mt-2 mb-4 border-bottom-0">
-						{tournamentList.length > 0 ?
+						{Array.isArray(tournamentList) && tournamentList.length > 0 ?
 							<ul className="tournament-history list-group">
 								{tournamentList.map((tournament, id) => (
-									<>
-									<li key={id} className="list-group-item">
-										{t('tournament.name')} : {tournament.name} | {t('tournament.creator')} : {tournament.creator}
-									</li>
-									<button className='btn btn-sm btn-success' onClick={() => tournamentPage(tournament.id)}>{t('tournament.watch')}</button>
-									</>
-								))}
+            					<div key={id}>
+            					    <li className="list-group-item">
+            					        {t('tournament.name')} : {tournament.name} | {t('tournament.creator')} : {tournament.creator}
+            					    </li>
+            					    <button className='btn btn-sm btn-success' onClick={() => tournamentPage(tournament.id)}>{t('tournament.watch')}</button>
+            					</div>
+        						))}
 							</ul>
 						:
 						<p className="text-muted">{t('tournament.noTournament')}</p>}
