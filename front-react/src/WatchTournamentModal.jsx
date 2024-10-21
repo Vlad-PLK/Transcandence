@@ -54,7 +54,7 @@ function WatchTournamentModal() {
             					    <li className="list-group-item">
             					        {t('tournament.name')} : {tournament.name}
             					    </li>
-            					    <button className='btn btn-sm btn-success ms-2' onClick={() => tournamentPage(tournament.id)}>{t('tournament.watch')}</button>
+            					    <button className='btn btn-sm btn-success ms-2' data-bs-dismiss="modal" onClick={() => tournamentPage(tournament.id)}>{t('tournament.watch')}</button>
             					</div>
         						))}
 							</ul>

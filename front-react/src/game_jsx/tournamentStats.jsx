@@ -29,7 +29,7 @@ function TournamentStats() {
 					const url = `api/tournament/${tournamentID}/participants/`;
 					api.get(url)
 					.then(response => {
-                        console.log(response.data);
+                        //console.log(response.data);
 						setPlayerList(response.data);
 					  })
 					.catch(error => {
@@ -39,6 +39,7 @@ function TournamentStats() {
                     const url2 = `api/tournament/${tournamentID}/needed-matches/`;
 					api.get(url2)
                     .then(response => {
+                        console.log(response.data);
 						setMatchList(response.data);
 					  })
 					.catch(error => {
@@ -58,7 +59,7 @@ function TournamentStats() {
     }, [])
 
     const containerStyle = {
-        backgroundImage: `url(../../public/scoreBackground.jpg)`,
+        backgroundImage: `url(../../public/game_stats.jpg)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -66,18 +67,8 @@ function TournamentStats() {
         margin: 0,
         padding: 0,
         position: 'relative',
+        fontFamily: 'cyber4',
     };
-
-    const players = [
-        { name: 'Player 1', winner: false },
-        { name: 'Player 2', winner: true },
-        { name: 'Player 3', winner: false },
-        { name: 'Player 4', winner: true },
-        { name: 'Player 5', winner: false },
-        { name: 'Player 6', winner: true },
-        { name: 'Player 7', winner: false },
-        { name: 'Player 8', winner: true },
-    ];
 
     const handleBack = () => {
         navigate("/userGameSetup");
@@ -95,32 +86,38 @@ function TournamentStats() {
     
         return (
             <div className="d-flex justify-content-between w-100">
+                {Array.isArray(matchList) && matchList.length > 0 ?
+                <>
                 <div className="player-column left-column">
                     <div className="player-group">
-                        {renderPlayerBox(playerList[0].id, 0)}
+                        {renderPlayerBox(matchList[0].player1_name, 0)}
                         <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(playerList[1].id, 1)}
+                        {renderPlayerBox(matchList[0].player2_name, 1)}
                     </div>
                     <div className="quarter-spacer "></div>
                     <div className="player-group">
-                        {renderPlayerBox(playerList[2].id, 2)}
+                        {renderPlayerBox(matchList[1].player1_name, 2)}
                         <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(playerList[3].id, 3)}
+                        {renderPlayerBox(matchList[1].player2_name, 3)}
                     </div>
                 </div>
                 <div className="player-column right-column">
                     <div className="player-group">
-                        {renderPlayerBox(playerList[4].id, 4)}
+                        {renderPlayerBox(matchList[2].player1_name, 4)}
                         <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(playerList[5].id, 5)}
+                        {renderPlayerBox(matchList[2].player2_name, 5)}
                     </div>
                     <div className="quarter-spacer "></div>
                     <div className="player-group">
-                        {renderPlayerBox(playerList[6].id, 6)}
+                        {renderPlayerBox(matchList[3].player1_name, 6)}
                         <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(playerList[7].id, 7)}
+                        {renderPlayerBox(matchList[3].player2_name, 7)}
                     </div>
                 </div>
+                </>
+                :
+                <></>
+                }
             </div>
         );
     };
@@ -188,7 +185,7 @@ function TournamentStats() {
 
     return (
         <div style={containerStyle}>
-            <div className="container-fluid mt-4">
+            <div className="container-fluid">
                 <h1 className="text-center text-white mb-4">{t('tournament.scoreboardTitle')}</h1>
                 <button className="btn btn-dark mb-4" onClick={handleBack}>{t('tournament.backButton')}</button>
                 <div className="flex-container">
