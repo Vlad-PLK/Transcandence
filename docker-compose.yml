@@ -38,6 +38,19 @@ services:
       - 8000:8000
     networks:
       - transcendance
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_DB: mydatabase        # имя базы данных
+      POSTGRES_USER: myuser          # имя пользователя
+      POSTGRES_PASSWORD: mypassword   # пароль
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - transcendance
     
 volumes:
   frontend:
@@ -46,5 +59,7 @@ volumes:
       type: 'none'
       o: 'bind'
       device: '${VOLUME_PATH}'
+  postgres_data:
+    driver: local
       
     
