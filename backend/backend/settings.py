@@ -87,10 +87,10 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',  # URL вашего фронтенда
+    'https://localhost',  # URL вашего фронтенда
 ]
 
-ALLOWED_HOSTS = ['localhost:3000']
+ALLOWED_HOSTS = ['*']
 
 
 ROOT_URLCONF = 'backend.urls'
