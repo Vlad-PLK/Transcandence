@@ -10,8 +10,6 @@ import SettingsModal from "./SettingsModal";
 import { useNavigate } from "react-router-dom";
 import api from "./api";
 import { GameContext } from "./GameContext";
-import ChatButton from "./ChatButton";
-import ChatWindow from "./ChatWindow";
 
 function UserHomePage() {
 	const { userData, setUserData } = useContext(UserDataContext);
@@ -109,10 +107,6 @@ function UserHomePage() {
 				</header>
 				<div className="opacity-75" style={{ position: 'absolute', top: '50%', left: '51%', transform: 'translate(-50%, -50%)', fontFamily: 'cyber4' }}>
 					<button type="button" className="btn btn-dark rounded-3 me-2" onClick={game_setup}>{t('play_game')}</button>
-				</div>
-				<div className="">
-					<ChatButton/>
-					<ChatWindow/>
 				</div>
 			</div>
 			<SettingsModal />

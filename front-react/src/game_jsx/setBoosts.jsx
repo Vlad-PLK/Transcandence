@@ -2,11 +2,11 @@ import * as THREE from 'three';
 
 function setBoosts(scene)
 {
-    // Speed boost surfaces
-    const speedBoostMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff, transparent:true, opacity: 0.5}); // Blue color for speed boost surfaces
+    // Speed Boost surfaces
+    const speedBoostMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff, transparent:true, opacity: 0.5}); // Blue color for speed Boost surfaces
     const speedBoostGeometry = new THREE.BoxGeometry(10, 0.1, 20);
 
-    // Create multiple speed boost surfaces
+    // Create multiple speed Boost surfaces
     const speedBoost1 = new THREE.Mesh(speedBoostGeometry, speedBoostMaterial);
     speedBoost1.position.set(15, 0, 20);
     //speedBoost1.receiveShadow = true;

@@ -8,10 +8,12 @@ import { UserStatsContext } from "./UserStatsContext";
 import { GameContext } from "./GameContext";
 import { useTranslation } from "react-i18next"
 import api from "./api";
+import { TournamentPairDataContext } from "./TournamentPairDataContext";
 
 function Root({children}){
   const [userData, setUserData] = useState(null);
-	const [guestData, setGuestData] = useState({nickname: 'nickname', id: 6, guestNickname: 'guest', isGuest: true});
+	const [guestData, setGuestData] = useState({nickname: '', id: 6, guestNickname: '', isGuest: true});
+  const [tournamentPairData, setTournamentPairData] = useState({match_id: 0, player1_name: '', player2_name: '', player1_id: 0, player2_id: 0});
 	const [userStats, setUserStats] = useState(null);
   const [TwoFA, setTwoFA] = useState(null);
   const {i18n: {changeLanguage} } = useTranslation();
@@ -40,11 +42,13 @@ function Root({children}){
     <UserDataContext.Provider value={{userData, setUserData}}>
 			<GuestDataContext.Provider value={{guestData, setGuestData}}>
       <UserStatsContext.Provider value={{userStats, setUserStats}}>
+      <TournamentPairDataContext.Provider value={{tournamentPairData, setTournamentPairData}}>
       <GameContext.Provider value={{gameData, setGameData}}>
       <TwoFaContext.Provider value={{TwoFA, setTwoFA}}>
         <div>{children}</div>
       </TwoFaContext.Provider>
       </GameContext.Provider>
+      </TournamentPairDataContext.Provider>
       </UserStatsContext.Provider>
 			</GuestDataContext.Provider>
     </UserDataContext.Provider>

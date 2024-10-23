@@ -43,10 +43,10 @@ function UserGameEnd()
 
 	const handleTournamentStats = () => {
         const winner = isPlayer1Winner ? player1_nick : player2_nick;
-        navigate("/tournamentStats", { state: { winner } });
+        navigate("../tournamentStats", { state: { winner } });
     };
 
-	// console.log("GAME_END", player1, player1_score, player2, player2_score);
+	console.log("GAME_END", player1, player1_score, player2, player2_score);
 
     return (
         <>
@@ -117,9 +117,13 @@ function UserGameEnd()
                         <p>{t('gameEnd.scoreboard.scoresUnavailable')}</p>
                     )}
                     {/* A FAIRE, SUPPRIMER CES BOUTTONS SI GAME DE TOURNOI */}
-                    <button className="restart-btn" onClick={handleRestart}>{t('gameEnd.scoreboard.restartButton')}</button>
-					<button className="newgame-btn" onClick={handleNewGame}>{t('gameEnd.scoreboard.newGameButton')}</button>
-					{flag === 1 && (
+                    {flag == 0 && 
+                    <>
+                        <button className="restart-btn" onClick={handleRestart}>{t('gameEnd.scoreboard.restartButton')}</button>
+					    <button className="newgame-btn" onClick={handleNewGame}>{t('gameEnd.scoreboard.newGameButton')}</button>
+                    </>
+                    }
+                    {flag === 1 && (
                             <button className="tournament-btn" onClick={handleTournamentStats}>{t('gameEnd.scoreboard.tournamentStatsButton')}</button>
                     )}
 				</div>

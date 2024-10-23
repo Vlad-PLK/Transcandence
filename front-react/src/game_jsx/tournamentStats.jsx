@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './tournamentStats.css';
 import api from '../api';
+import { TournamentPairDataContext } from '../TournamentPairDataContext';
 
 function TournamentStats() {
     const navigate = useNavigate();
     const { t } = useTranslation();
-    // const { winner } = location.state || {};
     const location = useLocation();
+    const [matchIndex, setMatchIndex] = useState(0);
     const { tournamentID } = location.state || {};
     const [tournamentArray, setTournamentArray] = useState();
 	const [playerList, setPlayerList] = useState([]);
 	const [tournamentName, setTournamentName] = useState('');
 	const [matchList, setMatchList] = useState([]);
+    const {tournamentPairData, setTournamentPairData} = useContext(TournamentPairDataContext);
 
 
     useEffect(() => {
@@ -180,14 +182,25 @@ function TournamentStats() {
         );
     };
     
-    
-    
+    const playGame = () => {
+        setTournamentPairData(prevState => ({
+            ...prevState,
+            match_id: matchList[0].id,
+            player1_name: matchList[0].player1_name,
+            player2_name: matchList[0].player2_name,
+            player1_id: matchList[0].player1,
+            player2_id: matchList[0].player2
+        }));
+        console.log(tournamentPairData);
+        navigate("../userGameWindow/");
+    };
 
     return (
         <div style={containerStyle}>
             <div className="container-fluid">
                 <h1 className="text-center text-white mb-4">{t('tournament.scoreboardTitle')}</h1>
                 <button className="btn btn-dark mb-4" onClick={handleBack}>{t('tournament.backButton')}</button>
+                <button type="button" className="btn btn-primary mb-4 ms-2" onClick={playGame}>Play Match</button>
                 <div className="flex-container">
                     <div className="col-12 d-flex justify-content-start">
                         <div className="players-container">
@@ -201,14 +214,14 @@ function TournamentStats() {
                         {renderFinalists()}
                     </div>
                 </div>
-                <div className="text-center position-absolute bottom-0 start-50 translate-middle-x mb-3">
-                    <img 
-                        src="../../public/trophy.png"
-                        alt="Description"
-                        className="img-fluid"
-                        style={{ maxWidth: '150px', height: 'auto' }}
-                    />
-                </div>
+                {/* <div className="text-center position-absolute bottom-0 start-50 translate-middle-x mb-3"> */}
+                    {/* <img  */}
+                        {/* src="../../public/trophy.png" */}
+                        {/* alt="Description" */}
+                        {/* className="img-fluid" */}
+                        {/* style={{ maxWidth: '150px', height: 'auto' }} */}
+                    {/* /> */}
+                {/* </div> */}
             </div>
         </div>
     );

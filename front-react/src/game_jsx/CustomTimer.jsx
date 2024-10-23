@@ -15,20 +15,31 @@ const ConvertTime = (time) =>
 		return (minutes + ':' + secondes);
 	}
 
-function CustomTimer({flag, seconds, player1, player1_nick, player2, player2_nick, player1_score, player2_score, isGuest})
+function CustomTimer({flag, tournamentID, seconds, player1, player1_nick, player2, player2_nick, player1_score, player2_score, isGuest})
 {
 	const [count, setCount] = useState(seconds);
 	const timerId = useRef();
 	const navigate = useNavigate();
 
 	const gameData = async () => {
-			try {
-				const response = await api.post('api/match-create/', {player1, player2, player1_score, player2_score});
-				console.log(response.data);
-			} catch (error) {
-				alert(error);
-			}
+	try {
+		if (flag == 0)
+		{
+			console.log(player1, player2, player1_score, player2_score);
+			const response = await api.post('api/match-create/', {player1, player2, player1_score, player2_score});
+			console.log(response.data);
 		}
+		else
+		{
+			console.log(tournamentID, player1, player2, player1_score, player2_score);
+			const url = `api/tournament/match/${tournamentID}/result/`;
+			const response = await api.post(url, {player1_score, player2_score});
+			console.log(response);
+		}
+	} catch (error) {
+		console.log(error);
+	}
+	}
 	useEffect(() => {
 		timerId.current = setInterval(() => {
 			setCount(prev => prev - 1);
@@ -38,15 +49,14 @@ function CustomTimer({flag, seconds, player1, player1_nick, player2, player2_nic
 	useEffect(() => {
 		if (count === 0)
 		{
-			// console.log("TIMER :", player1, player1_nick, player2, player2_nick, player1_score, player2_score);
+			console.log(player1, player1_nick, player2, player2_nick, player1_score, player2_score);
 			if (isGuest == false)
 				gameData();
 			clearInterval(timerId.current);
 			navigate("../userGameEnd", {
 				replace: true,
-				state:
-				{
-					flag: 1,
+				state: {
+					flag: flag,
 					player1: player1,
 					player1_nick: player1_nick,
 					player2: player2,

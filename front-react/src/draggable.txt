@@ -1,12 +1,13 @@
-<div ref={containerRef} style={{position: "relative",
-  border: "1px solid black",
-  height: "800px",
-  width: "800px",
-  overflow: "hidden",}}>
-				<div ref={boxRef} style={{position: "absolute",
-  top: "0",
-  left: "0",
-  color: "black",
-  height: "60px",
-  width: "60px",
-  cursor: "pointer"}}>
+{TournamentPairDataContext.player1_name != '' && TournamentPairDataContext.player1_name != '' ? 
+        <CustomTimer 
+                flag={1}
+                seconds={20} 
+                player1={TournamentPairDataContext.player1} 
+                player1_nick={TournamentPairDataContext.player1_name}
+                player2={TournamentPairDataContext.player2} 
+                player2_nick={TournamentPairDataContext.player1_name}
+                player1_score={scoreP1} 
+                player2_score={scoreP2} 
+                isGuest={false}
+            />
+        :

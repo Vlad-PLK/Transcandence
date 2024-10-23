@@ -21,6 +21,7 @@ import { GuestDataContext } from '../GuestDataContext.jsx';
 import CustomTimer from './CustomTimer.jsx';
 import { use } from 'i18next';
 import { GameContext } from '../GameContext.jsx';
+import { TournamentPairDataContext } from '../TournamentPairDataContext.jsx';
 
 
 let cameraKeyIsPressed = false;
@@ -368,9 +369,14 @@ function UserGame()
 {
     const {userData} = useContext(UserDataContext);
     const {guestData} = useContext(GuestDataContext);
+    const {tournamentPairData} = useContext(TournamentPairDataContext);
     const {gameData} = useContext(GameContext);
     const [scoreP1, setScoreP1] = useState(0);
     const [scoreP2, setScoreP2] = useState(0);
+    const [starType, setStarType] = useState(0);
+    const [Boost, setBoost] = useState(0);
+    const [BoostPower, setBoostPower] = useState(0);
+    const [PowerUp, setPowerUp] = useState(0);
     const animationFrameId = useRef(null);
     const mountRef = useRef(null);
     const sceneRef = useRef(null);
@@ -408,17 +414,31 @@ function UserGame()
     const loader = new FontLoader();
     const font = loader.parse(Ponderosa_Regular);
 
+    //updateScoreText(sceneRef.current, font, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, cameraPosition);
     // Start score
-    if (userData && guestData)
+    
+    if (tournamentPairData.player1_name != '' && tournamentPairData.player2_name != '')
+        updateScoreText(sceneRef.current, font, tournamentPairData.player1_name, tournamentPairData.player2_name, player1Score, player2Score, scoreTextMesh, cameraPosition);
+    else if ((guestData.guestNickname != '' || guestData.nickname != '') && userData)
         updateScoreText(sceneRef.current, font, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, cameraPosition);
 
-
     // SETTINGS
-    // if (!gameData)
-    //     return;
-    const starType = gameData.startFlag;
     let BHsize, sizeChecker, BHcolor, BHintensity;
     let starRadius, starIntensity, starColor, starCorona;
+    if (!gameData)
+    {
+        setStarType(0);
+        setBoost(0);
+        setBoostPower(0);
+        setPowerUp(0);
+    }
+    else
+    {
+        setStarType(gameData.startFlag);
+        setBoost(gameData.boostsEnabled);
+        setBoostPower(gameData.boostFactor);
+        setPowerUp(gameData.powerEnabled);
+    }
 
     if (starType == 3)
     {
@@ -437,11 +457,8 @@ function UserGame()
         starCorona = gameData.customCoronaType;
     }
 
-    const boost = gameData.boostsEnabled;
 
-    const boostPower = gameData.boostFactor;
 
-    const powerUp = gameData.powerEnabled;
 
     // // TESTING SETTINGS
 
@@ -454,8 +471,8 @@ function UserGame()
     //     console.log("Current custom intensity", starIntensity);
     //     console.log("Current custom color", starColor);
     //     console.log("Current custom corona", starCorona);
-    //     console.log("Current boosts status", boost);
-    //     console.log("Current boost factor", boostPower);
+    //     console.log("Current boosts status", Boost);
+    //     console.log("Current Boost factor", boostPower);
     //     console.log("Current powerup", powerUp);
     // }
 
@@ -470,7 +487,7 @@ function UserGame()
     const planeGeometry = setPlane(sceneRef.current);
     const { leftWall, rightWall, bottomWall, topWall} = setWalls(sceneRef.current, planeGeometry);
     ({bottomPaddle, topPaddle, bottomPaddleGeometry, topPaddleGeometry } = setPaddles(sceneRef.current, planeGeometry));
-    if (boost == 1)
+    if (Boost == 1)
         ({ speedBoostGeometry, speedBoost1, speedBoost2 } = setBoosts(sceneRef.current));
     if (starType == 0)
         ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, sunMesh, sunShadyMaterial, sunShadyMesh, sunShadingMaterial, sunShadingMesh, fresnelSunMesh, sunHaloMesh, sunLight, moonMesh, orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor, starCorona));
@@ -518,10 +535,20 @@ function UserGame()
 
         ({cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition, streakPowerIsPressed, streakPower, bottomPaddle, topPaddle} = updatedValues);
 
+        // ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
+            // planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower));
+        if (tournamentPairData.player1_name != '' && tournamentPairData.player2_name != '')
+        {
         ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
-            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower));
-        
-        if (powerUp == 1)
+            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, tournamentPairData.player1_name, tournamentPairData.player2_name, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower));
+        }
+        else if ((guestData.guestNickname != '' || guestData.nickname != '') && userData)
+        {
+            ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
+                 planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower));
+        }
+
+        if (PowerUp == 1)
         {
             if (streakPowerIsPressed == true && streakPower != 0)
             {
@@ -538,10 +565,10 @@ function UserGame()
             }
         }
 
-        if (boost == 1)
+        if (Boost == 1)
         {
             if (isBallOverBoostSurface(speedBoost1, sphere, sphereGeometry) || isBallOverBoostSurface(speedBoost2, sphere, sphereGeometry))
-                boostMultiplier = 2 * boostPower;
+                boostMultiplier = 2 * BoostPower;
             else
                 boostMultiplier = 1;
             
@@ -667,7 +694,7 @@ function UserGame()
             sceneRef.current.remove(rightWall);
             sceneRef.current.remove(topWall);
             sceneRef.current.remove(bottomWall);
-            if (boost == 1)
+            if (Boost == 1)
             {
                 speedBoostGeometry.dispose();
                 sceneRef.current.remove(speedBoost1);
@@ -802,18 +829,36 @@ function UserGame()
   return (
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
-        {<div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
-        <CustomTimer 
-                seconds={20} 
-                player1={userData.id} 
-                player1_nick={userData.username}
-                player2={guestData.id} 
-                player2_nick={guestData.guestNickname}
-                player1_score={scoreP1} 
-                player2_score={scoreP2} 
-                isGuest={guestData.isGuest}
-            />
-        </div>}
+        {
+            (userData && (guestData.nickname != '' || guestData.guestNickname != '')) ? (
+            <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
+            <CustomTimer 
+                    flag={0}
+                    seconds={20} 
+                    player1={userData.id} 
+                    player1_nick={userData.username}
+                    player2={guestData.id} 
+                    player2_nick={guestData.guestNickname}
+                    player1_score={scoreP1} 
+                    player2_score={scoreP2} 
+                    isGuest={guestData.isGuest}
+                />
+            </div>
+            ) : (userData && (tournamentPairData.player1_name != '' && tournamentPairData.player2_name != '')) ? (
+            <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
+            <CustomTimer 
+                    flag={1}
+                    tournamentID={tournamentPairData.match_id}
+                    seconds={20} 
+                    player1={tournamentPairData.player1_id} 
+                    player1_nick={tournamentPairData.player1_name}
+                    player2={tournamentPairData.player2_id} 
+                    player2_nick={tournamentPairData.player2_name}
+                    player1_score={scoreP1} 
+                    player2_score={scoreP2}
+                    isGuest={false}
+                />
+            </div>) : (<></>)}
         <div className="d-flex justify-content-center" ref={mountRef}/>;
     </>
   )

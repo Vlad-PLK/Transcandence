@@ -24,7 +24,7 @@ function UserGameEnd()
 		backgroundPosition: 'center',
 	};
 
-    const { player1, player2, player1_score, player2_score } = location.state || {};
+    const { flag, player1, player2, player1_score, player2_score } = location.state || {};
 
 	const isPlayer1Winner = player1_score > player2_score;
     const isPlayer2Winner = player2_score > player1_score;
@@ -34,7 +34,7 @@ function UserGameEnd()
         navigate("../UserGame");
     };
 
-	// console.log("GAME_END", player1, player1_score, player2, player2_score);
+	console.log("GAME_END", player1, player1_score, player2, player2_score);
 
     return (
         <>
