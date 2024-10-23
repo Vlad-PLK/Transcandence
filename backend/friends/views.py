@@ -8,8 +8,9 @@ from rest_framework.views import APIView
 from django.db.models import Q
 from users.models import CustomUser
 from gameinfo.models import PlayerStats
-from gameinfo.serializers import PlayerStatsSerializer
+from gameinfo.serializers import PlayerStatsSerializer, MatchSerializer
 from users.serializers import UserSerializer
+from gameinfo.models import Match
 
 class FriendRequestCreateView(generics.CreateAPIView):
     serializer_class = FriendRequestSerializer
@@ -98,10 +99,13 @@ class GetFriendProfileView(APIView):
         friend_stats = PlayerStats.objects.get(player=friend)
         friend_stats_serializer = PlayerStatsSerializer(friend_stats)
         friend_profile_serializer = UserSerializer(friend)
-        
+        friend_matches = Match.objects.filter(Q(player1=friend) | Q(player2=friend))
+        friend_matches_serializer = MatchSerializer(friend_matches, many=True)
+
         combined_data = {
             'profile_data': friend_profile_serializer.data,
-            'profile_stats': friend_stats_serializer.data
+            'profile_stats': friend_stats_serializer.data,
+            'profile_matches': friend_matches_serializer.data,
         }
     
         return Response(combined_data, status=status.HTTP_200_OK)
