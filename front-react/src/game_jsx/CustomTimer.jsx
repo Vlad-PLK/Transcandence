@@ -33,7 +33,7 @@ function CustomTimer({flag, tournamentID, seconds, player1, player1_nick, player
 		{
 			console.log(tournamentID, player1, player2, player1_score, player2_score);
 			const url = `api/tournament/match/${tournamentID}/result/`;
-			const response = await api.post(url, {player1_score, player2_score});
+			const response = await api.post(url, {player1_goals:player1_score, player2_goals:player2_score});
 			console.log(response);
 		}
 	} catch (error) {
