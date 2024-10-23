@@ -27,6 +27,8 @@ services:
       - transcendance
   backend:
     container_name: backend
+    volumes:
+      - backend:/app
     build: 
       context: ./backend
       args:
@@ -57,6 +59,8 @@ volumes:
       o: 'bind'
       device: '${VOLUME_PATH}'
   postgres_data:
+    driver: local
+  backend:
     driver: local
       
     
