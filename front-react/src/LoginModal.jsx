@@ -97,6 +97,12 @@ function LoginModal()
         }
     }
 
+	const loginbutton42 = () => {
+		window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id='
+    	+ encodeURIComponent(window.OAUTH_CLIENT_ID) + '&redirect_uri=' +
+    	encodeURIComponent(window.OAUTH_CALLBACK) + '&response_type=code'
+	}
+
 	return (
 	<>
       	<div className="modal fade" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
@@ -154,7 +160,8 @@ function LoginModal()
 					:
 					<>
 					 <div className="d-flex flex-column align-items-center mb-4">
-					<button className="w-90 btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton}>{t('login_login')}</button>
+					 <button className="w-90 btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton}>42 LOGIN</button>
+					 <button className="w-90 btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton42}>{t('login_login')}</button>
         		    {errorLog ? <p className="mt-2 text-danger">{errorLog}</p> : null}
 					</div>
 					</>
