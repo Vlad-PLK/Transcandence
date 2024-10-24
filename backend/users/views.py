@@ -13,7 +13,12 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 import pyotp
 from django.core.mail import send_mail
-
+import hashlib
+import uuid
+import datetime
+import os
+import random
+import requests
 
 class CreateUserView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -142,3 +147,75 @@ class Get2FAStatusView(APIView):
         serializer = Get2FAStatusSerializer(user)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class Register42APIView(APIView):
+    permission_classes = [AllowAny]
+
+    # def redirect_with_token(user, redirect_url="/"):
+        # # Generate token using RefreshToken
+        # refresh = RefreshToken.for_user(user)
+        # token = str(refresh.access_token)
+
+        # # Create a redirect response to the specified URL
+        # resp = redirect(redirect_url)
+
+        # # Set the token in the response as a cookie
+        # resp.set_cookie('client_token', token, max_age=60 * 60 * 24)
+
+        # return resp
+
+    def get(self, request):
+        code = request.GET.get("code")
+        state = request.COOKIES.get("oauth_state")
+        resp = requests.post(
+            "https://api.intra.42.fr/oauth/token",
+            data={
+                "grant_type": "authorization_code",
+                "client_id": "u-s4t2ud-f2e4eed0fe85865ea95e27e9d857816c8276ac645887e9b68c2cf33ea18f24d7",
+                "client_secret": "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",
+                "code": code,
+                "state": state,
+                "redirect_uri": "https" + (request.build_absolute_uri()[4:].split("?")[0])
+            }
+        )
+
+        if resp.status_code != 200:
+            return Response({'error': 'OAuth token request failed'}, status=status.HTTP_400_BAD_REQUEST)
+
+        client_token = resp.json()["access_token"]
+
+        resp = requests.get("https://api.intra.42.fr/v2/me",
+                            headers={"Authorization": "Bearer " + client_token})
+
+        if resp.status_code != 200:
+            return Response({'error': 'OAuth profile request failed'}, status=status.HTTP_400_BAD_REQUEST)
+
+        profile42 = resp.json()
+        username = profile42["login"]
+        email = profile42["email"]
+        return Response({'username': username, 'email': email}, status=status.HTTP_200_OK)
+        # profile_img = profile42["image"]["versions"]["large"]
+
+        # if CustomUser.objects.filter(email=email).exists():
+            # user = CustomUser.objects.get(email=email)
+            # # if not user.is_oauth_user:
+                # # user.is_oauth_user = True
+                # # user.save()
+        # else:
+            # original_username = username
+            # while CustomUser.objects.filter(username=username).exists():
+                # username = original_username + "-" + str(random.randint(111_111, 999_999))
+            # user = CustomUser.objects.create_user(username=username, email=email, password=None)
+            # # user.is_oauth_user = True
+            # user.save()
+            # # try:
+                # # img_bytes = BytesIO(requests.get(profile_img).content)
+                # # os.makedirs("/root/asset/avatars/", exist_ok=True)
+                # # img = Image.open(img_bytes)
+                # # square_crop(img).save(f"/root/asset/avatars/{user.id}.png")
+            # # except Exception as e:
+                # # print(e)
+
+        # token = __create_session(request, user)
+        # resp.set_cookie('client_token', token, max_age=60 * 60 * 24)
+        # return redirect_with_token(user)

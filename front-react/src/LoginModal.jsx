@@ -99,8 +99,8 @@ function LoginModal()
 
 	const loginbutton42 = () => {
 		window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id='
-    	+ encodeURIComponent(window.OAUTH_CLIENT_ID) + '&redirect_uri=' +
-    	encodeURIComponent(window.OAUTH_CALLBACK) + '&response_type=code'
+    	+ encodeURIComponent(u-s4t2ud-f2e4eed0fe85865ea95e27e9d857816c8276ac645887e9b68c2cf33ea18f24d7) + '&redirect_uri=' +
+    	encodeURIComponent("https://localhost:1443/api/users/user/oauth/") + '&response_type=code'
 	}
 
 	return (
