@@ -19,6 +19,8 @@ import datetime
 import os
 import random
 import requests
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 class CreateUserView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -191,29 +193,17 @@ class Register42APIView(APIView):
         profile42 = resp.json()
         username = profile42["login"]
         email = profile42["email"]
-        return Response({'username': username, 'email': email}, status=status.HTTP_200_OK)
-        # profile_img = profile42["image"]["versions"]["large"]
+        
+        user, created = CustomUser.objects.get_or_create(username=username, defaults={'email': email})
 
-        # if CustomUser.objects.filter(email=email).exists():
-            # user = CustomUser.objects.get(email=email)
-            # # if not user.is_oauth_user:
-                # # user.is_oauth_user = True
-                # # user.save()
-        # else:
-            # original_username = username
-            # while CustomUser.objects.filter(username=username).exists():
-                # username = original_username + "-" + str(random.randint(111_111, 999_999))
-            # user = CustomUser.objects.create_user(username=username, email=email, password=None)
-            # # user.is_oauth_user = True
-            # user.save()
-            # # try:
-                # # img_bytes = BytesIO(requests.get(profile_img).content)
-                # # os.makedirs("/root/asset/avatars/", exist_ok=True)
-                # # img = Image.open(img_bytes)
-                # # square_crop(img).save(f"/root/asset/avatars/{user.id}.png")
-            # # except Exception as e:
-                # # print(e)
-
-        # token = __create_session(request, user)
-        # resp.set_cookie('client_token', token, max_age=60 * 60 * 24)
-        # return redirect_with_token(user)
+        # Генерируем токены для пользователя
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+        
+        return Response({
+            'username': username,
+            'email': email,
+            'access_token': access_token,
+            'refresh_token': refresh_token
+        }, status=status.HTTP_200_OK)
