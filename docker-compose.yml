@@ -37,9 +37,9 @@ services:
         OAUTH_UID: ${OAUTH_UID}
         OAUTH_SECRET: ${OAUTH_SECRET}
         OAUTH_CALLBACK: ${OAUTH_CALLBACK}
-        POSTGRES_DB: ${DBNAME}       
-        POSTGRES_USER: ${DBUSER}        
-        POSTGRES_PASSWORD: ${DBPASSWORD} 
+        DBNAME: ${DBNAME}       
+        DBUSER: ${DBUSER}        
+        DBPASSWORD: ${DBPASSWORD} 
 
     command: sh -c "python manage.py migrate && daphne -b 0.0.0.0 -p 8000 backend.asgi:application"
     depends_on:
@@ -50,9 +50,9 @@ services:
     image: postgres:latest
     container_name: postgres
     environment:
-      POSTGRES_DB: ${DBNAME}       
-      POSTGRES_USER: ${DBUSER}        
-      POSTGRES_PASSWORD: ${DBPASSWORD}  
+      DBNAME: ${DBNAME}       
+      DBUSER: ${DBUSER}        
+      DBPASSWORD: ${DBPASSWORD}  
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:

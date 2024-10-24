@@ -100,7 +100,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # URL вашего фронтенда
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://localhost:1443','https://*.127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ["https://"+os.getenv('DOMAIN')]
 
 ALLOWED_HOSTS = ['*']
 
@@ -132,9 +132,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mydatabase',          
-        'USER': 'myuser',             
-        'PASSWORD': 'mypassword',      
+        'NAME': os.getenv('DBNAME'),          
+        'USER': os.getenv('DBUSER'),             
+        'PASSWORD': os.getenv('DBPASSWORD'),      
         'HOST': 'postgres',          
         'PORT': '5432',
     }
