@@ -56,14 +56,19 @@ class CustomTokenObtainPairSerializer(serializers.Serializer):
 
         user = authenticate(username=username, password=password)
 
-        if user and user.is_2fa_enabled:
+        if not user:
+            raise serializers.ValidationError("Not valid username or password")
+
+        if user.is_2fa_enabled:
             if not otp_code:
                 generate_otp(user)  
-                raise serializers.ValidationError("Требуется одноразовый код.")
+                raise serializers.ValidationError("You need one time code.")
             if not verify_otp(user, otp_code):
-                raise serializers.ValidationError("Неверный одноразовый код.")
+                raise serializers.ValidationError("One time code is not correct.")
 
-        return user
+        return {
+            'user': user,
+        }
 
 
 class Get2FAStatusSerializer(serializers.ModelSerializer):
