@@ -140,27 +140,27 @@ function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry,
                     cameraPosition = 0;
                 if (cameraPosition == 0)
                 {
-                    camera.position.set(0, 35, -100);
+                    camera.position.set(0, 50, -175);
                     camera.lookAt(0, 0, 0);
                 }
                 else if (cameraPosition == 1)
                 {
-                    camera.position.set(0, 50, -150);
+                    camera.position.set(0, 80, -200);
                     camera.lookAt(0, 0, 0);
                 }
                 else if (cameraPosition == 2)
                 {
-                    camera.position.set(0, 35, 100);
+                    camera.position.set(0, 50, 175);
                     camera.lookAt(0, 0, 0);
                 }
                 else if (cameraPosition == 3)
                 {
-                    camera.position.set(0, 50, 150);
+                    camera.position.set(0, 80, 200);
                     camera.lookAt(0, 0, 0);
                 }
                 else if (cameraPosition == 4)
                 {
-                    camera.position.set(0, 100, 0); // Place the camera above the scene
+                    camera.position.set(0, 175, 0); // Place the camera above the scene
                     camera.lookAt(0, 0, 0);
                     camera.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
                     

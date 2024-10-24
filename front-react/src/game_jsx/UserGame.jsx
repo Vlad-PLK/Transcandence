@@ -156,18 +156,21 @@ const calculateCollisionNormal = (sphere, sphereGeometry, topPaddle, bottomPaddl
     return { normal: null, flag: 0 };
 };
 
-function resetSphere(scene, sphere, sphereGeometry)
+function resetSphere(scene, sphere, sphereGeometry, setFlag)
 {
-    velocity = vec.vectorize(0, 0, 0);
-    sphere.position.set(0, sphereGeometry.parameters.radius, 0);
-
-    setTimeout(() =>
+    // console.log("RESETSPHERE : ", setFlag);
+    if (setFlag == 1)
     {
-        let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
-        velocity.x = Math.cos(randomAngle);
-        velocity.z = Math.sin(randomAngle);
-    }, 6000);
-    
+        velocity = vec.vectorize(0, 0, 0);
+        sphere.position.set(0, sphereGeometry.parameters.radius, 0);
+
+        setTimeout(() =>
+        {
+            let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
+            velocity.x = Math.cos(randomAngle);
+            velocity.z = Math.sin(randomAngle);
+        }, 6000);
+    }
 }
 
 function resetPaddles(topPaddle, bottomPaddle, planeGeometry)
@@ -220,10 +223,8 @@ function createScoreText(player1ID, player2ID, player1Score, player2Score, font,
     const textMesh = new THREE.Mesh(textGeometry, textMaterial);
     textMesh.position.set(0, 10, 0);
     if (cameraPosition == 1 || cameraPosition == 2)
-    {
         textMesh.rotation.y = Math.PI;
-    }
-    else if (cameraPosition === 0 || cameraPosition === 5)
+    else if (cameraPosition == 0 || cameraPosition == 5)
         textMesh.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
     return textMesh;
 }
@@ -270,13 +271,13 @@ function checkCollision(scene, sphere, sphereGeometry,
         if (normal != null && flag > 0)
         {
             if (paddle1Left == true && flag == 3)
-                velocity.x += 0.2;
+                velocity.x += 0.3;
             else if (paddle1Right == true && flag == 3)
-                velocity.x -= 0.2;
+                velocity.x -= 0.3;
             else if (paddle2Left == true && flag == 4)
-                velocity.x += 0.2;
+                velocity.x += 0.3;
             else if (paddle2Right == true && flag == 4)
-                velocity.x -= 0.2;
+                velocity.x -= 0.3;
             velocity = vec.reflectVector(velocity, normal);
         }
 
@@ -296,7 +297,7 @@ function checkCollision(scene, sphere, sphereGeometry,
         }
         scoreFlag = 1;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
-        resetSphere(scene, sphere, sphereGeometry);
+        resetSphere(scene, sphere, sphereGeometry, setFlag);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry);
     }
     else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2 - 0.01)
@@ -315,7 +316,7 @@ function checkCollision(scene, sphere, sphereGeometry,
         }
         scoreFlag = 2;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
-        resetSphere(scene, sphere, sphereGeometry);
+        resetSphere(scene, sphere, sphereGeometry, setFlag);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry);
     }
     return {player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower};
@@ -409,7 +410,6 @@ function UserGame()
     );
     const cameraDirection = new THREE.Vector3();
     setCamera(cameraRef.current, cameraDirection);
-    cameraRef.current.position.set(Math.PI / 2, 100, Math.PI / 10000);
     let cameraDistance = 0;
     const loader = new FontLoader();
     const font = loader.parse(Ponderosa_Regular);

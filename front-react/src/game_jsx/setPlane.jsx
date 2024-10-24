@@ -3,7 +3,7 @@ import * as THREE from 'three';
 function setPlane(scene)
 {
     // Create a plane on the X and Y axis
-    const planeGeometry = new THREE.PlaneGeometry(75, 100); // Width, height
+    const planeGeometry = new THREE.PlaneGeometry(125, 180); // Width, height
     const planeMaterial = new THREE.MeshStandardMaterial({
         color: 0x00ff00, // Green color
         side: THREE.DoubleSide, // Ensure the plane is visible from both sides
@@ -19,7 +19,7 @@ function setPlane(scene)
 
     // Create a white line in the middle of the plane
     const lineWidth = 5;
-    const lineHeight = 75; // Length of the line to match the width of the plane
+    const lineHeight = planeGeometry.parameters.width; // Length of the line to match the width of the plane
     const lineGeometry = new THREE.PlaneGeometry(lineHeight, lineWidth); // Width, height
     const lineMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, transparent: true, opacity: 0.5}); // White color
     const line = new THREE.Mesh(lineGeometry, lineMaterial);
