@@ -19,6 +19,7 @@ import UserFriends from "./UserFriends";
 import UserGameSetup from "./UserGameSetup";
 import UserGameEnd from "./game_jsx/UserGameEnd_TV";
 import TournamentStats from "./game_jsx/tournamentStats";
+import OAuth from "./OAuth"
 
 const router = createBrowserRouter([
     {
@@ -92,6 +93,12 @@ const router = createBrowserRouter([
                     <ProtectedRoute>
                         <UserFriends/>
                     </ProtectedRoute>
+                )
+            },
+            {
+                path: "oauth_callback/",
+                element: (
+                    <OAuth/>
                 )
             }
         ]
