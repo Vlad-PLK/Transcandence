@@ -166,7 +166,6 @@ class Register42APIView(APIView):
 
     def get(self, request):
         code = request.GET.get("code")
-        state = request.COOKIES.get("oauth_state")
         resp = requests.post(
             "https://api.intra.42.fr/oauth/token",
             data={
@@ -174,13 +173,12 @@ class Register42APIView(APIView):
                 "client_id": "u-s4t2ud-f2e4eed0fe85865ea95e27e9d857816c8276ac645887e9b68c2cf33ea18f24d7",
                 "client_secret": "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",
                 "code": code,
-                "state": state,
-                "redirect_uri": "https" + (request.build_absolute_uri()[4:].split("?")[0])
+                "redirect_uri": "https://localhost:1443/api/users/user/oauth/"
             }
         )
 
         if resp.status_code != 200:
-            return Response({'error': 'OAuth token request failed'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'OAuth token request failed',"raw": resp.json()}, status=status.HTTP_400_BAD_REQUEST)
 
         client_token = resp.json()["access_token"]
 
@@ -188,7 +186,7 @@ class Register42APIView(APIView):
                             headers={"Authorization": "Bearer " + client_token})
 
         if resp.status_code != 200:
-            return Response({'error': 'OAuth profile request failed'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'OAuth profile request failed', "raw": resp.json()}, status=status.HTTP_400_BAD_REQUEST)
 
         profile42 = resp.json()
         username = profile42["login"]
