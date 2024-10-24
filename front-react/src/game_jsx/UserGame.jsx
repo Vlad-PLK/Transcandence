@@ -849,7 +849,7 @@ function UserGame()
             <CustomTimer 
                     flag={1}
                     tournamentID={tournamentPairData.match_id}
-                    seconds={20} 
+                    seconds={3} 
                     player1={tournamentPairData.player1_id} 
                     player1_nick={tournamentPairData.player1_name}
                     player2={tournamentPairData.player2_id} 

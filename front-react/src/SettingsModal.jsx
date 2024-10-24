@@ -5,11 +5,13 @@ import { UserDataContext } from './UserDataContext';
 import { TwoFaContext } from './TwoFaContext';
 import { useState } from 'react';
 import api from './api';
+import { use } from 'i18next';
 
 function SettingsModal() {
     const { userData, setUserData } = useContext(UserDataContext);
     const { TwoFA, setTwoFA } = useContext(TwoFaContext);
     const [isTwoFAEnabled, setIsTwoFAEnabled] = useState(0);
+    const [newUsername, setNewUsername] = useState('');
     const [logError, setLogError] = useState('');
     const [errorAvatar, setErrorAvatar] = useState('');
     const [errorNick, setErrorNick] = useState('');
@@ -89,16 +91,24 @@ function SettingsModal() {
             setMessageAvatar('');
         }
     }
-
-    const changeUsername = () => {
-        const newUsername = document.getElementById('paramUsername-change').value;
-        if (newUsername.length > 0) {
-            api.patch('api/users/user/update-username/', {
+    useEffect(() => {
+        if (newUsername) {
+            setUserData(prevData => ({
+                ...prevData,
                 username: newUsername
+            }));
+        }
+    }, [newUsername]);
+    const changeUsername = () => {
+        const username = document.getElementById('paramUsername-change').value;
+        if (username.length > 0) {
+            api.patch('api/users/user/update-username/', {
+                username: username
             }).then(response => {
                 document.getElementById('paramUsername-change').value = '';
                 setMessageNick(t('userSettings.usernameUpdateSuccess'));
                 setErrorNick('');
+                setNewUsername(username);
             }).catch(error => {
                 setErrorNick(t('userSettings.usernameUpdateFailed'));
                 setMessageNick('');
@@ -186,7 +196,7 @@ function SettingsModal() {
                                         {userData.avatar == null ?
                                             <img className="rounded bg-warning" src="/robot.webp" alt="" height="100" width="100" />
                                             :
-                                            <img className="rounded bg-warning" src={"http://localhost:8000" + userData.avatar} alt="" height="100" width="100" />
+                                            <img className="rounded bg-warning" src={"https://localhost:1443" + userData.avatar} alt="" height="100" width="100" />
                                         }
                                     </label>
                                 </div>

@@ -59,7 +59,7 @@ function UserGameEnd()
                                 </ul>
                                 {userData && <Link to={`../userSettings/`} type="button" className="btn btn-outline-light me-2">{userData.username}
                                     {userData.avatar != null ?
-                                        <img className="ms-2 rounded" src={"http://localhost:8000" + userData.avatar} alt="" height="40" widht="40" />
+                                        <img className="ms-2 rounded" src={"https://localhost:1443" + userData.avatar} alt="" height="40" widht="40" />
                                         :
                                         <img className="ms-2 rounded" src="/robot.webp" alt="" height="40" widht="40" />
                                     }

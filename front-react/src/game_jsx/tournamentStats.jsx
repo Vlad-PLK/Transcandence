@@ -91,30 +91,43 @@ function TournamentStats() {
                 {Array.isArray(matchList) && matchList.length > 0 ?
                 <>
                 <div className="player-column left-column">
-                    <div className="player-group">
-                        {renderPlayerBox(matchList[0].player1_name, 0)}
-                        <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(matchList[0].player2_name, 1)}
-                    </div>
+                    {matchList[0] &&
+                    <>
+                        <div className="player-group">
+                            {renderPlayerBox(matchList[0].player1_name, 0)}
+                            <div className="quarter-vs-label">VS.</div>
+                            {renderPlayerBox(matchList[0].player2_name, 1)}
+                        </div>
+                    </>
+                    }
                     <div className="quarter-spacer "></div>
+                    {matchList[1] &&
+                    <>
                     <div className="player-group">
                         {renderPlayerBox(matchList[1].player1_name, 2)}
                         <div className="quarter-vs-label">VS.</div>
                         {renderPlayerBox(matchList[1].player2_name, 3)}
                     </div>
+                    </>}
                 </div>
                 <div className="player-column right-column">
-                    <div className="player-group">
-                        {renderPlayerBox(matchList[2].player1_name, 4)}
-                        <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(matchList[2].player2_name, 5)}
-                    </div>
+                        {matchList[2] &&
+                        <>
+                            <div className="player-group">
+                                {renderPlayerBox(matchList[2].player1_name, 4)}
+                                <div className="quarter-vs-label">VS.</div>
+                                {renderPlayerBox(matchList[2].player2_name, 5)}
+                            </div>
+                        </>}
                     <div className="quarter-spacer "></div>
+                    {matchList[3] &&
+                    <>
                     <div className="player-group">
                         {renderPlayerBox(matchList[3].player1_name, 6)}
                         <div className="quarter-vs-label">VS.</div>
                         {renderPlayerBox(matchList[3].player2_name, 7)}
                     </div>
+                    </>}
                 </div>
                 </>
                 :
@@ -185,13 +198,14 @@ function TournamentStats() {
     const playGame = () => {
         setTournamentPairData(prevState => ({
             ...prevState,
-            match_id: matchList[0].id,
-            player1_name: matchList[0].player1_name,
-            player2_name: matchList[0].player2_name,
-            player1_id: matchList[0].player1,
-            player2_id: matchList[0].player2
+            match_id: matchList[matchIndex].id,
+            player1_name: matchList[matchIndex].player1_name,
+            player2_name: matchList[matchIndex].player2_name,
+            player1_id: matchList[matchIndex].player1,
+            player2_id: matchList[matchIndex].player2
         }));
         console.log(tournamentPairData);
+        setMatchIndex(prevState => prevState + 1);
         navigate("../userGameWindow/");
     };
 

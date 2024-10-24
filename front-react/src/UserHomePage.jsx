@@ -94,7 +94,7 @@ function UserHomePage() {
 										<button type="button" className="btn btn-outline-light me-2" onClick={stats_page}>
 											{userData.username}
 											{userData.avatar != null ?
-												<img className="ms-2 rounded" src={"http://localhost:8000" + userData.avatar} alt="" height="40" width="40" />
+												<img className="ms-2 rounded" src={"https://localhost:1443" + userData.avatar} alt="" height="40" width="40" />
 												:
 												<img className="ms-2 rounded" src="/robot.webp" alt="" height="40" width="40" />
 											}

@@ -47,25 +47,27 @@ function CustomTimer({flag, tournamentID, seconds, player1, player1_nick, player
 		return () => clearInterval(timerId.current);
 	}, []);
 	useEffect(() => {
-		if (count === 0)
-		{
-			console.log(player1, player1_nick, player2, player2_nick, player1_score, player2_score);
-			if (isGuest == false)
-				gameData();
-			clearInterval(timerId.current);
-			navigate("../userGameEnd", {
-				replace: true,
-				state: {
-					flag: flag,
-					player1: player1,
-					player1_nick: player1_nick,
-					player2: player2,
-					player2_nick: player2_nick,
-					player1_score: player1_score,
-					player2_score: player2_score
-				}
-			});
-		}
+		if (count === 0 && (player1_score == player2_score) && flag == 1)
+			setCount(prev => prev + 1);
+		else if (count === 0 && (player1_score != player2_score))
+			{
+				console.log(player1, player1_nick, player2, player2_nick, player1_score, player2_score);
+				if (isGuest == false)
+					gameData();
+				clearInterval(timerId.current);
+				navigate("../userGameEnd", {
+					replace: true,
+					state: {
+						flag: flag,
+						player1: player1,
+						player1_nick: player1_nick,
+						player2: player2,
+						player2_nick: player2_nick,
+						player1_score: player1_score,
+						player2_score: player2_score
+					}
+				});
+			}
 	}, [count]);
 	return (
 		<>

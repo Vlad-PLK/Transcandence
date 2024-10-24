@@ -99,7 +99,7 @@ function LoginModal()
 
 	const loginbutton42 = () => {
 		window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id='
-    	+ encodeURIComponent(u-s4t2ud-f2e4eed0fe85865ea95e27e9d857816c8276ac645887e9b68c2cf33ea18f24d7) + '&redirect_uri=' +
+    	+ encodeURIComponent("u-s4t2ud-f2e4eed0fe85865ea95e27e9d857816c8276ac645887e9b68c2cf33ea18f24d7") + '&redirect_uri=' +
     	encodeURIComponent("https://localhost:1443/api/users/user/oauth/") + '&response_type=code'
 	}
 
@@ -160,8 +160,8 @@ function LoginModal()
 					:
 					<>
 					 <div className="d-flex flex-column align-items-center mb-4">
-					 <button className="w-90 btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton}>42 LOGIN</button>
-					 <button className="w-90 btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton42}>{t('login_login')}</button>
+					 {/* <button className="w-90 btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton42}>42 LOGIN</button> */}
+					 <button className="w-90 btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton}>{t('login_login')}</button>
         		    {errorLog ? <p className="mt-2 text-danger">{errorLog}</p> : null}
 					</div>
 					</>
