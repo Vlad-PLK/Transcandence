@@ -10,8 +10,10 @@ function TournamentStats() {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const location = useLocation();
+
+    const { winner, tournamentID } = location.state || {};
+    
     const [matchIndex, setMatchIndex] = useState(0);
-    const { tournamentID } = location.state || {};
     const [tournamentArray, setTournamentArray] = useState();
 	const [playerList, setPlayerList] = useState([]);
 	const [tournamentName, setTournamentName] = useState('');
