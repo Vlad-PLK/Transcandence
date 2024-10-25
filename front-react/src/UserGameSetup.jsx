@@ -21,6 +21,7 @@ import api from "./api";
 function UserGameSetup()
 {
 	const {userData, setUserData} = useContext(UserDataContext);
+	const [tournamentList, setTournamentList] = useState([]);
 	const navigate = useNavigate();
 	const {t} = useTranslation();
 	const main_image = {
@@ -47,6 +48,17 @@ function UserGameSetup()
     	color: 'black',
     	backgroundImage: 'linear-gradient(to right, #AC16A5,  #1F054C)',
 	}
+	const search_tournament = () => {
+		api.get('api/tournament/list-tournaments/')
+		.then(response => {
+			console.log(response.data);
+			setTournamentList(response.data);
+		})
+		.catch(error => {
+			console.log('Error:', error);
+		});
+	}
+
 	return (
 		<>
 			<div className="d-flex flex-column vh-100" style={main_image}>
@@ -83,7 +95,7 @@ function UserGameSetup()
     		</div>
             <div className="d-flex flex-column mt-4" style={buttons_style}>
 				<button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#localGame" style={{color: '#6B3EB8'}}>{t('local')}</button>
-				<button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#tournamentWModal" style={{color: '#A337C7'}}>{t('join_tournament')}</button>
+				<button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#tournamentWModal" style={{color: '#A337C7'}} onClick={search_tournament}>{t('join_tournament')}</button>
                 <button type="button" className="btn btn-dark btn-lg rounded-3 me-4 mb-3" data-bs-toggle="modal" data-bs-target="#tournamentCModal" style={{color: '#FF29DF'}}>{t('create_tournament')}</button>
             </div>
             <div className="" style={{position: 'absolute', top: '20%', left: '51%', transform: 'translate(-50%, -50%)',fontFamily: 'cyber4'}}>
@@ -97,7 +109,7 @@ function UserGameSetup()
             <GameSettingsModal/>
 			<SettingsModal/>
 			<CreateTournamentModal/>
-			<WatchTournamentModal/>
+			<WatchTournamentModal tournamentList={tournamentList}/>
 		</>
     )
 }

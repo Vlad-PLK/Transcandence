@@ -10,6 +10,8 @@ import SettingsModal from "./SettingsModal";
 import { useNavigate } from "react-router-dom";
 import api from "./api";
 import { GameContext } from "./GameContext";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 function UserHomePage() {
 	const { userData, setUserData } = useContext(UserDataContext);

@@ -94,11 +94,11 @@ function TournamentStats() {
                 <div className="player-column left-column">
                     {matchList[0] &&
                     <>
-                        <div className="player-group">
-                            {renderPlayerBox(matchList[0].player1_name, 0)}
-                            <div className="quarter-vs-label">VS.</div>
-                            {renderPlayerBox(matchList[0].player2_name, 1)}
-                        </div>
+                    <div className="player-group">
+                        {renderPlayerBox(matchList[0].player1_name, 0)}
+                        <div className="quarter-vs-label">VS.</div>
+                        {renderPlayerBox(matchList[0].player2_name, 1)}
+                    </div>
                     </>
                     }
                     <div className="quarter-spacer "></div>
