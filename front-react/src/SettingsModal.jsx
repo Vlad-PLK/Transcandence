@@ -196,7 +196,7 @@ function SettingsModal() {
                                         {userData.avatar == null ?
                                             <img className="rounded bg-warning" src="/robot.webp" alt="" height="100" width="100" />
                                             :
-                                            <img className="rounded bg-warning" src={"https://localhost:1443" + userData.avatar} alt="" height="100" width="100" />
+                                            <img className="rounded bg-warning" src={"https://"+window.location.host+userData.avatar} alt="" height="100" width="100" />
                                         }
                                     </label>
                                 </div>

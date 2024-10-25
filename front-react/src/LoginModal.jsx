@@ -125,6 +125,7 @@ function LoginModal()
         		        <input type="password" className="form-control rounded-3" id="passwordLogin" placeholder={t('password')} autoComplete='password' value={password} onChange={(e) => setPassword(e.target.value)}/>
         		        <label htmlFor="passwordLogin">{t('password')}</label>
         		      </div>
+					  {errorLog ? <p className="mt-2 text-danger">{errorLog}</p> : null}
         		  	 </div>
 					 {show2FA == true ?
 					 <>
@@ -159,10 +160,14 @@ function LoginModal()
 					</>
 					:
 					<>
-					 <div className="d-flex flex-column align-items-center mb-4">
-					 <button className="w-90 btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton42}>42 LOGIN</button>
-					 <button className="w-90 btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton}>{t('login_login')}</button>
-        		    {errorLog ? <p className="mt-2 text-danger">{errorLog}</p> : null}
+					<div className="d-flex flex-row justify-content-center mb-4">
+					 	<button onClick={loginbutton42} className="me-4" style={{ border: 'none', background: 'none', padding: 0 }}>
+  							<img src="/42.png" alt="" height="100" width="100"/>
+					 	</button>
+						<p className="fs-4 mt-4 ms-3 me-4">OR</p>
+						<div className="d-flex flex-column ms-3 mt-3">
+					 		<button className="btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton}>{t('login_login')}</button>
+						</div>
 					</div>
 					</>
 					}
