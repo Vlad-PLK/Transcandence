@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useContext} from "react";
-import './UserGameEnd_TV.css';
+import './UserGameEnd.css';
 import { useTranslation } from "react-i18next";
 import TranslationSelect from "../TranslationSelect.jsx";
 import { Link } from "react-router-dom";
@@ -27,6 +27,7 @@ function UserGameEnd()
 	};
 
     const { flag, player1, player1_nick, player2, player2_nick, player1_score, player2_score } = location.state || {};
+
 	const isPlayer1Winner = player1_score > player2_score;
     const isPlayer2Winner = player2_score > player1_score;
 
@@ -45,7 +46,7 @@ function UserGameEnd()
         navigate("../tournamentStats", { state: { winner } });
     };
 
-	console.log("GAME_END ",flag, player1, player1_score, player2, player2_score);
+	console.log("GAME_END", player1, player1_score, player2, player2_score);
 
     return (
         <>

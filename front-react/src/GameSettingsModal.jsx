@@ -100,7 +100,7 @@ function GameSettingsModal() {
                 boostsEnabled: gameData.boostsEnabled,
                 boostFactor: gameData.boostFactor,
                 powerEnabled: gameData.powerEnabled,
-                gameDuration: 3,
+                gameDuration: 20,
             }
         ).then(response => {
             setMsg('');

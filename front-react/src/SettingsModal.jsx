@@ -7,7 +7,7 @@ import { useState } from 'react';
 import api from './api';
 import { use } from 'i18next';
 
-function SettingsModal() {
+function  SettingsModal() {
     const { userData, setUserData } = useContext(UserDataContext);
     const { TwoFA, setTwoFA } = useContext(TwoFaContext);
     const [isTwoFAEnabled, setIsTwoFAEnabled] = useState(0);
@@ -44,6 +44,7 @@ function SettingsModal() {
     }
 
     const clearAvatar = () => {
+        setSelectedFile(null);
         document.getElementById('avatar0').value = '';
         setMessageAvatar('');
         setErrorAvatar('');
