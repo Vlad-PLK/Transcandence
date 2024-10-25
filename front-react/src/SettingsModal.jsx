@@ -44,6 +44,7 @@ function SettingsModal() {
     }
 
     const clearAvatar = () => {
+        setSelectedFile(null);
         document.getElementById('avatar0').value = '';
         setMessageAvatar('');
         setErrorAvatar('');

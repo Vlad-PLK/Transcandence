@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install bootstrap && npm install
+RUN npm install
 
 EXPOSE 3000
 
