@@ -22,9 +22,6 @@ clean:
 fclean: clean
 	docker-compose down
 	docker system prune -a -f
-	docker volume rm transcandence_backend
-	docker volume rm transcandence_backend
-	docker volume rm transcandence_postgres_data
 	rm -rf ${VOLUME_PATH}
 
 re:	fclean all
