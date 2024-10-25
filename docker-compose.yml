@@ -50,9 +50,9 @@ services:
     image: postgres:latest
     container_name: postgres
     environment:
-      DBNAME: ${DBNAME}       
-      DBUSER: ${DBUSER}        
-      DBPASSWORD: ${DBPASSWORD}  
+      POSTGRES_DB: ${DBNAME}       
+      POSTGRES_USER: ${DBUSER}        
+      POSTGRES_PASSWORD: ${DBPASSWORD}  
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
