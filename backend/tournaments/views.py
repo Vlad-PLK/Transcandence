@@ -227,4 +227,12 @@ class GetUserTournamentsStatsView(APIView):
         }
 
 
-        return Response(stats)
+class GetTournamentMatchInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+            
+        match = TournamentMatch.objects.get(pk=pk)
+
+        serializer = TournamentMatchSerializer(match)
+        return Response(serializer.data, status=status.HTTP_200_OK)
