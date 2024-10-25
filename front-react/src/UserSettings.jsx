@@ -26,6 +26,21 @@ function UserSettings()
 		navigate("/");
 	}
 
+	const check_2FA = async() => {
+		try{
+		  await api.get('api/users/user/status-2fa/')
+		  .then(response => {
+			  setTwoFA(response.data.is_2fa_enabled);
+			  console.log(response.data);
+		  })
+		  .catch(error => {
+			  console.log('Error:', error);
+			// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+		  });
+		}catch(error){
+		  console.log(error);}
+		}
+
     return (
         <>
             <>

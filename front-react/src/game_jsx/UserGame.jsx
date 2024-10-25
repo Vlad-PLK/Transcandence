@@ -374,10 +374,6 @@ function UserGame()
     const {gameData} = useContext(GameContext);
     const [scoreP1, setScoreP1] = useState(0);
     const [scoreP2, setScoreP2] = useState(0);
-    const [starType, setStarType] = useState(0);
-    const [Boost, setBoost] = useState(0);
-    const [BoostPower, setBoostPower] = useState(0);
-    const [PowerUp, setPowerUp] = useState(0);
     const animationFrameId = useRef(null);
     const mountRef = useRef(null);
     const sceneRef = useRef(null);
@@ -423,22 +419,9 @@ function UserGame()
         updateScoreText(sceneRef.current, font, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, cameraPosition);
 
     // SETTINGS
+    const starType = gameData.startFlag;
     let BHsize, sizeChecker, BHcolor, BHintensity;
     let starRadius, starIntensity, starColor, starCorona;
-    if (!gameData)
-    {
-        setStarType(0);
-        setBoost(0);
-        setBoostPower(0);
-        setPowerUp(0);
-    }
-    else
-    {
-        setStarType(gameData.startFlag);
-        setBoost(gameData.boostsEnabled);
-        setBoostPower(gameData.boostFactor);
-        setPowerUp(gameData.powerEnabled);
-    }
 
     if (starType == 3)
     {
@@ -456,6 +439,12 @@ function UserGame()
         starColor = gameData.customStarColor;
         starCorona = gameData.customCoronaType;
     }
+
+    const Boost = gameData.boostsEnabled;
+
+    const BoostPower = gameData.boostFactor;
+
+    const PowerUp = gameData.powerEnabled;
 
 
 
@@ -834,7 +823,7 @@ function UserGame()
             <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
             <CustomTimer 
                     flag={0}
-                    seconds={20} 
+                    seconds={3} 
                     player1={userData.id} 
                     player1_nick={userData.username}
                     player2={guestData.id} 

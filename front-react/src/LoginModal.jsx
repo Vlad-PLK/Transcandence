@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useEffect } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from "./api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import TwoFAModal from './TwoFAModal';
 import takeData from './takeData';
 import { GameContext } from './GameContext';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 function LoginModal()
 {
@@ -23,20 +22,6 @@ function LoginModal()
 	const [otp_code, setCode] = useState('');
     const inputRefs = useRef([]);
 	const navigate = useNavigate();
-	const [showModal, setShowModal] = useState(false);
-
-    useEffect(() => {
-        const modalElement = document.getElementById('loginModal');
-        if (modalElement) {
-			const modal = new bootstrap.Modal(modalElement);
-
-        	if (showModal) {
-        	    modal.show();
-        	} else {
-        	    modal.hide();
-        	}
-		}
-    }, [showModal]);
 
 	const cleanForm = () => {
 		document.getElementById('usernameLogin').value = '';
@@ -98,7 +83,7 @@ function LoginModal()
             setPassword('');
 		} catch (error) {
 			console.log(error);
-			if (error.response.data.non_field_errors != null && error.response.data.non_field_errors[0] === 'You need one time code.') {
+			if (error.response.data.non_field_errors != null && error.response.data.non_field_errors[0] === 'Требуется одноразовый код.') {
 				setShow2FA(true);
 				setLogError('2FA code required');
 			}
@@ -120,13 +105,12 @@ function LoginModal()
 
 	return (
 	<>
-		{showModal ?
-      	<div className="modal" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
+      	<div className="modal fade" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{fontFamily: 'cyber4'}}>
         	<div className="modal-dialog modal-dialog-centered modal-lg" role="document">
         		<div className="modal-content rounded-4 shadow">
         		  <div className="modal-header d-flex flex-column align-content-center p-5 pb-4 border-bottom-0">
         		    <h1 className="fw-bold mb-0 fs-4" id="loginModalLabel">{t('welcomeBack')}</h1>
-        		    <button type="button" className="btn-close" aria-label="Close" onClick={() => setShowModal(false)}></button>
+        		    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" className="bi bi-door-open" viewBox="0 0 16 16">
   						<path d="M8.5 10c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1"/>
   						<path d="M10.828.122A.5.5 0 0 1 11 .5V1h.5A1.5 1.5 0 0 1 13 2.5V15h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V1.5a.5.5 0 0 1 .43-.495l7-1a.5.5 0 0 1 .398.117M11.5 2H11v13h1V2.5a.5.5 0 0 0-.5-.5M4 1.934V15h6V1.077z"/>
@@ -170,7 +154,8 @@ function LoginModal()
 					 </div>
 				 	 </div>
 					 <div className="d-flex flex-column align-items-center">
-					 <button className="btn btn-success btn-lg mt-4 align-items-center" onClick={send_otp}>Verify</button>
+					 <button className="btn btn-success btn-lg mt-4 align-items-center" data-bs-dismiss="modal" onClick={send_otp}>Verify</button>
+					 {errorLog ? <p className="mt-2 text-danger">{errorLog}</p> : null}
 				 	 </div>
 					</>
 					:
@@ -181,7 +166,7 @@ function LoginModal()
 					 	</button>
 						<p className="fs-4 mt-4 ms-3 me-4">OR</p>
 						<div className="d-flex flex-column ms-3 mt-3">
-					 		<button className="btn btn-lg rounded-3 btn-primary" onClick={loginbutton}>{t('login_login')}</button>
+					 		<button className="btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton}>{t('login_login')}</button>
 						</div>
 					</div>
 					</>
@@ -189,8 +174,6 @@ function LoginModal()
         		</div>
         	</div>
 		</div>
-		:
-		<></>}
 	</>
 	);
 }
