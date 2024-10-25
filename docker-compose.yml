@@ -39,8 +39,10 @@ services:
         OAUTH_CALLBACK: ${OAUTH_CALLBACK}
         DBNAME: ${DBNAME}       
         DBUSER: ${DBUSER}        
-        DBPASSWORD: ${DBPASSWORD} 
-
+        DBPASSWORD: ${DBPASSWORD}
+        DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+        DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+        DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
     command: sh -c "python manage.py migrate && daphne -b 0.0.0.0 -p 8000 backend.asgi:application"
     depends_on:
       - postgres

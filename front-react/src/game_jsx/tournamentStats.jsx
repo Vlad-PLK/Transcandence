@@ -20,7 +20,6 @@ function TournamentStats() {
 	const [matchList, setMatchList] = useState([]);
     const {tournamentPairData, setTournamentPairData} = useContext(TournamentPairDataContext);
 
-
     useEffect(() => {
         try{
         console.log(tournamentID);
@@ -113,14 +112,14 @@ function TournamentStats() {
                     </>}
                 </div>
                 <div className="player-column right-column">
-                        {matchList[2] &&
-                        <>
-                            <div className="player-group">
-                                {renderPlayerBox(matchList[2].player1_name, 4)}
-                                <div className="quarter-vs-label">VS.</div>
-                                {renderPlayerBox(matchList[2].player2_name, 5)}
-                            </div>
-                        </>}
+                    {matchList[2] &&
+                    <>
+                        <div className="player-group">
+                            {renderPlayerBox(matchList[2].player1_name, 4)}
+                            <div className="quarter-vs-label">VS.</div>
+                            {renderPlayerBox(matchList[2].player2_name, 5)}
+                        </div>
+                    </>}
                     <div className="quarter-spacer "></div>
                     {matchList[3] &&
                     <>
@@ -139,8 +138,6 @@ function TournamentStats() {
         );
     };
     
-    
-
     const renderSemifinals = () => {
         return (
             <div className="d-flex justify-content-between w-100 mt-3">
@@ -173,7 +170,6 @@ function TournamentStats() {
             </div>
         );
     };
-    
 
     const renderFinalists = () => {
         return (

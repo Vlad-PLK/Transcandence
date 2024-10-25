@@ -58,8 +58,21 @@ function CreateTournamentModal() {
             setError(t('usernameRequired'));
             return;
         }
+		api.get('api/tournament/list-tournaments/')
+		.then(response => {
+			console.log(response);
+			for (let i = 0; i < response.data.length; i++) {
+				if (response.data[i].name == name) {
+					setMsg("Tournament Already exists !");
+					return ;
+				}
+			}
+		})
+		.catch(error => {
+			console.log('Error:', error);
+		});
+
 		try{
-			//check for if the name already exists//
 			const response = await api.post('api/tournament/create-tournament/', {name});
 			console.log(response);
 			setTournamentArray(response.data);
@@ -94,10 +107,8 @@ function CreateTournamentModal() {
 						  })
 						.catch(error => {
 							console.log('Error:', error);
-							// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
 						  });
 						setIsCreated(true);
-						//need a way to find the number of players in the tournament + the names//
 					}
 				}
 			})
@@ -149,6 +160,7 @@ function CreateTournamentModal() {
                                     			/>
                                				</div>
 								<button type="button" className="btn btn-success btn-sm rounded-3 me-4 mb-3" onClick={createTournament}>{t('create_tournament')}</button></>}
+								{msg && <p className="text-danger mt-2">{msg}</p>}
 								{!isCreated && <>
 								<div className="mb-2 mt-2">
                                     			<input
