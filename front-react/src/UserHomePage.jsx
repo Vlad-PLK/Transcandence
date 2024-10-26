@@ -83,7 +83,7 @@ function UserHomePage() {
 							</a>
 							<div className="text-end">
 								<div className="btn-group dropstart">
-									<button type="button" className="btn btn-outline-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+									<button className="btn btn-outline-light dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 										<span className="visually-hidden">{t('dropdown.toggle')}</span>
 									</button>
 									<ul className="dropdown-menu opacity-50" style={{ fontSize: "12px", textAlign: "center", minWidth: "5rem" }}>

@@ -16,6 +16,8 @@ import { createContext } from "react";
 import { color } from "three/examples/jsm/nodes/Nodes.js";
 import WatchTournamentModal from "./WatchTournamentModal";
 import CreateTournamentModal from "./CreateTournamentModal";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 import api from "./api";
 
 function UserGameSetup()

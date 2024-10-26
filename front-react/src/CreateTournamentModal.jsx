@@ -35,6 +35,7 @@ function CreateTournamentModal() {
         }
         try
         {
+			await api.post('/api/get-user-id/', {nickname});
 			setTournament(tournamentArray.id);
             const response = await api.post('api/tournament/add-participant/', {tournament, nickname});
             console.log(response.data);

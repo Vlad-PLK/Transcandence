@@ -5,7 +5,6 @@ import { UserStatsContext } from './UserStatsContext';
 import api from './api';
 import { useNavigate } from 'react-router-dom';
 
-
 function WatchTournamentModal({tournamentList}) {
     const { t } = useTranslation();
 	const {userData} = useContext(UserDataContext);

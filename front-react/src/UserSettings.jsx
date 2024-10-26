@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import SettingsModal from "./SettingsModal";
 import { TwoFaContext } from "./TwoFaContext";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 function UserSettings()
 {
