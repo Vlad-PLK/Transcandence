@@ -10,14 +10,25 @@ import random
 from django.db import models
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from users.models import CustomUser
 
-class CreateTournamentView(generics.CreateAPIView):
-    queryset = Tournament.objects.all()
-    serializer_class = TournamentSerializer
+
+class CreateTournamentView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+    def post(self, request):
+        serlializer = TournamentSerializer(data=request.data)
+
+        name = request.data.get('name')
+        if Tournament.objects.filter(name=name).exists():
+            return Response({"details": "Tournament with this name already exists"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if serlializer.is_valid():
+            serlializer.save(creator=request.user)
+            return Response(serlializer.data, status=status.HTTP_200_OK)
+    
+        return Response(serlializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
 class ListTournamentsView(generics.ListAPIView):
     serializer_class = TournamentSerializer
@@ -26,10 +37,23 @@ class ListTournamentsView(generics.ListAPIView):
     def get_queryset(self):
         return Tournament.objects.filter(creator=self.request.user)
 
-class AddParticipantView(generics.CreateAPIView):
-    queryset = Participant.objects.all()
-    serializer_class = ParticipantSerializer
+
+class AddParticipantView(APIView):
     permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ParticipantSerializer(data=request.data)
+
+        nickname = request.data.get('nickname')
+        if not CustomUser.objects.filter(username=nickname).exists():
+            return Response({"details": "There is no users with this username"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ShuffleParticipantsView(APIView):
     permission_classes = [IsAuthenticated]
@@ -50,6 +74,7 @@ class ShuffleParticipantsView(APIView):
                 matches.append(match)
 
         return Response({'status': 'Participants shuffled and matches created!'})
+
 
 class AdvanceToNextRoundView(APIView):
     permission_classes = [IsAuthenticated]
