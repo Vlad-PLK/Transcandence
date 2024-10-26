@@ -35,6 +35,12 @@ services:
       args:
         DOMAIN: ${DOMAIN}
         LISTEN_PORT: ${LISTEN_PORT}
+        OAUTH_UID: ${OAUTH_UID}
+        OAUTH_SECRET: ${OAUTH_SECRET}
+        OAUTH_CALLBACK: ${OAUTH_CALLBACK}
+        DBNAME: ${DBNAME}       
+        DBUSER: ${DBUSER}        
+        DBPASSWORD: ${DBPASSWORD} 
     ports:
       - 8000:8000
     networks:
@@ -45,9 +51,9 @@ services:
     image: postgres:latest
     container_name: postgres
     environment:
-      POSTGRES_DB: mydatabase        
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: ${DBNAME}       
+      POSTGRES_USER: ${DBUSER}        
+      POSTGRES_PASSWORD: ${DBPASSWORD}  
     ports:
       - 5432:5432
     volumes:
