@@ -21,7 +21,7 @@ class TournamentMatchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TournamentMatch
-        fields = ['id', 'player1', 'player2', 'player1_name', 'player2_name']
+        fields = ['id', 'player1', 'player2', 'player1_name', 'player2_name', 'winner']
 
     def get_player1_name(self, obj):
         return obj.player1.nickname

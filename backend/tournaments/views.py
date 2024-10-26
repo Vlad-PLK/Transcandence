@@ -206,18 +206,14 @@ class GetUserTournamentsStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
-        # Находим турнир
         participant_nickname = request.user.username
         tournament = get_object_or_404(Tournament, pk=pk)
 
-        # Находим участника по нику и турниру
         participant = get_object_or_404(Participant, tournament=tournament, nickname=participant_nickname)
 
-        # Получаем все матчи, где участник играл
         matches_as_player1 = TournamentMatch.objects.filter(tournament=tournament, player1=participant)
         matches_as_player2 = TournamentMatch.objects.filter(tournament=tournament, player2=participant)
 
-        # Считаем статистику
         total_goals = sum(match.player1_goals for match in matches_as_player1) + sum(match.player2_goals for match in matches_as_player2)
         wins = TournamentMatch.objects.filter(tournament=tournament, winner=participant).count()
         losses = matches_as_player1.count() + matches_as_player2.count() - wins
@@ -261,3 +257,17 @@ class GetTournamentMatchInfoView(APIView):
 
         serializer = TournamentMatchSerializer(match)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class GetAllTournamentMatches(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk): 
+        tournament = Tournament.objects.get(pk=pk)
+
+        matches = TournamentMatch.objects.filter(tournament=tournament)
+
+        serializer = TournamentMatchSerializer(matches, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
