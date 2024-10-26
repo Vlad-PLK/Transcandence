@@ -176,7 +176,7 @@ class Register42APIView(APIView):
                 "client_id": "u-s4t2ud-f2e4eed0fe85865ea95e27e9d857816c8276ac645887e9b68c2cf33ea18f24d7",
                 "client_secret": "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",
                 "code": code,
-                "redirect_uri": "https://localhost:1443/oauth_callback"
+                "redirect_uri": os.getenv("OAUTH_CALLBACK")
             }
         )
 
