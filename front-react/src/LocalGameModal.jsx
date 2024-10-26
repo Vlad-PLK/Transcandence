@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserDataContext } from "./UserDataContext";
 import GuestModal from "./GuestModal";
 import PlayerModal from "./PlayerModal";
@@ -8,7 +8,44 @@ function LocalGameModal() {
     const { t } = useTranslation();
     
     const { userData } = useContext(UserDataContext);
-
+    // useEffect(() => {
+        // const handleModalShown = () => {
+            // Handle modal shown event if needed
+        // };
+// 
+        // const handleModalHidden = () => {
+            // Manually remove any extra backdrops
+            // const backdrops = document.querySelectorAll('.modal-backdrop');
+            // if (backdrops.length > 1) {
+                // backdrops[backdrops.length - 1].remove();
+            // }
+        // };
+// 
+        // const guestModal = document.getElementById('guestModal');
+        // const playerModal = document.getElementById('playerModal');
+// 
+        // if (guestModal) {
+            // guestModal.addEventListener('shown.bs.modal', handleModalShown);
+            // guestModal.addEventListener('hidden.bs.modal', handleModalHidden);
+        // }
+// 
+        // if (playerModal) {
+            // playerModal.addEventListener('shown.bs.modal', handleModalShown);
+            // playerModal.addEventListener('hidden.bs.modal', handleModalHidden);
+        // }
+// 
+        // return () => {
+            // if (guestModal) {
+                // guestModal.removeEventListener('shown.bs.modal', handleModalShown);
+                // guestModal.removeEventListener('hidden.bs.modal', handleModalHidden);
+            // }
+// 
+            // if (playerModal) {
+                // playerModal.removeEventListener('shown.bs.modal', handleModalShown);
+                // playerModal.removeEventListener('hidden.bs.modal', handleModalHidden);
+            // }
+        // };
+    // }, []);
     return (
         <>
             <div className="modal fade" id="localGame" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{ fontFamily: 'cyber4' }}>
@@ -40,8 +77,8 @@ function LocalGameModal() {
                     </div>
                 </div>
             </div>
-            <GuestModal />
-            <PlayerModal />
+            <GuestModal/>
+            <PlayerModal/>
         </>
     );
 }

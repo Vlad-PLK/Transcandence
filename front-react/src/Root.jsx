@@ -9,10 +9,18 @@ import { GameContext } from "./GameContext";
 import { useTranslation } from "react-i18next"
 import api from "./api";
 import { TournamentPairDataContext } from "./TournamentPairDataContext";
+import { CurrentTournamentContext } from "./CurrentTournamentContext";
 
 function Root({children}){
   const [userData, setUserData] = useState(null);
 	const [guestData, setGuestData] = useState({nickname: '', id: 6, guestNickname: '', isGuest: true});
+  const [currentTournament, setCurrentTournament] = useState({
+    creator: '', 
+    id: 0,
+    name: '',
+    playerList: [[]], 
+    matchList: [[]]
+  });
   const [tournamentPairData, setTournamentPairData] = useState({match_id: 0, player1_name: '', player2_name: '', player1_id: 0, player2_id: 0});
 	const [userStats, setUserStats] = useState(null);
   const [TwoFA, setTwoFA] = useState(null);
@@ -45,7 +53,9 @@ function Root({children}){
       <TournamentPairDataContext.Provider value={{tournamentPairData, setTournamentPairData}}>
       <GameContext.Provider value={{gameData, setGameData}}>
       <TwoFaContext.Provider value={{TwoFA, setTwoFA}}>
+      <CurrentTournamentContext.Provider value={{currentTournament, setCurrentTournament}}>
         <div>{children}</div>
+      </CurrentTournamentContext.Provider>
       </TwoFaContext.Provider>
       </GameContext.Provider>
       </TournamentPairDataContext.Provider>

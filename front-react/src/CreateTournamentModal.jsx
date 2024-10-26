@@ -1,14 +1,16 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserDataContext } from "./UserDataContext";
 import GuestModal from "./GuestModal";
 import PlayerModal from "./PlayerModal";
 import { useTranslation } from 'react-i18next';
 import api from "./api";
 import { useNavigate } from 'react-router-dom';
+import { CurrentTournamentContext } from "./CurrentTournamentContext";
 
 function CreateTournamentModal() {
     const { t } = useTranslation();
 	const [playersNB, setPlayersNB] = useState(0);
+	const {currentTournament, setCurrentTournament} = useContext(CurrentTournamentContext);
 	const [error, setError] = useState('');
 	const [username, setUsername] = useState('');
 	const [nickname, setNickname] = useState('');
@@ -45,10 +47,8 @@ function CreateTournamentModal() {
 				}
 			}
             const response = await api.post('api/tournament/add-participant/', {tournament, nickname});
-            console.log(response.data);
 			incPlayers();
 			setPlayerList([...playerList, response.data]);
-			console.log(playerList);
 			if (playersNB == 7)
 				setIsFull(true);
             setNickname('');
@@ -60,6 +60,7 @@ function CreateTournamentModal() {
             setError(t('userNotFound'));
         }
     };
+
 	const createTournament = async(e) => {
 		e.preventDefault();
 		if (!name) {
@@ -68,7 +69,6 @@ function CreateTournamentModal() {
         }
 		try{
 			const response = await api.post('api/tournament/create-tournament/', {name});
-			console.log(response);
 			setTournamentArray(response.data);
 			setTournament(response.data.id);
 			setIsCreated(true);
@@ -89,7 +89,6 @@ function CreateTournamentModal() {
 		try {
 			api.get('api/tournament/list-tournaments/')
 			.then(response => {
-				console.log(response);
 				let i = 0;
 				for (i; i < response.data.length; i++) {
 					if (response.data[i].name == username) {
@@ -124,13 +123,27 @@ function CreateTournamentModal() {
 	}
 	const launchTournament = async(id) => {
         const url = `api/tournament/${id}/shuffle-participants/`;
+		setCurrentTournament(prevState => ({
+			...prevState,
+			id: tournamentArray.id,
+            creator: tournamentArray.creator,
+            name: tournamentArray.name,
+			playerList: playerList,
+		}))
 		try {
 			const response = await api.post(url);
-			console.log(response);
-			const tId = id;
-			navigate("../tournamentStats/", {state: {
-				tournamentID: tId
-			}});
+			const url2 = `api/tournament/${id}/needed-matches/`;
+			api.get(url2)
+        	.then(response => {
+				setCurrentTournament(prevState => ({
+        	        ...prevState,
+        	        matchList: response.data,
+        	    }));
+			  })
+			.catch(error => {
+				console.log('Error:', error);
+			});
+			navigate("../tournamentStats/");
 		} catch (error) {
 			console.log(error);
 		}

@@ -5,60 +5,22 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './tournamentStats.css';
 import api from '../api';
 import { TournamentPairDataContext } from '../TournamentPairDataContext';
+import { CurrentTournamentContext } from '../CurrentTournamentContext';
 
 function TournamentStats() {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const location = useLocation();
-
-    const { winner, tournamentID } = location.state || {};
-    
     const [matchIndex, setMatchIndex] = useState(0);
     const [tournamentArray, setTournamentArray] = useState();
 	const [playerList, setPlayerList] = useState([]);
 	const [tournamentName, setTournamentName] = useState('');
 	const [matchList, setMatchList] = useState([]);
     const {tournamentPairData, setTournamentPairData} = useContext(TournamentPairDataContext);
+    const {currentTournament, setCurrentTournament} = useContext(CurrentTournamentContext);
 
     useEffect(() => {
-        try{
-        console.log(tournamentID);
-		api.get('api/tournament/list-tournaments/')
-		.then(response => {
-			for (let i = 0; i < response.data.length; i++) {
-				if (response.data[i].id == tournamentID) {
-					setTournamentArray(response.data[i]);
-					setTournamentName(response.data[i].name);
-					const url = `api/tournament/${tournamentID}/participants/`;
-					api.get(url)
-					.then(response => {
-                        //console.log(response.data);
-						setPlayerList(response.data);
-					  })
-					.catch(error => {
-						console.log('Error:', error);
-						// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
-					});
-                    const url2 = `api/tournament/${tournamentID}/needed-matches/`;
-					api.get(url2)
-                    .then(response => {
-                        console.log(response.data);
-						setMatchList(response.data);
-					  })
-					.catch(error => {
-						console.log('Error:', error);
-						// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
-					});
-				}
-			}
-		})
-		.catch(error => {
-			console.log('Error:', error);
-		})
-        }catch(error)
-        {
-            console.log(error);
-        }
+        console.log(currentTournament);
     }, [])
 
     const containerStyle = {
@@ -89,50 +51,118 @@ function TournamentStats() {
     
         return (
             <div className="d-flex justify-content-between w-100">
-                {Array.isArray(matchList) && matchList.length > 0 ?
+                {Array.isArray(currentTournament.matchList) && currentTournament.matchList.length > 0 ?
                 <>
                 <div className="player-column left-column">
-                    {matchList[0] &&
+                    {currentTournament.matchList[0] ?
                     <>
                     <div className="player-group">
-                        {renderPlayerBox(matchList[0].player1_name, 0)}
+                        {renderPlayerBox(currentTournament.matchList[0].player1_name, 0)}
                         <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(matchList[0].player2_name, 1)}
+                        {renderPlayerBox(currentTournament.matchList[0].player2_name, 1)}
+                    </div>
+                    </>
+                    :
+                    <>
+                    <div className="player-group">
+                        {renderPlayerBox("player 1", 0)}
+                        <div className="quarter-vs-label">VS.</div>
+                        {renderPlayerBox("player 2", 1)}
                     </div>
                     </>
                     }
                     <div className="quarter-spacer "></div>
-                    {matchList[1] &&
+                    {currentTournament.matchList[1] ?
                     <>
                     <div className="player-group">
-                        {renderPlayerBox(matchList[1].player1_name, 2)}
+                        {renderPlayerBox(currentTournament.matchList[1].player1_name, 2)}
                         <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(matchList[1].player2_name, 3)}
+                        {renderPlayerBox(currentTournament.matchList[1].player2_name, 3)}
+                    </div>
+                    </>
+                    :
+                    <>
+                    <div className="player-group">
+                        {renderPlayerBox("player3", 0)}
+                        <div className="quarter-vs-label">VS.</div>
+                        {renderPlayerBox("player4", 1)}
                     </div>
                     </>}
                 </div>
                 <div className="player-column right-column">
-                    {matchList[2] &&
+                    {currentTournament.matchList[2] ?
                     <>
                         <div className="player-group">
-                            {renderPlayerBox(matchList[2].player1_name, 4)}
+                            {renderPlayerBox(currentTournament.matchList[2].player1_name, 4)}
                             <div className="quarter-vs-label">VS.</div>
-                            {renderPlayerBox(matchList[2].player2_name, 5)}
+                            {renderPlayerBox(currentTournament.matchList[2].player2_name, 5)}
                         </div>
-                    </>}
-                    <div className="quarter-spacer "></div>
-                    {matchList[3] &&
+                    </>
+                    :
                     <>
                     <div className="player-group">
-                        {renderPlayerBox(matchList[3].player1_name, 6)}
+                        {renderPlayerBox("player5", 0)}
                         <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(matchList[3].player2_name, 7)}
+                        {renderPlayerBox("player6", 1)}
+                    </div>
+                    </>
+                    }
+                    <div className="quarter-spacer "></div>
+                    {currentTournament.matchList[3] ?
+                    <>
+                    <div className="player-group">
+                        {renderPlayerBox(currentTournament.matchList[3].player1_name, 6)}
+                        <div className="quarter-vs-label">VS.</div>
+                        {renderPlayerBox(currentTournament.matchList[3].player2_name, 7)}
+                    </div>
+                    </>
+                    :    
+                    <>
+                    <div className="player-group">
+                        {renderPlayerBox("player7", 0)}
+                        <div className="quarter-vs-label">VS.</div>
+                        {renderPlayerBox("player8", 1)}
                     </div>
                     </>}
                 </div>
                 </>
                 :
-                <></>
+                <>
+                <div className="player-column left-column">
+                    <>
+                    <div className="player-group">
+                        {renderPlayerBox("player 1", 0)}
+                        <div className="quarter-vs-label">VS.</div>
+                        {renderPlayerBox("player 2", 1)}
+                    </div>
+                    </>
+                    <div className="quarter-spacer "></div>
+                    <>
+                    <div className="player-group">
+                        {renderPlayerBox("player3", 0)}
+                        <div className="quarter-vs-label">VS.</div>
+                        {renderPlayerBox("player4", 1)}
+                    </div>
+                    </>
+                </div>
+                <div className="player-column right-column">
+                    <>
+                    <div className="player-group">
+                        {renderPlayerBox("player5", 0)}
+                        <div className="quarter-vs-label">VS.</div>
+                        {renderPlayerBox("player6", 1)}
+                    </div>
+                    </>
+                    <div className="quarter-spacer "></div>
+                    <>
+                    <div className="player-group">
+                        {renderPlayerBox("player7", 0)}
+                        <div className="quarter-vs-label">VS.</div>
+                        {renderPlayerBox("player8", 1)}
+                    </div>
+                    </>
+                </div>
+                </>
                 }
             </div>
         );
@@ -196,11 +226,11 @@ function TournamentStats() {
     const playGame = () => {
         setTournamentPairData(prevState => ({
             ...prevState,
-            match_id: matchList[matchIndex].id,
-            player1_name: matchList[matchIndex].player1_name,
-            player2_name: matchList[matchIndex].player2_name,
-            player1_id: matchList[matchIndex].player1,
-            player2_id: matchList[matchIndex].player2
+            match_id: currentTournament.matchList[matchIndex].id,
+            player1_name: currentTournament.matchList[matchIndex].player1_name,
+            player2_name: currentTournament.matchList[matchIndex].player2_name,
+            player1_id: currentTournament.matchList[matchIndex].player1,
+            player2_id: currentTournament.matchList[matchIndex].player2
         }));
         console.log(tournamentPairData);
         setMatchIndex(prevState => prevState + 1);
