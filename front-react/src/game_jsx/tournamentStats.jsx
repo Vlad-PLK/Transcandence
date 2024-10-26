@@ -11,16 +11,51 @@ function TournamentStats() {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const location = useLocation();
+    const {tournamentID} = location.state || {};
     const [matchIndex, setMatchIndex] = useState(0);
-    const [tournamentArray, setTournamentArray] = useState();
-	const [playerList, setPlayerList] = useState([]);
-	const [tournamentName, setTournamentName] = useState('');
-	const [matchList, setMatchList] = useState([]);
     const {tournamentPairData, setTournamentPairData} = useContext(TournamentPairDataContext);
     const {currentTournament, setCurrentTournament} = useContext(CurrentTournamentContext);
 
     useEffect(() => {
-        console.log(currentTournament);
+        api.get('api/tournament/list-tournaments/')
+			.then(response => {
+				let i = 0;
+                console.log(response.data);
+				for (i; i < response.data.length; i++) {
+					if (response.data[i].name == tournamentID) {
+						setCurrentTournament(prevState => ({
+                            ...prevState,
+                            creator: response.data[i].creator,
+                            name: response.data[i].name,
+                        }))
+						const url = `api/tournament/${tournamentID}/participants/`;
+						api.get(url)
+						.then(response => {
+							setCurrentTournament(prevState => ({
+                                ...prevState,
+                                playerList: response.data[i],
+                            }))
+						  })
+						.catch(error => {
+							console.log('Error:', error);
+						  });
+					}
+				}
+			})
+			.catch(error => {
+				console.log('Error:', error);
+			});
+        const url2 = `api/tournament/${tournamentID}/needed-matches/`;
+			api.get(url2)
+        	.then(response => {
+				setCurrentTournament(prevState => ({
+        	        ...prevState,
+        	        matchList: response.data,
+        	    }));
+			  })
+			.catch(error => {
+				console.log('Error:', error);
+			});
     }, [])
 
     const containerStyle = {
@@ -154,13 +189,22 @@ function TournamentStats() {
                     </div>
                     </>
                     <div className="quarter-spacer "></div>
+                    {currentTournament.matchList[3] ?
+                    <>
+                    <div className="player-group">
+                        {renderPlayerBox(currentTournament.matchList[3].player1_name, 6)}
+                        <div className="quarter-vs-label">VS.</div>
+                        {renderPlayerBox(currentTournament.matchList[3].player2_name, 7)}
+                    </div>
+                    </>
+                    :    
                     <>
                     <div className="player-group">
                         {renderPlayerBox("player7", 0)}
                         <div className="quarter-vs-label">VS.</div>
                         {renderPlayerBox("player8", 1)}
                     </div>
-                    </>
+                    </>}
                 </div>
                 </>
                 }

@@ -143,7 +143,9 @@ function CreateTournamentModal() {
 			.catch(error => {
 				console.log('Error:', error);
 			});
-			navigate("../tournamentStats/");
+			navigate("../tournamentStats/", {state: {
+				tournamentID: tId
+			}});
 		} catch (error) {
 			console.log(error);
 		}
