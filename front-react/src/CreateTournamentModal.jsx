@@ -14,13 +14,11 @@ function CreateTournamentModal() {
 	const [nickname, setNickname] = useState('');
 	const [name, setName] = useState('');
 	const [tournament, setTournament] = useState('');
-    const { userData } = useContext(UserDataContext);
 	const [tournamentArray, setTournamentArray] = useState();
 	const [playerList, setPlayerList] = useState([]);
 	const [isCreated, setIsCreated] = useState(false);
 	const [isFull, setIsFull] = useState(false);
 	const [msg, setMsg] = useState('');
-	const [tournamentList, setTournamentList] = useState([]);
 	const navigate = useNavigate();
 
 	const incPlayers = () => {
@@ -35,8 +33,17 @@ function CreateTournamentModal() {
         }
         try
         {
-			await api.post('/api/get-user-id/', {nickname});
+			await api.post('/api/get-user-id/', {username:nickname});
 			setTournament(tournamentArray.id);
+			for (let i = 0; i < playerList.length; i++) {
+				if (playerList[i].nickname == nickname) {
+					//a traduire//
+					setMsg("User already in the tournament !");
+					setNickname('');
+            		setError('');
+					return ;
+				}
+			}
             const response = await api.post('api/tournament/add-participant/', {tournament, nickname});
             console.log(response.data);
 			incPlayers();
@@ -45,7 +52,7 @@ function CreateTournamentModal() {
 			if (playersNB == 7)
 				setIsFull(true);
             setNickname('');
-            setError('');
+            setMsg('');
         }
         catch(error)
         {
@@ -68,6 +75,7 @@ function CreateTournamentModal() {
 			setName('');
 		}catch(error){
 			setName('');
+			//a traduire//
 			setMsg("Tournament Already exists !");
 			console.log(error);
 		}
@@ -103,6 +111,7 @@ function CreateTournamentModal() {
 					}
 				}
 				if (i == response.data.length) {
+					//a traduire//
 					setError("Tournament not found !");
 				}
 			})
@@ -160,8 +169,9 @@ function CreateTournamentModal() {
                                     			    onChange={(e) => setName(e.target.value)}
                                     			/>
                                				</div>
-								<button type="button" className="btn btn-success btn-sm rounded-3 me-4 mb-3" onClick={createTournament}>{t('create_tournament')}</button></>}
+								<button type="button" className="btn btn-success btn-sm rounded-3 me-4 mb-3" onClick={createTournament}>{t('create_tournament')}</button>
 								{msg && <p className="text-danger">{msg}</p>}
+								</>}
 								{!isCreated && <>
 								<div className="mb-2 mt-2">
                                     			<input
