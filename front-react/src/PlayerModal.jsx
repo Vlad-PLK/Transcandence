@@ -40,7 +40,7 @@ function PlayerModal() {
 
     return (
         <>
-            <div className="modal fade" id="playerModal" tabIndex="-1" aria-labelledby="playerModalLabel" aria-hidden="true" style={{ fontFamily: 'cyber4' }}>
+            <div className="modal" id="playerModal" tabIndex="-1" aria-labelledby="playerModalLabel" aria-hidden="true" style={{ fontFamily: 'cyber4' }}>
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content rounded-4 shadow">
                         <div className="modal-header p-5 pb-4 border-bottom-0">
