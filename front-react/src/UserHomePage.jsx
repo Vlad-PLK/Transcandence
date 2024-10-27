@@ -10,6 +10,8 @@ import SettingsModal from "./SettingsModal";
 import { useNavigate } from "react-router-dom";
 import api from "./api";
 import { GameContext } from "./GameContext";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 function UserHomePage() {
 	const { userData, setUserData } = useContext(UserDataContext);
@@ -81,7 +83,7 @@ function UserHomePage() {
 							</a>
 							<div className="text-end">
 								<div className="btn-group dropstart">
-									<button type="button" className="btn btn-outline-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+									<button className="btn btn-outline-light dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 										<span className="visually-hidden">{t('dropdown.toggle')}</span>
 									</button>
 									<ul className="dropdown-menu opacity-50" style={{ fontSize: "12px", textAlign: "center", minWidth: "5rem" }}>

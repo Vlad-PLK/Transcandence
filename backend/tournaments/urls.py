@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (CreateTournamentView, ListTournamentsView, AddParticipantView, 
                     ShuffleParticipantsView, AdvanceToNextRoundView, MatchResultView, GetMatchesToPlayView,
-                    TournamentParticipantsView, GetUserTournamentsListView, GetUserTournamentsStatsView)
+                    TournamentParticipantsView, GetUserTournamentsListView, GetUserTournamentsStatsView, 
+                    GetTournamentMatchInfoView, GetAllTournamentMatches)
 
 urlpatterns = [
     path("tournament/create-tournament/", CreateTournamentView.as_view(), name='create-tournament'),
@@ -13,5 +14,7 @@ urlpatterns = [
     path('tournament/<int:pk>/needed-matches/', GetMatchesToPlayView.as_view(), name='needed-matches'),
     path('tournament/<int:pk>/participants/', TournamentParticipantsView.as_view(), name='tournament-participants'),
     path('tournaments/get-user-tournaments/', GetUserTournamentsListView.as_view(), name='get-user-tournaments'),
-    path('tournamets/<int:pk>/user-tournament-stats/', GetUserTournamentsStatsView.as_view(), name='get-user-tournament-stats')
+    path('tournamets/<int:pk>/user-tournament-stats/', GetUserTournamentsStatsView.as_view(), name='get-user-tournament-stats'),
+    path('tournament/<int:pk>/match-info/', GetTournamentMatchInfoView.as_view(), name='get-match-info'),
+    path('tournament/<int:pk>/tournament-matches/', GetAllTournamentMatches.as_view(), name='get-matches-tour')
 ]

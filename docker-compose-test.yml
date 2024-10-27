@@ -1,0 +1,73 @@
+networks:
+  transcendance:
+    driver: bridge
+
+services:
+
+  # nginx:
+    # container_name: nginx
+    # build: ./nginx
+    # ports:
+      # - 1080:80  # Forward HTTP traffic on port 80
+      # - 1443:443
+    # depends_on:
+      # - backend
+      # - frontend
+    # networks:
+      # - transcendance
+
+  frontend:
+    container_name: frontend
+    build: ./front-react
+    ports:
+      - 3000:3000
+    volumes:
+      - frontend:/app
+    # depends_on:
+      # - backend
+    networks:
+      - transcendance
+    
+  # backend:
+    # container_name: backend
+    # build: 
+      # context: ./backend
+      # args:
+        # DOMAIN: ${DOMAIN}
+        # LISTEN_PORT: ${LISTEN_PORT}
+        # OAUTH_UID: ${OAUTH_UID}
+        # OAUTH_SECRET: ${OAUTH_SECRET}
+        # OAUTH_CALLBACK: ${OAUTH_CALLBACK}
+        # DBNAME: ${DBNAME}       
+        # DBUSER: ${DBUSER}        
+        # DBPASSWORD: ${DBPASSWORD} 
+    # ports:
+      # - 8000:8000
+    # networks:
+      # - transcendance
+    # command: sh -c "python manage.py makemigrations && python manage.py migrate && daphne -b 0.0.0.0 -p 8000 backend.asgi:application"
+
+  # postgres:
+    # image: postgres:latest
+    # container_name: postgres
+    # environment:
+      # POSTGRES_DB: ${DBNAME}       
+      # POSTGRES_USER: ${DBUSER}        
+      # POSTGRES_PASSWORD: ${DBPASSWORD}  
+    # ports:
+      # - 5432:5432
+    # volumes:
+      # - postgres_data:/var/lib/postgresql/data
+    # networks:
+      # - transcendance
+    
+volumes:
+  frontend:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '${VOLUME_PATH}'
+  # postgres_data:
+    # driver: local
+      

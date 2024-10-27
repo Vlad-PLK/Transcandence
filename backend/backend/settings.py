@@ -100,7 +100,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # URL вашего фронтенда
 ]
 
-CSRF_TRUSTED_ORIGINS = ["https://"+os.getenv('DOMAIN')]
+CSRF_TRUSTED_ORIGINS = ["https://"+os.getenv('DOMAIN')+"/"]
 
 ALLOWED_HOSTS = ['*']
 

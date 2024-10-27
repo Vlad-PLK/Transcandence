@@ -835,7 +835,12 @@ function UserGame()
             <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
             <CustomTimer 
                     flag={0}
+<<<<<<< HEAD
                     seconds={10} 
+=======
+                    tournamentID={0}
+                    seconds={3} 
+>>>>>>> 7f669d026002026bb38280cbb49355b0b4c910c0
                     player1={userData.id} 
                     player1_nick={userData.username}
                     player2={guestData.id} 

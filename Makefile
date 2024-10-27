@@ -22,10 +22,16 @@ clean:
 fclean: clean
 	docker-compose down
 	docker system prune -a -f
-	docker volume rm transcandence_backend
-	docker volume rm transcandence_backend
-	docker volume rm transcandence_postgres_data
-
+	@if docker volume inspect transcandence_backend > /dev/null 2>&1; then \
+        docker volume rm transcandence_backend; \
+    else \
+        echo "Volume transcandence_backend does not exist"; \
+    fi
+	@if docker volume inspect transcandence_postgres_data > /dev/null 2>&1; then \
+        docker volume rm transcandence_postgres_data; \
+    else \
+        echo "Volume transcandence_postgres_data does not exist"; \
+    fi
 	rm -rf ${VOLUME_PATH}
 
 re:	fclean all
