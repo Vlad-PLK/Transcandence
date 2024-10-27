@@ -10,8 +10,6 @@ import SettingsModal from "./SettingsModal";
 import api from "./api";
 import FriendRequestModal from "./FriendRequestModal";
 import DeleteFriendModal from "./DeleteFriendModal";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 function UserFriends() {
     const { userData } = useContext(UserDataContext);

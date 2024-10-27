@@ -5,16 +5,30 @@ import { UserStatsContext } from './UserStatsContext';
 import api from './api';
 import { useNavigate } from 'react-router-dom';
 
-function WatchTournamentModal({tournamentList}) {
+
+function WatchTournamentModal() {
     const { t } = useTranslation();
 	const {userData} = useContext(UserDataContext);
-	// const [tournamentList, setTournamentList] = useState([]);
+	const [tournamentList, setTournamentList] = useState([]);
 	const navigate = useNavigate();
-	console.log(tournamentList);
+
+	useEffect(() => {
+			try {
+				api.get('api/tournament/list-tournaments/')
+				.then(response => {
+					setTournamentList(response.data)
+				  })
+				.catch(error => {
+					console.log('Error:', error);
+					// alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+				  });
+			} catch (error) {
+				alert(error);
+			}
+	},[])
 
 	const tournamentPage = async(id) => {
 		//navigate to tournament page specified by the ID//
-		console.log(id);
 		const tId = id;
 		navigate("../tournamentStats/", {state: {
 			tournamentID: tId
@@ -36,7 +50,7 @@ function WatchTournamentModal({tournamentList}) {
 						{Array.isArray(tournamentList) && tournamentList.length > 0 ?
 							<ul className="tournament-history list-group">
 								{tournamentList.map((tournament, id) => (
-            					<div key={id} className="d-flex mt-2 mb-2">
+            					<div key={id} className="d-flex">
             					    <li className="list-group-item">
             					        {t('tournament.name')} : {tournament.name}
             					    </li>

@@ -113,23 +113,29 @@ function setSphere(scene, sphere, sphereGeometry, setFlag)
         //sphere.receiveShadow = true;
         //sphere.castShadow = true; 
         scene.add(sphere);
+        // setTimeout(() =>
+        // {
+        //     let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
+        //     velocity.x = Math.cos(randomAngle);
+        //     velocity.z = Math.sin(randomAngle);
+        // }, 6000);
+        setFlag = 1;
+    }
+    else
+    {
+        // console.log("SETSPHERE 1");
+        sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
+        const sphereMaterial = new THREE.MeshStandardMaterial({color:0xFFFFFF});
+        sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        sphere.position.set(0, sphereGeometry.parameters.radius, 0);
+        scene.add(sphere);
         setTimeout(() =>
         {
             let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
             velocity.x = Math.cos(randomAngle);
             velocity.z = Math.sin(randomAngle);
         }, 6000);
-        setFlag = 1;
     }
-    // else
-    // {
-    //     // console.log("SETSPHERE 1");
-    //     sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
-    //     const sphereMaterial = new THREE.MeshStandardMaterial({color:0xFFFFFF});
-    //     sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    //     sphere.position.set(0, sphereGeometry.parameters.radius, 0);
-    //     scene.add(sphere);
-    // }
 
     return { sphere, sphereGeometry, setFlag};
 }
@@ -835,12 +841,7 @@ function UserGame()
             <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
             <CustomTimer 
                     flag={0}
-<<<<<<< HEAD
-                    seconds={10} 
-=======
-                    tournamentID={0}
-                    seconds={3} 
->>>>>>> 7f669d026002026bb38280cbb49355b0b4c910c0
+                    seconds={15} 
                     player1={userData.id} 
                     player1_nick={userData.username}
                     player2={guestData.id} 

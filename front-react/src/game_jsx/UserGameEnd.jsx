@@ -1,14 +1,12 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useContext} from "react";
-import './UserGameEnd_TV.css';
+import './UserGameEnd.css';
 import { useTranslation } from "react-i18next";
 import TranslationSelect from "../TranslationSelect.jsx";
 import { Link } from "react-router-dom";
-import { UserDataContext } from "../UserDataContext.jsx";
-import SettingsModal from "../SettingsModal.jsx";
-import TournamentStats from './tournamentStats.jsx';
-
+import { UserDataContext } from "../UserDataContext";
+import SettingsModal from "../SettingsModal";
 
 function UserGameEnd()
 {
@@ -26,26 +24,17 @@ function UserGameEnd()
 		backgroundPosition: 'center',
 	};
 
-    const { flag, player1, player1_nick, player2, player2_nick, player1_score, player2_score } = location.state || {};
+    const { flag, player1, player2, player1_score, player2_score } = location.state || {};
+
 	const isPlayer1Winner = player1_score > player2_score;
     const isPlayer2Winner = player2_score > player1_score;
 
     const handleRestart = () =>
 	{
-        navigate("../userGameWindow");
+        navigate("../UserGame");
     };
 
-	const handleNewGame = () =>
-	{
-		navigate("../userGameSetup/");
-	};
-
-	const handleTournamentStats = () => {
-        const winner = isPlayer1Winner ? player1_nick : player2_nick;
-        navigate("../tournamentStats", { state: { winner } });
-    };
-
-	console.log("GAME_END ",flag, player1, player1_score, player2, player2_score);
+	console.log("GAME_END", player1, player1_score, player2, player2_score);
 
     return (
         <>
@@ -85,7 +74,7 @@ function UserGameEnd()
                     <p className="endgame-thanks">{t('gameEnd.thanks')}</p>
 
                     {/* Scoreboard */}
-                    {player1_nick && player2_nick ? (
+                    {player1 && player2 ? (
                         <div className="scoreboard">
                             <table className="score-table">
                                 <thead>
@@ -98,14 +87,14 @@ function UserGameEnd()
                                     <tr className={isPlayer1Winner ? "winner-row" : ""}>
                                         <td>
                                             {isPlayer1Winner && <span className="crown">{t('gameEnd.winnerCrown')}</span>}
-                                            {player1_nick}
+                                            {player1}
                                         </td>
                                         <td>{player1_score}</td>
                                     </tr>
                                     <tr className={isPlayer2Winner ? "winner-row" : ""}>
                                         <td>
                                             {isPlayer2Winner && <span className="crown">{t('gameEnd.winnerCrown')}</span>}
-                                            {player2_nick}
+                                            {player2}
                                         </td>
                                         <td>{player2_score}</td>
                                     </tr>
@@ -115,17 +104,9 @@ function UserGameEnd()
                     ) : (
                         <p>{t('gameEnd.scoreboard.scoresUnavailable')}</p>
                     )}
-                    {/* A FAIRE, SUPPRIMER CES BOUTTONS SI GAME DE TOURNOI */}
-                    {flag == 0 && 
-                    <>
-                        <button className="restart-btn" onClick={handleRestart}>{t('gameEnd.scoreboard.restartButton')}</button>
-					    <button className="newgame-btn" onClick={handleNewGame}>{t('gameEnd.scoreboard.newGameButton')}</button>
-                    </>
-                    }
-                    {flag === 1 && (
-                            <button className="tournament-btn" onClick={handleTournamentStats}>{t('gameEnd.scoreboard.tournamentStatsButton')}</button>
-                    )}
-				</div>
+
+                    <button className="restart-btn" onClick={handleRestart}>{t('gameEnd.scoreboard.restartButton')}</button>
+                </div>
             </div>
             <SettingsModal />
         </>
