@@ -35,10 +35,10 @@ function Root({children}){
   useEffect(() => {
     if (isUserReady == false){
       const token = localStorage.getItem(ACCESS_TOKEN);
-      if (token != null)
-        takeData(setUserData, setIsUserReady, setGameData);
-      else
+      if (!token)
         setIsUserReady(true);
+      else
+        takeData(setUserData, setIsUserReady, setGameData);
     }
   }, [isUserReady])
 
