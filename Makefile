@@ -1,6 +1,6 @@
 NAME = TRANSCENDANCE
 
-VOLUME_PATH = /Users/macbook/volumes
+VOLUME_PATH = /Users/tvinci/volumes
 
 all: ${NAME}
 
