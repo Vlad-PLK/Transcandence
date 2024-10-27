@@ -42,6 +42,7 @@ let streakPower = 0;
 const paddleWidth = 12;
 const paddleHeight = 2;
 const paddleDepth = 1;
+let isPaddlePowered = false;
 
 let boostMultiplier = 1;
 let boost1Flag = 0.5; 
@@ -120,15 +121,15 @@ function setSphere(scene, sphere, sphereGeometry, setFlag)
         }, 6000);
         setFlag = 1;
     }
-    else
-    {
-        // console.log("SETSPHERE 1");
-        sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
-        const sphereMaterial = new THREE.MeshStandardMaterial({color:0xFFFFFF});
-        sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-        sphere.position.set(0, sphereGeometry.parameters.radius, 0);
-        scene.add(sphere);
-    }
+    // else
+    // {
+    //     // console.log("SETSPHERE 1");
+    //     sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
+    //     const sphereMaterial = new THREE.MeshStandardMaterial({color:0xFFFFFF});
+    //     sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    //     sphere.position.set(0, sphereGeometry.parameters.radius, 0);
+    //     scene.add(sphere);
+    // }
 
     return { sphere, sphereGeometry, setFlag};
 }
@@ -173,9 +174,9 @@ function resetSphere(scene, sphere, sphereGeometry, setFlag)
     }
 }
 
-function resetPaddles(topPaddle, bottomPaddle, planeGeometry)
+function resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower)
 {
-    if (topPaddle.geometry.parameters.width == paddleWidth/2 || bottomPaddle.geometry.parameters.width == paddleWidth/2)
+    if (!streakPower)
     {
         const PaddleGeo = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth);
         topPaddle.geometry.dispose();
@@ -262,6 +263,7 @@ function updateScoreText(scene, font, player1ID, player2ID, player1Score, player
     }
     animateScoreText();
 }
+
 function checkCollision(scene, sphere, sphereGeometry, 
     planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower)
 {
@@ -294,11 +296,13 @@ function checkCollision(scene, sphere, sphereGeometry,
                 streakPower = 2;
             else
                 streakPower = 0;
+            console.log("scoreFlag 1 ", player1Streak, streakPower);
+
         }
         scoreFlag = 1;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
         resetSphere(scene, sphere, sphereGeometry, setFlag);
-        resetPaddles(topPaddle, bottomPaddle, planeGeometry);
+        resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower);
     }
     else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2 - 0.01)
     {
@@ -313,11 +317,12 @@ function checkCollision(scene, sphere, sphereGeometry,
                 streakPower = 1;
             else
                 streakPower = 0;
+            console.log("scoreFlag 2 ", player2Streak, streakPower);
         }
         scoreFlag = 2;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
         resetSphere(scene, sphere, sphereGeometry, setFlag);
-        resetPaddles(topPaddle, bottomPaddle, planeGeometry);
+        resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower);
     }
     return {player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower};
 }
@@ -539,18 +544,25 @@ function UserGame()
 
         if (PowerUp == 1)
         {
-            if (streakPowerIsPressed == true && streakPower != 0)
+            if (streakPowerIsPressed && streakPower != 0 && !isPaddlePowered)
             {
-                if (streakPower == 1)
+                if (streakPower === 1)
                 {
                     powerPaddle(topPaddle);
-                    streakPower = 0;
+                    isPaddlePowered = true;
                 }
-                else if (streakPower == 2)
+                else if (streakPower === 2)
                 {
                     powerPaddle(bottomPaddle);
-                    streakPower = 0;
+                    isPaddlePowered = true;
                 }
+                streakPower = 0;
+            }
+            if (isPaddlePowered && streakPower === 0)
+            {
+                topPaddle.geometry.parameters.width = paddleWidth;
+                bottomPaddle.geometry.parameters.width = paddleWidth;
+                isPaddlePowered = false;
             }
         }
 
@@ -823,7 +835,7 @@ function UserGame()
             <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
             <CustomTimer 
                     flag={0}
-                    seconds={3} 
+                    seconds={10} 
                     player1={userData.id} 
                     player1_nick={userData.username}
                     player2={guestData.id} 
@@ -838,7 +850,7 @@ function UserGame()
             <CustomTimer 
                     flag={1}
                     tournamentID={tournamentPairData.match_id}
-                    seconds={3} 
+                    seconds={10} 
                     player1={tournamentPairData.player1_id} 
                     player1_nick={tournamentPairData.player1_name}
                     player2={tournamentPairData.player2_id} 

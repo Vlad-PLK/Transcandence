@@ -1,13 +1,3 @@
-import * as THREE from 'three';
-import checkSun from './checkSun';
-
-function powerPaddle(paddle)
-{
-    console.log("paddle.geometry.parameters.width = ", paddle.geometry.parameters.width );
-    paddle.geometry.parameters.width = 6;
-    return (paddle);
-}
-
 function updateKey(keyboardState, bottomPaddle, topPaddle, bottomPaddleGeometry, topPaddleGeometry,  
     planeGeometry, cameraKeyIsPressed, paddle1Left, paddle1Right, 
     paddle2Left, paddle2Right, camera, cameraPosition, streakPowerIsPressed, streakPower)
