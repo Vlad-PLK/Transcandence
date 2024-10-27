@@ -15,6 +15,7 @@ function CreateTournamentModal() {
 	const [username, setUsername] = useState('');
 	const [nickname, setNickname] = useState('');
 	const [name, setName] = useState('');
+	const [errorTournament, setErrorTournament] = useState('');
 	const [tournament, setTournament] = useState('');
 	const [tournamentArray, setTournamentArray] = useState();
 	const [playerList, setPlayerList] = useState([]);
@@ -40,9 +41,8 @@ function CreateTournamentModal() {
 			for (let i = 0; i < playerList.length; i++) {
 				if (playerList[i].nickname == nickname) {
 					//a traduire//
-					setMsg("User already in the tournament !");
+					setError("User already in the tournament !");
 					setNickname('');
-            		setError('');
 					return ;
 				}
 			}
@@ -52,7 +52,7 @@ function CreateTournamentModal() {
 			if (playersNB == 7)
 				setIsFull(true);
             setNickname('');
-            setMsg('');
+            setError('');
         }
         catch(error)
         {
@@ -111,7 +111,7 @@ function CreateTournamentModal() {
 				}
 				if (i == response.data.length) {
 					//a traduire//
-					setError("Tournament not found !");
+					setErrorTournament("Tournament not found !");
 				}
 			})
 			.catch(error => {
@@ -131,8 +131,8 @@ function CreateTournamentModal() {
 			playerList: playerList,
 		}))
 		try {
-			const response = await api.post(url);
-			const url2 = `api/tournament/${id}/needed-matches/`;
+			await api.post(url);
+			const url2 = `api/tournament/${id}/tournament-matches/`;
 			api.get(url2)
         	.then(response => {
 				setCurrentTournament(prevState => ({
@@ -144,7 +144,7 @@ function CreateTournamentModal() {
 				console.log('Error:', error);
 			});
 			navigate("../tournamentStats/", {state: {
-				tournamentID: tId
+				tournamentID: id,
 			}});
 		} catch (error) {
 			console.log(error);
@@ -200,7 +200,7 @@ function CreateTournamentModal() {
                                     			/>
                                				</div>
 								<button type="button" className="btn btn-primary btn-sm rounded-3 me-4 mb-3" onClick={searchTournament}>{t('search_tournament')}</button>
-								{error && <p className="text-danger">{error}</p>}
+								{errorTournament && <p className="text-danger">{errorTournament}</p>}
 								</>}
 								{isCreated &&
 								<>

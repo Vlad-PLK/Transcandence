@@ -8,7 +8,7 @@ function PlayerModal() {
     const { t } = useTranslation();
     const [username, setUsername] = useState('');
     const [error, setError] = useState('');
-    const { guestData, setGuestData } = useContext(GuestDataContext);
+    const {setGuestData } = useContext(GuestDataContext);
     const navigate = useNavigate();
 
     const launchGame = async (e) => {
