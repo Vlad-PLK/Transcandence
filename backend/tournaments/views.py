@@ -247,6 +247,7 @@ class GetUserTournamentsStatsView(APIView):
             'matches': matches
         }
 
+        return Response(stats, status=status.HTTP_200_OK)
 
 class GetTournamentMatchInfoView(APIView):
     permission_classes = [IsAuthenticated]
