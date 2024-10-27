@@ -106,12 +106,30 @@ function setSphere(scene, sphere, sphereGeometry, setFlag)
 {
     if (setFlag == 0)
     {
+        console.log("SETSPHERE 0");
         sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
         const sphereMaterial = new THREE.MeshStandardMaterial({color:0xFFFFFF});
         sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
         sphere.position.set(0, sphereGeometry.parameters.radius, 0);
-        //sphere.receiveShadow = true;
-        //sphere.castShadow = true; 
+        sphere.receiveShadow = true;
+        sphere.castShadow = true; 
+        // scene.add(sphere);
+        // setTimeout(() =>
+        // {
+        //     let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
+        //     velocity.x = Math.cos(randomAngle);
+        //     velocity.z = Math.sin(randomAngle);
+        // }, 6000);
+        setFlag = 1;
+    }
+    else
+    {
+        console.log("SETSPHERE 1");
+        setFlag = 0;
+        sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
+        const sphereMaterial = new THREE.MeshStandardMaterial({color:0xFFFFFF});
+        sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        sphere.position.set(0, sphereGeometry.parameters.radius, 0);
         scene.add(sphere);
         setTimeout(() =>
         {
@@ -119,17 +137,7 @@ function setSphere(scene, sphere, sphereGeometry, setFlag)
             velocity.x = Math.cos(randomAngle);
             velocity.z = Math.sin(randomAngle);
         }, 6000);
-        setFlag = 1;
     }
-    // else
-    // {
-    //     // console.log("SETSPHERE 1");
-    //     sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
-    //     const sphereMaterial = new THREE.MeshStandardMaterial({color:0xFFFFFF});
-    //     sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    //     sphere.position.set(0, sphereGeometry.parameters.radius, 0);
-    //     scene.add(sphere);
-    // }
 
     return { sphere, sphereGeometry, setFlag};
 }
@@ -159,19 +167,16 @@ const calculateCollisionNormal = (sphere, sphereGeometry, topPaddle, bottomPaddl
 
 function resetSphere(scene, sphere, sphereGeometry, setFlag)
 {
-    // console.log("RESETSPHERE : ", setFlag);
-    if (setFlag == 1)
-    {
-        velocity = vec.vectorize(0, 0, 0);
-        sphere.position.set(0, sphereGeometry.parameters.radius, 0);
+    console.log("RESETSPHERE : ", setFlag);
+    velocity = vec.vectorize(0, 0, 0);
+    sphere.position.set(0, sphereGeometry.parameters.radius, 0);
 
-        setTimeout(() =>
-        {
-            let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
-            velocity.x = Math.cos(randomAngle);
-            velocity.z = Math.sin(randomAngle);
-        }, 6000);
-    }
+    setTimeout(() =>
+    {
+        let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
+        velocity.x = Math.cos(randomAngle);
+        velocity.z = Math.sin(randomAngle);
+    }, 6000);
 }
 
 function resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower)
@@ -835,12 +840,7 @@ function UserGame()
             <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
             <CustomTimer 
                     flag={0}
-<<<<<<< HEAD
                     seconds={10} 
-=======
-                    tournamentID={0}
-                    seconds={3} 
->>>>>>> 7f669d026002026bb38280cbb49355b0b4c910c0
                     player1={userData.id} 
                     player1_nick={userData.username}
                     player2={guestData.id} 
@@ -854,8 +854,7 @@ function UserGame()
             <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
             <CustomTimer 
                     flag={1}
-                    tournamentID={tournamentPairData.match_id}
-                    seconds={10} 
+                    seconds={15} 
                     player1={tournamentPairData.player1_id} 
                     player1_nick={tournamentPairData.player1_name}
                     player2={tournamentPairData.player2_id} 
