@@ -60,15 +60,8 @@ function LoginModal()
             const response = await api.post('api/users/user/token/', { username, password, otp_code });
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-			takeData(setUserData);
+			takeData(setUserData, NULL, setGameData);
 			setTwoFA(true);
-			api.get('api/update-game-settings/')
-			.then(response => {
-				setGameData(response.data);
-			})
-			.catch(error => {
-				console.log('Error:', error);
-			});
             navigate("userPage/");
 		} catch (error) {
 			console.log(error);
@@ -85,14 +78,7 @@ function LoginModal()
             const response = await api.post('api/users/user/token/', { username, password });
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-			takeData(setUserData);
-			api.get('api/update-game-settings/')
-			.then(response => {
-				setGameData(response.data);
-			})
-			.catch(error => {
-				console.log('Error:', error);
-			});
+			takeData(setUserData, NULL, setGameData);
 			navigate("userPage/");
             setUsername('');
             setPassword('');

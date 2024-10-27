@@ -12,11 +12,9 @@ function WatchTournamentModal({tournamentList}) {
 	const navigate = useNavigate();
 	console.log(tournamentList);
 
-	const tournamentPage = async(id) => {
-		//navigate to tournament page specified by the ID//
-		console.log(id);
+	const tournamentPage = (id) => {
 		const tId = id;
-		navigate("../tournamentStats/", {state: {
+		navigate("/tournamentStats/", {state: {
 			tournamentID: tId
 		}});
 	}

@@ -53,7 +53,6 @@ function UserGameSetup()
 	const search_tournament = () => {
 		api.get('api/tournament/list-tournaments/')
 		.then(response => {
-			console.log(response.data);
 			setTournamentList(response.data);
 		})
 		.catch(error => {

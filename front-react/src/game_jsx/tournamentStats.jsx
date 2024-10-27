@@ -12,50 +12,50 @@ function TournamentStats() {
     const { t } = useTranslation();
     const location = useLocation();
     const {tournamentID} = location.state || {};
-    const [matchIndex, setMatchIndex] = useState(0);
+    var matchIndex;
     const {tournamentPairData, setTournamentPairData} = useContext(TournamentPairDataContext);
     const {currentTournament, setCurrentTournament} = useContext(CurrentTournamentContext);
+    const [semiFinalists, setSemiFinalists] = useState([]);
+    const [Finalists, setFinalists] = useState([]);
+    const [toogleIndex, setToogleIndex] = useState(false);
 
     useEffect(() => {
         api.get('api/tournament/list-tournaments/')
-			.then(response => {
-				let i = 0;
-                console.log(response.data);
-				for (i; i < response.data.length; i++) {
-					if (response.data[i].name == tournamentID) {
+		.then(response => {
+			for (let i = 0; i < response.data.length; i++) {
+				if (response.data[i].name == tournamentID) {
+					setCurrentTournament(prevState => ({
+                        ...prevState,
+                        creator: response.data[i].creator,
+                        name: response.data[i].name,
+                        id: tournamentID,
+                    }))
+					api.get(`api/tournament/${tournamentID}/participants/`)
+					.then(response => {
 						setCurrentTournament(prevState => ({
                             ...prevState,
-                            creator: response.data[i].creator,
-                            name: response.data[i].name,
+                            playerList: response.data[i],
                         }))
-						const url = `api/tournament/${tournamentID}/participants/`;
-						api.get(url)
-						.then(response => {
-							setCurrentTournament(prevState => ({
+		                api.get(`api/tournament/${tournamentID}/tournament-matches/`)
+                        .then(response => {
+		                	setCurrentTournament(prevState => ({
                                 ...prevState,
-                                playerList: response.data[i],
-                            }))
-						  })
-						.catch(error => {
-							console.log('Error:', error);
-						  });
-					}
+                                matchList: response.data,
+                            }));
+		                    })
+		                .catch(error => {
+		                	console.log('Error:', error);
+		                });
+					  })
+					.catch(error => {
+						console.log('Error:', error);
+					});
 				}
-			})
-			.catch(error => {
-				console.log('Error:', error);
-			});
-        const url2 = `api/tournament/${tournamentID}/needed-matches/`;
-			api.get(url2)
-        	.then(response => {
-				setCurrentTournament(prevState => ({
-        	        ...prevState,
-        	        matchList: response.data,
-        	    }));
-			  })
-			.catch(error => {
-				console.log('Error:', error);
-			});
+			}
+		})
+		.catch(error => {
+			console.log('Error:', error);
+		});
     }, [])
 
     const containerStyle = {
@@ -71,7 +71,7 @@ function TournamentStats() {
     };
 
     const handleBack = () => {
-        navigate("/userGameSetup");
+        navigate("../userGameSetup");
     };
 
     const renderPlayerBox = (nickname, index) => {
@@ -83,80 +83,48 @@ function TournamentStats() {
     };
 
     const renderQuarterfinals = () => {
-    
+        if (Array.isArray(currentTournament.matchList)) {
+            currentTournament.matchList.sort((a, b) => a.id - b.id);
+        }
         return (
             <div className="d-flex justify-content-between w-100">
                 {Array.isArray(currentTournament.matchList) && currentTournament.matchList.length > 0 ?
                 <>
                 <div className="player-column left-column">
-                    {currentTournament.matchList[0] ?
+                    {currentTournament.matchList[0] &&
                     <>
                     <div className="player-group">
                         {renderPlayerBox(currentTournament.matchList[0].player1_name, 0)}
                         <div className="quarter-vs-label">VS.</div>
                         {renderPlayerBox(currentTournament.matchList[0].player2_name, 1)}
                     </div>
-                    </>
-                    :
-                    <>
-                    <div className="player-group">
-                        {renderPlayerBox("player 1", 0)}
-                        <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox("player 2", 1)}
-                    </div>
-                    </>
-                    }
+                    </>}
                     <div className="quarter-spacer "></div>
-                    {currentTournament.matchList[1] ?
+                    {currentTournament.matchList[1] &&
                     <>
                     <div className="player-group">
                         {renderPlayerBox(currentTournament.matchList[1].player1_name, 2)}
                         <div className="quarter-vs-label">VS.</div>
                         {renderPlayerBox(currentTournament.matchList[1].player2_name, 3)}
                     </div>
-                    </>
-                    :
-                    <>
-                    <div className="player-group">
-                        {renderPlayerBox("player3", 0)}
-                        <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox("player4", 1)}
-                    </div>
                     </>}
                 </div>
                 <div className="player-column right-column">
-                    {currentTournament.matchList[2] ?
+                    {currentTournament.matchList[2] &&
                     <>
                         <div className="player-group">
                             {renderPlayerBox(currentTournament.matchList[2].player1_name, 4)}
                             <div className="quarter-vs-label">VS.</div>
                             {renderPlayerBox(currentTournament.matchList[2].player2_name, 5)}
                         </div>
-                    </>
-                    :
-                    <>
-                    <div className="player-group">
-                        {renderPlayerBox("player5", 0)}
-                        <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox("player6", 1)}
-                    </div>
-                    </>
-                    }
+                    </>}
                     <div className="quarter-spacer "></div>
-                    {currentTournament.matchList[3] ?
+                    {currentTournament.matchList[3] &&
                     <>
                     <div className="player-group">
                         {renderPlayerBox(currentTournament.matchList[3].player1_name, 6)}
                         <div className="quarter-vs-label">VS.</div>
                         {renderPlayerBox(currentTournament.matchList[3].player2_name, 7)}
-                    </div>
-                    </>
-                    :    
-                    <>
-                    <div className="player-group">
-                        {renderPlayerBox("player7", 0)}
-                        <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox("player8", 1)}
                     </div>
                     </>}
                 </div>
@@ -165,10 +133,11 @@ function TournamentStats() {
                 <>
                 <div className="player-column left-column">
                     <>
+                    {/* a traduire */}
                     <div className="player-group">
-                        {renderPlayerBox("player 1", 0)}
+                        {renderPlayerBox("player1", 0)}
                         <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox("player 2", 1)}
+                        {renderPlayerBox("player2", 1)}
                     </div>
                     </>
                     <div className="quarter-spacer "></div>
@@ -188,66 +157,143 @@ function TournamentStats() {
                         {renderPlayerBox("player6", 1)}
                     </div>
                     </>
-                    <div className="quarter-spacer "></div>
-                    {currentTournament.matchList[3] ?
-                    <>
-                    <div className="player-group">
-                        {renderPlayerBox(currentTournament.matchList[3].player1_name, 6)}
-                        <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox(currentTournament.matchList[3].player2_name, 7)}
-                    </div>
-                    </>
-                    :    
                     <>
                     <div className="player-group">
                         {renderPlayerBox("player7", 0)}
                         <div className="quarter-vs-label">VS.</div>
                         {renderPlayerBox("player8", 1)}
                     </div>
-                    </>}
+                    </>
                 </div>
                 </>
                 }
             </div>
         );
     };
-    
+
     const renderSemifinals = () => {
+        if (currentTournament && Array.isArray(currentTournament.matchList) && currentTournament.matchList.length >= 4) {
+            currentTournament.matchList.sort((a, b) => a.id - b.id);
+            //console.log(currentTournament.matchList);
+            for (let i = 0; i < 4; i++) {
+                const match = currentTournament.matchList[i];
+                if (match && match.id != null) {
+                    const winners = `api/tournament/${match.id}/match-info/`;
+                    api.get(winners)
+                        .then(response => {
+                            console.log("info about match", response.data);
+                            if (response.data.winner != null)
+			                    setSemiFinalists([...semiFinalists, response.data.winner]);
+                        })
+                        .catch(error => {
+                            console.log('Error', error);
+                        });
+                } else {
+                    console.log(`Match or match.id is undefined at index ${i}`);
+                }
+            }
+        } else {
+            console.log('currentTournament.matchList is not defined or does not have enough elements');
+        }
         return (
             <div className="d-flex justify-content-between w-100 mt-3">
-                <div className="player-column left-column semifinals">
+                {(semiFinalists && Array.isArray(currentTournament.semiFinalists) && semiFinalists.length > 0) ?
+                <>
+                    <div className="player-column left-column semifinals">
                     <div className="player-group">
-                        <div className="player-box semi-player-box p-3 mb-2 bg-light border rounded text-center">
-                            <div className="player-name">Semifinalist 1</div>
-                        </div>
+                        {renderPlayerBox(semiFinalists[0],0)}
                         <div className="semi-spacer "></div>
                         <div className="semi-vs-label">VS.</div>
                         <div className="semi-spacer "></div>
-                        <div className="player-box semi-player-box p-3 mb-2 bg-light border rounded text-center">
-                            <div className="player-name">Semifinalist 2</div>
-                        </div>
+                        {renderPlayerBox(semiFinalists[1],1)}
                     </div>
                 </div>
                 <div className="player-column right-column semifinals">
                     <div className="player-group">
-                        <div className="player-box semi-player-box p-3 mb-2 bg-light border rounded text-center">
-                            <div className="player-name">Semifinalist 3</div>
-                        </div>
+                        {renderPlayerBox(semiFinalists[2],2)}
                         <div className="semi-spacer "></div>
                         <div className="semi-vs-label">VS.</div>
                         <div className="semi-spacer "></div>
-                        <div className="player-box semi-player-box p-3 mb-2 bg-light border rounded text-center">
-                            <div className="player-name">Semifinalist 4</div>
-                        </div>
+                        {renderPlayerBox(semiFinalists[3],3)}
                     </div>
                 </div>
+                </>
+                :
+                <>
+                    <div className="player-column left-column semifinals">
+                        <div className="player-group">
+                            <div className="player-box semi-player-box p-3 mb-2 bg-light border rounded text-center">
+                                <div className="player-name">Semifinalist 1</div>
+                            </div>
+                            <div className="semi-spacer "></div>
+                            <div className="semi-vs-label">VS.</div>
+                            <div className="semi-spacer "></div>
+                            <div className="player-box semi-player-box p-3 mb-2 bg-light border rounded text-center">
+                                <div className="player-name">Semifinalist 2</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="player-column right-column semifinals">
+                        <div className="player-group">
+                            <div className="player-box semi-player-box p-3 mb-2 bg-light border rounded text-center">
+                                <div className="player-name">Semifinalist 3</div>
+                            </div>
+                            <div className="semi-spacer "></div>
+                            <div className="semi-vs-label">VS.</div>
+                            <div className="semi-spacer "></div>
+                            <div className="player-box semi-player-box p-3 mb-2 bg-light border rounded text-center">
+                                <div className="player-name">Semifinalist 4</div>
+                            </div>
+                        </div>
+                    </div>
+                    </>
+                }
             </div>
         );
     };
 
     const renderFinalists = () => {
+        if (currentTournament && Array.isArray(currentTournament.matchList) && currentTournament.matchList.length >= 6) {
+            currentTournament.matchList.sort((a, b) => a.id - b.id);
+            //console.log(currentTournament.matchList);
+            const match = currentTournament.matchList[6];
+            if (match && match.id != null) {
+                const winners = `api/tournament/${match.id}/match-info/`;
+                api.get(winners)
+                    .then(response => {
+                        console.log("info about semi finals", response.data);
+                        if (response.data.winner != null) {
+                            setFinalists([...Finalists, response.data.winner]);
+                        }
+                    })
+                    .catch(error => {
+                        console.log('Error', error);
+                    });
+            } else {
+                console.log(`Match or match.id is undefined at index 6`);
+            }
+        } else {
+            console.log('currentTournament.matchList is not defined or does not have enough elements');
+        }
         return (
             <div className="d-flex justify-content-between w-100 mt-3">
+            {(Finalists && Array.isArray(Finalists) && Finalists.length > 0)
+            ?
+            <>
+                <div className="player-column left-column finals">
+                    <div className="player-group">
+                        {renderPlayerBox(Finalists[0],0)}
+                    </div>
+                </div>
+                <div className="finals-vs-label">VS.</div>
+                <div className="player-column right-column finals">
+                    <div className="player-group">
+                        {renderPlayerBox(Finalists[1],1)}
+                    </div>
+                </div>
+            </>
+            :
+            <>
                 <div className="player-column left-column finals">
                     <div className="player-group">
                         <div className="player-box finals-player-box p-3 mb-2 bg-light border rounded text-center">
@@ -263,23 +309,65 @@ function TournamentStats() {
                         </div>
                     </div>
                 </div>
+            </>
+            }
             </div>
         );
     };
-    
-    const playGame = () => {
-        setTournamentPairData(prevState => ({
-            ...prevState,
-            match_id: currentTournament.matchList[matchIndex].id,
-            player1_name: currentTournament.matchList[matchIndex].player1_name,
-            player2_name: currentTournament.matchList[matchIndex].player2_name,
-            player1_id: currentTournament.matchList[matchIndex].player1,
-            player2_id: currentTournament.matchList[matchIndex].player2
-        }));
-        console.log(tournamentPairData);
-        setMatchIndex(prevState => prevState + 1);
-        navigate("../userGameWindow/");
-    };
+
+    const advanceRound = async(tournamentID) => {
+        const url = `api/tournament/${tournamentID}/advance-round/`;
+        try {
+            await api.post(url);
+        } catch (error) {
+            console.log("error advance round : ", error);
+        }
+    }
+    const setMatchIndex = async() => {
+        try {
+            const url3 = `api/tournament/${tournamentID}/needed-matches/`;
+            const response = await api.get(url3)
+            console.log("needed matches", response.data);
+            console.log("first match of the list index", response.data[0].id);
+            matchIndex = response.data[0].id;
+        } catch (error) {
+            console.log('Error while searching index', error);
+        }
+    }
+    const searchForCurrentMatch = (id) => {
+        for (let match of currentTournament.matchList) {
+        console.log(match.id);
+        if (match.id === id) {
+            return match;
+        }
+        }
+        return null;
+    }
+    const playGame = async () => {
+        const url2 = `api/tournament/${tournamentID}/needed-matches/`;
+	    try {
+            const response = await api.get(url2);
+            if (response.data.length === 0) {
+                advanceRound(tournamentID);
+                setMatchIndex();
+            }
+            matchIndex = response.data[0].id;
+            console.log(matchIndex);
+            const currentMatch = searchForCurrentMatch(matchIndex);
+            setTournamentPairData(prevState => ({
+                ...prevState,
+                tournament_id: tournamentID,
+                match_id: currentMatch.id,
+                player1_name: currentMatch.player1_name,
+                player2_name: currentMatch.player2_name,
+                player1_id: currentMatch.player1,
+                player2_id: currentMatch.player2
+            }));
+            navigate("../userGameWindow/");
+        } catch (error) {
+            console.log('Error:', error);
+        }
+    }
 
     return (
         <div style={containerStyle}>
@@ -311,7 +399,7 @@ function TournamentStats() {
             </div>
         </div>
     );
-    
+
 }
 
 export default TournamentStats;

@@ -21,7 +21,7 @@ function Root({children}){
     playerList: [[]], 
     matchList: [[]]
   });
-  const [tournamentPairData, setTournamentPairData] = useState({match_id: 0, player1_name: '', player2_name: '', player1_id: 0, player2_id: 0});
+  const [tournamentPairData, setTournamentPairData] = useState({tournament_id: 0, match_id: 0, player1_name: '', player2_name: '', player1_id: 0, player2_id: 0});
 	const [userStats, setUserStats] = useState(null);
   const [TwoFA, setTwoFA] = useState(null);
   const {i18n: {changeLanguage} } = useTranslation();
@@ -35,13 +35,10 @@ function Root({children}){
   useEffect(() => {
     if (isUserReady == false){
       const token = localStorage.getItem(ACCESS_TOKEN);
-      if (!token)
-          setIsUserReady(true);
+      if (token != null)
+        takeData(setUserData, setIsUserReady, setGameData);
       else
-      {
-        takeData(setUserData, setIsUserReady);
-        //check_2FA();
-      }
+        setIsUserReady(true);
     }
   }, [isUserReady])
 
@@ -54,7 +51,8 @@ function Root({children}){
       <GameContext.Provider value={{gameData, setGameData}}>
       <TwoFaContext.Provider value={{TwoFA, setTwoFA}}>
       <CurrentTournamentContext.Provider value={{currentTournament, setCurrentTournament}}>
-        <div>{children}</div>
+        {isUserReady &&
+        <div>{children}</div>}
       </CurrentTournamentContext.Provider>
       </TwoFaContext.Provider>
       </GameContext.Provider>
