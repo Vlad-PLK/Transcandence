@@ -1,8 +1,6 @@
 import axios from "axios";
 import { ACCESS_TOKEN } from "./constants";
 
-// baseURL: "https://localhost:1443/"
-// baseURL: "https://localhost:1443/"
 const api = axios.create({
   baseURL: "https://"+window.location.host+"/"
 });

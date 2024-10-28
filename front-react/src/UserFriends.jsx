@@ -11,7 +11,6 @@ import api from "./api";
 import FriendRequestModal from "./FriendRequestModal";
 import DeleteFriendModal from "./DeleteFriendModal";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 function UserFriends() {
     const { userData } = useContext(UserDataContext);
@@ -32,10 +31,6 @@ function UserFriends() {
         backgroundPosition: 'center',
         fontFamily: 'cyber4'
     };
-
-    const toggleNotFriend = () => {
-        setNotFriend(!isNotFriend);
-    }
 
     useEffect(() => {
 		if (userData == null)
@@ -120,6 +115,10 @@ function UserFriends() {
         }
     }
 
+    const visit_friend_page = (friend) => {
+        navigate("/userFriendPage/", { state: { friend: friend } });
+    }
+
     return (
         <>
             <div className="d-flex flex-column vh-100" style={main_image}>
@@ -163,10 +162,13 @@ function UserFriends() {
                                 </button>
                             </div>
                             {isVisible && (userFriends.length > 0 ? (
-                                <ul className="friend-history list-group">
+                                <ul className="friend-history list-group overflow-auto" style={{ maxHeight: '170px' }}>
                                     {Array.isArray(userFriends) && userFriends.map((friends, index) => (
                                         <li key={index} className="list-group-item">
-                                            {friends.user1.id == userData.id ? friends.user2.username : friends.user1.username}
+                                            {friends.user1.id == userData.id ?
+                                             <button href="" type="button" className="btn btn-outline-dark" onClick={() => visit_friend_page(friends.user2)}>{friends.user2.username}</button> 
+                                             : 
+                                             <button href="" type="button" className="btn btn-outline-dark" onClick={() => visit_friend_page(friends.user1)}>{friends.user1.username}</button>}
                                         </li>
                                     ))}
                                 </ul>
@@ -184,7 +186,7 @@ function UserFriends() {
                                 </button>
                             </div>
                             {isFr && ((Array.isArray(userFriendRequest) && userFriendRequest.length > 0 || Array.isArray(userFriendRequestSent) && userFriendRequestSent.length > 0) ? (
-                                <ul className="friend-request-history list-group">
+                                <ul className="friend-request-history list-group overflow-auto" style={{ maxHeight: '170px' }}>
                                     {userFriendRequest.map((friendsRequest, index) => (
                                         <li key={index} className="list-group-item">
                                             <div>
