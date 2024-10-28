@@ -12,7 +12,7 @@ const ConvertTime = (time) => {
     return (minutes + ':' + seconds);
 };
 
-function CustomTimer({ flag, tournamentID, seconds, player1, player1_nick, player2, player2_nick, player1_score, player2_score, isGuest }) {
+function CustomTimer({ flag, tournamentID, matchID, seconds, player1, player1_nick, player2, player2_nick, player1_score, player2_score, isGuest }) {
     const [count, setCount] = useState(seconds);
     const [extraTimeAdded, setExtraTimeAdded] = useState(false);
     const timerId = useRef();
@@ -25,8 +25,8 @@ function CustomTimer({ flag, tournamentID, seconds, player1, player1_nick, playe
                 const response = await api.post('api/match-create/', { player1, player2, player1_score, player2_score });
                 console.log(response.data);
             } else {
-                console.log(tournamentID, player1, player2, player1_score, player2_score);
-                const response = await api.post(`api/tournament/match/${tournamentID}/result/`, { player1_goals: player1_score, player2_goals: player2_score });
+                console.log(tournamentID, matchID, player1, player2, player1_score, player2_score);
+                const response = await api.post(`api/tournament/match/${matchID}/result/`, { player1_goals: player1_score, player2_goals: player2_score });
                 console.log(response);
             }
         } catch (error) {

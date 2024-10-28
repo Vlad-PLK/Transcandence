@@ -15,9 +15,8 @@ function TournamentStats() {
     var matchIndex = 0;
     const {tournamentPairData, setTournamentPairData} = useContext(TournamentPairDataContext);
     const {currentTournament, setCurrentTournament} = useContext(CurrentTournamentContext);
-    const [semiFinalists, setSemiFinalists] = useState([]);
-    const [Finalists, setFinalists] = useState([]);
-    const [toogleIndex, setToogleIndex] = useState(false);
+    const [semiFinalists, setSemiFinalists] = useState({nickname: '', index: 0});
+    const [Finalists, setFinalists] = useState({nickname: '', index: 0});
 
     useEffect(() => {
         console.log("tournament id = ", tournamentID);
@@ -48,11 +47,74 @@ function TournamentStats() {
 		});
         api.get(`api/tournament/${tournamentID}/tournament-matches/`)
         .then(response => {
+            console.log("All tournament matches : ", response.data);
             setCurrentTournament(prevState => ({
                 ...prevState,
                 matchList: response.data,
             }));
-            })
+            return response.data   
+        })
+        .then(matchList => {
+            const setWinner = (winner, match) => {
+                if (winner == match.player1)
+                    return match.player1_name
+                else
+                    return match.player2_name
+            }
+            if (Array.isArray(matchList) && matchList.length >= 4) {
+                for (let i = 0; i < 4; i++) {
+                    const match = matchList[i];
+                    if (match && match.id != null) {
+                        api.get(`api/tournament/${match.id}/match-info/`)
+                            .then(response => {
+                                console.log("info about quarter-finals", response.data);
+                                if (response.data.winner != null)
+                                    var nick_winner = setWinner(response.data.winner, match);
+                                    setSemiFinalists(prevSemiFinalists => ({
+                                        ...prevSemiFinalists,
+                                        nickname: nick_winner,
+                                        index: i,
+                                    }));
+                                    console.log(nick_winner, i);
+                            })
+                            .catch(error => {
+                                console.log('Error', error);
+                            });
+                    } else {
+                        console.log(`Match or match.id is undefined at index ${i}`);
+                    }
+                }
+            } else {
+                console.log('currentTournament.matchList is not defined or does not have enough elements');
+            }
+            if (Array.isArray(matchList) && matchList.length >= 6) {
+                console.log(matchList);
+                const match = matchList[5];
+                if (match && match.id != null) {
+                    const winners = `api/tournament/${match.id}/match-info/`;
+                    api.get(winners)
+                        .then(response => {
+                            console.log("info about semi finals", response.data);
+                            if (response.data.winner != null) {
+                                var nick_winner = setWinner(response.data.winner, match);
+                                setFinalists(prevSemiFinalists => ({
+                                    ...prevSemiFinalists,
+                                    nickname: nick_winner,
+                                    index: i,
+                                }));
+                                console.log(nick_winner, i);
+                            }
+                        })
+                        .catch(error => {
+                            console.log('Error', error);
+                        });
+                } else {
+                    console.log(`Match or match.id is undefined at index 6`);
+                }
+            } else {
+                console.log('currentTournament.matchList is not defined or does not have enough elements');
+            }
+        })
 		.catch(error => {
 			console.log('Error:', error);
 		});
@@ -172,31 +234,6 @@ function TournamentStats() {
     };
 
     const renderSemifinals = () => {
-        useEffect(() => {
-            if (currentTournament && Array.isArray(currentTournament.matchList) && currentTournament.matchList.length >= 4) {
-                currentTournament.matchList.sort((a, b) => a.id - b.id);
-                console.log(currentTournament.matchList);
-                for (let i = 0; i < 4; i++) {
-                    const match = currentTournament.matchList[i];
-                    if (match && match.id != null) {
-                        const winners = `api/tournament/${match.id}/match-info/`;
-                        api.get(winners)
-                            .then(response => {
-                                console.log("info about match", response.data);
-                                if (response.data.winner != null)
-                                    setSemiFinalists(prevSemiFinalists => [...prevSemiFinalists, response.data.winner]);
-                            })
-                            .catch(error => {
-                                console.log('Error', error);
-                            });
-                    } else {
-                        console.log(`Match or match.id is undefined at index ${i}`);
-                    }
-                }
-            } else {
-                console.log('currentTournament.matchList is not defined or does not have enough elements');
-            }
-        },[])
         return (
             <div className="d-flex justify-content-between w-100 mt-3">
                 {(semiFinalists && Array.isArray(currentTournament.semiFinalists) && semiFinalists.length > 0) ?
@@ -255,30 +292,6 @@ function TournamentStats() {
     };
 
     const renderFinalists = () => {
-        useEffect(() => {
-            if (currentTournament && Array.isArray(currentTournament.matchList) && currentTournament.matchList.length >= 6) {
-                currentTournament.matchList.sort((a, b) => a.id - b.id);
-                //console.log(currentTournament.matchList);
-                const match = currentTournament.matchList[6];
-                if (match && match.id != null) {
-                    const winners = `api/tournament/${match.id}/match-info/`;
-                    api.get(winners)
-                        .then(response => {
-                            console.log("info about semi finals", response.data);
-                            if (response.data.winner != null) {
-                                setFinalists(prevFinalists => [...prevFinalists, response.data.winner]);
-                            }
-                        })
-                        .catch(error => {
-                            console.log('Error', error);
-                        });
-                } else {
-                    console.log(`Match or match.id is undefined at index 6`);
-                }
-            } else {
-                console.log('currentTournament.matchList is not defined or does not have enough elements');
-            }
-        },[])
         return (
             <div className="d-flex justify-content-between w-100 mt-3">
             {(Finalists && Array.isArray(Finalists) && Finalists.length > 0)
@@ -320,9 +333,8 @@ function TournamentStats() {
     };
 
     const advanceRound = async(tournamentID) => {
-        const url = `api/tournament/${tournamentID}/advance-round/`;
         try {
-            await api.post(url);
+            await api.post(`api/tournament/${tournamentID}/advance-round/`);
         } catch (error) {
             console.log("error advance round : ", error);
         }
@@ -330,42 +342,39 @@ function TournamentStats() {
     const setMatchIndex = async() => {
         try {
             const response = await api.get(`api/tournament/${tournamentID}/needed-matches/`)
-            console.log("needed matches", response.data);
-            console.log("first match of the list index", response.data[0].id);
+            //console.log("needed matches", response.data);
+            //console.log("first match of the list index", response.data[0].id);
             matchIndex = response.data[0].id;
         } catch (error) {
             console.log('Error while searching index', error);
         }
     }
-    const searchForCurrentMatch = (id) => {
-        for (let match of currentTournament.matchList) {
-        console.log(match.id);
-        if (match.id === id) {
-            return match;
-        }
-        }
-        return null;
-    }
     const playGame = async () => {
 	    try {
             const response = await api.get(`api/tournament/${tournamentID}/needed-matches/`);
-            if (response.data.length === 0) {
+            console.log("needed matches :", response.data);
+            if (response.data == null) {
                 advanceRound(tournamentID);
                 setMatchIndex();
             }
-            matchIndex = response.data[0].id;
-            console.log(matchIndex);
-            const currentMatch = searchForCurrentMatch(matchIndex);
-            setTournamentPairData(prevState => ({
-                ...prevState,
-                tournament_id: tournamentID,
-                match_id: currentMatch.id,
-                player1_name: currentMatch.player1_name,
-                player2_name: currentMatch.player2_name,
-                player1_id: currentMatch.player1,
-                player2_id: currentMatch.player2
-            }));
-            navigate("../userGameWindow/");
+            else
+                matchIndex = response.data[0].id;
+            console.log("id of the next match :", matchIndex);
+            for (let match of currentTournament.matchList) {
+                //console.log(match.id);
+                    if (match.id === matchIndex) {
+                        setTournamentPairData(prevState => ({
+                            ...prevState,
+                            tournament_id: tournamentID,
+                            match_id: match.id,
+                            player1_name: match.player1_name,
+                            player2_name: match.player2_name,
+                            player1_id: match.player1,
+                            player2_id: match.player2
+                        }));
+                        navigate("../userGameWindow/");
+                    }
+                }
         } catch (error) {
             console.log('Error:', error);
         }
