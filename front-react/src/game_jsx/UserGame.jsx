@@ -100,20 +100,20 @@ const handleKeyUp = (event) => {
 document.addEventListener('keydown', handleKeyDown);
 document.addEventListener('keyup', handleKeyUp);
 
-
+let sphereTimeoutID;
 let setSphereFlag = false;
 
-function setSphere(scene, sphere, sphereGeometry, setSphereFlag)
+function setSphere(scene, sphere, sphereGeometry, setSphereFlag, sphereTimeoutID)
 {
-    // console.log("SETSPHERE");
+    console.log("SETSPHERE FLAG = ", setSphereFlag);
     sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
     const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
     sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
     sphere.position.set(0, sphereGeometry.parameters.radius, 0);
     scene.add(sphere);
 
-    setTimeout(() => {
-        if (!setSphereFlag)
+    sphereTimeoutID = setTimeout(() => {
+        if (setSphereFlag == false)
         {
             let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
             velocity.x = Math.cos(randomAngle);
@@ -122,7 +122,7 @@ function setSphere(scene, sphere, sphereGeometry, setSphereFlag)
         }
     }, 6000);
 
-    return { sphere, sphereGeometry, setSphereFlag};
+    return { sphere, sphereGeometry, setSphereFlag, sphereTimeoutID};
 }
 
 
@@ -149,15 +149,16 @@ const calculateCollisionNormal = (sphere, sphereGeometry, topPaddle, bottomPaddl
     return { normal: null, flag: 0 };
 };
 
+let resphereTimeoutID;
 let resetSphereFlag = false;
 
-function resetSphere(scene, sphere, sphereGeometry, resetSphereFlag)
+function resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID)
 {
-    // console.log("RESETSPHERE");
+    console.log("RESET FLAG = ", resetSphereFlag);
     velocity = vec.vectorize(0, 0, 0);
     sphere.position.set(0, sphereGeometry.parameters.radius, 0);
-        setTimeout(() => {
-            if (!resetSphereFlag)
+        resphereTimeoutID = setTimeout(() => {
+            if (resetSphereFlag == false)
             {
                 let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
                 velocity.x = Math.cos(randomAngle);
@@ -165,6 +166,7 @@ function resetSphere(scene, sphere, sphereGeometry, resetSphereFlag)
                 resetSphereFlag = true;
             }
         }, 6000);
+    return (resetSphereFlag, resphereTimeoutID);
 }
 
 function resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower)
@@ -258,7 +260,7 @@ function updateScoreText(scene, font, player1ID, player2ID, player1Score, player
 }
 
 function checkCollision(scene, sphere, sphereGeometry, 
-    planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag)
+    planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag, resphereTimeoutID)
 {
     // console.log("RESETFLAG : ", resetSphereFlag);
     const { normal, flag } = calculateCollisionNormal(sphere, sphereGeometry, 
@@ -296,7 +298,7 @@ function checkCollision(scene, sphere, sphereGeometry,
         }
         scoreFlag = 1;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
-        resetSphere(scene, sphere, sphereGeometry);
+        resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower);
     }
     else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2 - 0.01)
@@ -317,7 +319,7 @@ function checkCollision(scene, sphere, sphereGeometry,
         }
         scoreFlag = 2;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
-        resetSphere(scene, sphere, sphereGeometry);
+        resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower);
     }
     return {player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag};
@@ -382,15 +384,9 @@ function UserGame()
     const rendererRef = useRef(null);
 
     useEffect(() => {
-    if (velocity)
-        velocity = vec.vectorize(0,0,0);
-
-    if (setSphereFlag == true)
-        setSphereFlag = false;
-
-    if (resetSphereFlag == true)
-        resetSphereFlag = false;
-
+    // let velocity = vec.vectorize(0,0,0);
+    // let setSphereFlag = false;
+    // let resetSphereFlag = false;
     // scene, lights, textures  //
     // scene //
     sceneRef.current = new THREE.Scene();
@@ -514,7 +510,7 @@ function UserGame()
     }
     let sphere = null;
     let sphereGeometry = null;
-    ({ sphere, sphereGeometry, setSphereFlag} = setSphere(sceneRef.current, sphere, sphereGeometry, setSphereFlag));
+    ({ sphere, sphereGeometry, setSphereFlag, sphereTimeoutID} = setSphere(sceneRef.current, sphere, sphereGeometry, setSphereFlag, sphereTimeoutID));
 
     // animation
     const animate = () =>
@@ -533,17 +529,17 @@ function UserGame()
 
         ({cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition, streakPowerIsPressed, streakPower, bottomPaddle, topPaddle} = updatedValues);
 
-        // ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
+        // ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag, resphereTimeoutID} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
             // planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag));
         if (tournamentPairData.player1_name != '' && tournamentPairData.player2_name != '')
         {
         ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
-            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, tournamentPairData.player1_name, tournamentPairData.player2_name, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag));
+            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, tournamentPairData.player1_name, tournamentPairData.player2_name, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag, resphereTimeoutID));
         }
         else if ((guestData.guestNickname != '' || guestData.nickname != '') && userData)
         {
             ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
-                 planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag));
+                 planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag, resphereTimeoutID));
         }
 
         if (PowerUp == 1)
@@ -692,6 +688,10 @@ function UserGame()
         setSphereFlag = false;
         resetSphereFlag = false;
         velocity = vec.vectorize(0,0,0);
+        if (sphereTimeoutID)
+            clearTimeout(sphereTimeoutID);
+        if (resphereTimeoutID)
+            clearTimeout(resphereTimeoutID);
         if (sceneRef.current){
             sceneRef.current.remove(planeGeometry);
             sceneRef.current.remove(bottomPaddle);
