@@ -22,7 +22,6 @@ import CustomTimer from './CustomTimer.jsx';
 import { use } from 'i18next';
 import { GameContext } from '../GameContext.jsx';
 import { TournamentPairDataContext } from '../TournamentPairDataContext.jsx';
-import api from '../api.jsx';
 
 
 let cameraKeyIsPressed = false;
@@ -75,8 +74,6 @@ let angle = 0;
 let speedBoostGeometry, speedBoost1, speedBoost2;
 const speedBoostSpeed = 0.8;
 let velocity = vec.vectorize(0, 0, 0);
-let setFlag = 0;
-let timeoutId;
 
 
 // PowerUps
@@ -104,25 +101,30 @@ document.addEventListener('keydown', handleKeyDown);
 document.addEventListener('keyup', handleKeyUp);
 
 
-function setSphere(scene, sphere, sphereGeometry, timeOutRef)
+let setSphereFlag = false;
+
+function setSphere(scene, sphere, sphereGeometry, setSphereFlag)
 {
-    console.log("SETSPHERE 0");
+    // console.log("SETSPHERE");
     sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
-    const sphereMaterial = new THREE.MeshStandardMaterial({color:0xFFFFFF});
+    const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
     sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
     sphere.position.set(0, sphereGeometry.parameters.radius, 0);
-    //sphere.receiveShadow = true;
-    //sphere.castShadow = true; 
     scene.add(sphere);
-    timeOutRef = setTimeout(() =>
-    {
-        let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
-        velocity.x = Math.cos(randomAngle);
-        velocity.z = Math.sin(randomAngle);
+
+    setTimeout(() => {
+        if (!setSphereFlag)
+        {
+            let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
+            velocity.x = Math.cos(randomAngle);
+            velocity.z = Math.sin(randomAngle);
+            setSphereFlag = true;
+        }
     }, 6000);
 
-    return { sphere, sphereGeometry, setFlag};
+    return { sphere, sphereGeometry, setSphereFlag};
 }
+
 
 const calculateCollisionNormal = (sphere, sphereGeometry, topPaddle, bottomPaddle, planeGeometry) =>
 {
@@ -147,18 +149,22 @@ const calculateCollisionNormal = (sphere, sphereGeometry, topPaddle, bottomPaddl
     return { normal: null, flag: 0 };
 };
 
-function resetSphere(scene, sphere, sphereGeometry, setFlag)
+let resetSphereFlag = false;
+
+function resetSphere(scene, sphere, sphereGeometry, resetSphereFlag)
 {
-    console.log("RESETSPHERE : ", setFlag);
+    // console.log("RESETSPHERE");
     velocity = vec.vectorize(0, 0, 0);
     sphere.position.set(0, sphereGeometry.parameters.radius, 0);
-
-    setTimeout(() =>
-    {
-        let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
-        velocity.x = Math.cos(randomAngle);
-        velocity.z = Math.sin(randomAngle);
-    }, 6000);
+        setTimeout(() => {
+            if (!resetSphereFlag)
+            {
+                let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
+                velocity.x = Math.cos(randomAngle);
+                velocity.z = Math.sin(randomAngle);
+                resetSphereFlag = true;
+            }
+        }, 6000);
 }
 
 function resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower)
@@ -252,8 +258,9 @@ function updateScoreText(scene, font, player1ID, player2ID, player1Score, player
 }
 
 function checkCollision(scene, sphere, sphereGeometry, 
-    planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower)
+    planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag)
 {
+    // console.log("RESETFLAG : ", resetSphereFlag);
     const { normal, flag } = calculateCollisionNormal(sphere, sphereGeometry, 
         topPaddle, bottomPaddle, planeGeometry);
 
@@ -276,6 +283,7 @@ function checkCollision(scene, sphere, sphereGeometry,
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
         shockWave(scene, contactPoint, planeGeometry);
         player2Score += 1;
+        resetSphereFlag = false;
         if (scoreFlag == 1)
         {
             player1Streak += 1;
@@ -288,7 +296,7 @@ function checkCollision(scene, sphere, sphereGeometry,
         }
         scoreFlag = 1;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
-        resetSphere(scene, sphere, sphereGeometry, setFlag);
+        resetSphere(scene, sphere, sphereGeometry);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower);
     }
     else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2 - 0.01)
@@ -297,6 +305,7 @@ function checkCollision(scene, sphere, sphereGeometry,
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
         shockWave(scene, contactPoint, planeGeometry);
         player1Score += 1;
+        resetSphereFlag = false;
         if (scoreFlag == 2)
         {
             player2Streak += 1;
@@ -308,10 +317,10 @@ function checkCollision(scene, sphere, sphereGeometry,
         }
         scoreFlag = 2;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
-        resetSphere(scene, sphere, sphereGeometry, setFlag);
+        resetSphere(scene, sphere, sphereGeometry);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower);
     }
-    return {player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower};
+    return {player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag};
 }
 
 function calculateRotationSpeed(radius, sunRotationSpeed)
@@ -358,12 +367,12 @@ function updateStarfield(stars, camera)
 }
   
 
-function UserGame({gameData})
+function UserGame()
 {
     const {userData} = useContext(UserDataContext);
     const {guestData} = useContext(GuestDataContext);
     const {tournamentPairData} = useContext(TournamentPairDataContext);
-    //const {gameData} = useContext(GameContext);
+    const {gameData} = useContext(GameContext);
     const [scoreP1, setScoreP1] = useState(0);
     const [scoreP2, setScoreP2] = useState(0);
     const animationFrameId = useRef(null);
@@ -371,9 +380,16 @@ function UserGame({gameData})
     const sceneRef = useRef(null);
     const cameraRef = useRef(null);
     const rendererRef = useRef(null);
-    const timeroutIdRef = useRef(null);
 
     useEffect(() => {
+    if (velocity)
+        velocity = vec.vectorize(0,0,0);
+
+    if (setSphereFlag == true)
+        setSphereFlag = false;
+
+    if (resetSphereFlag == true)
+        resetSphereFlag = false;
 
     // scene, lights, textures  //
     // scene //
@@ -488,7 +504,7 @@ function UserGame({gameData})
         starRadius = BHsize;
         starColor = BHcolor;
         starIntensity = BHintensity;
-        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, blackHoleMesh, blackHoleGLensMesh, blackHoleGLensMaterial, blackHoleLight, moonMesh,  orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor, starCorona));
+        ({earthMesh, lightsMesh, cloudsMesh, fresnelEarthMesh, blackHoleMesh, blackHoleGLensMesh, blackHoleGLensMaterial, blackHoleLight, moonMesh, orbitRadius, stars} = setSolarySystem(sceneRef.current, cameraRef.current, rendererRef.current, textureLoader, starType, starIntensity, starRadius, starColor, starCorona));
         maxDistance = 3790;
     }
     else if (starType == 4)
@@ -498,7 +514,7 @@ function UserGame({gameData})
     }
     let sphere = null;
     let sphereGeometry = null;
-    ({ sphere, sphereGeometry, setFlag} = setSphere(sceneRef.current, sphere, sphereGeometry, timeroutIdRef.current));
+    ({ sphere, sphereGeometry, setSphereFlag} = setSphere(sceneRef.current, sphere, sphereGeometry, setSphereFlag));
 
     // animation
     const animate = () =>
@@ -517,17 +533,17 @@ function UserGame({gameData})
 
         ({cameraKeyIsPressed, paddle1Left, paddle1Right, paddle2Left, paddle2Right, cameraPosition, streakPowerIsPressed, streakPower, bottomPaddle, topPaddle} = updatedValues);
 
-        // ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
-            // planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower));
+        // ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
+            // planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag));
         if (tournamentPairData.player1_name != '' && tournamentPairData.player2_name != '')
         {
-        ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
-            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, tournamentPairData.player1_name, tournamentPairData.player2_name, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower));
+        ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
+            planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, tournamentPairData.player1_name, tournamentPairData.player2_name, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag));
         }
         else if ((guestData.guestNickname != '' || guestData.nickname != '') && userData)
         {
-            ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
-                 planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower));
+            ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
+                 planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag));
         }
 
         if (PowerUp == 1)
@@ -671,15 +687,11 @@ function UserGame({gameData})
     return () => {
         //if (sceneRef.current) sceneRef.current.dispose();
         cancelAnimationFrame(animationFrameId.current);
-        velocity = vec.vectorize(0, 0, 0);
-        sphere.position.set(0, sphereGeometry.parameters.radius, 0);
         player1Score = 0;
         player2Score = 0;
-        if (timeroutIdRef.current)
-        {
-            clearTimeout(timeroutIdRef.current);
-            timeroutIdRef = null;
-        }
+        setSphereFlag = false;
+        resetSphereFlag = false;
+        velocity = vec.vectorize(0,0,0);
         if (sceneRef.current){
             sceneRef.current.remove(planeGeometry);
             sceneRef.current.remove(bottomPaddle);
@@ -830,9 +842,7 @@ function UserGame({gameData})
             <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
             <CustomTimer 
                     flag={0}
-                    tournamentID={0}
-                    matchID={0}
-                    seconds={200} 
+                    seconds={15} 
                     player1={userData.id} 
                     player1_nick={userData.username}
                     player2={guestData.id} 
@@ -846,9 +856,8 @@ function UserGame({gameData})
             <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
             <CustomTimer 
                     flag={1}
-                    tournamentID={tournamentPairData.tournament_id}
-                    matchID={tournamentPairData.match_id}
-                    seconds={7} 
+                    tournamentID={tournamentPairData.match_id}
+                    seconds={3} 
                     player1={tournamentPairData.player1_id} 
                     player1_nick={tournamentPairData.player1_name}
                     player2={tournamentPairData.player2_id} 
