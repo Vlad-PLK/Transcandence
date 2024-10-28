@@ -57,7 +57,7 @@ function TournamentStats() {
             console.log("All tournament matches : ", response.data);
             setCurrentTournament(prevState => ({
                 ...prevState,
-                matchList: response.data,
+                matchList: response.data.sort((a, b) => a.id - b.id),
             }));
             return response.data   
         })
@@ -80,6 +80,13 @@ function TournamentStats() {
                                     var nick_winner = setWinner(response.data.winner, match);
                                     setSemiFinalists(prevSemiFinalists => {
                                         const updatedSemiFinalists = [...prevSemiFinalists];
+                                        
+                                        // Ensure the array has enough elements
+                                        while (updatedSemiFinalists.length <= i) {
+                                            updatedSemiFinalists.push(undefined);
+                                        }
+                                        
+                                        // Update the specific index
                                         updatedSemiFinalists[i] = { nickname: nick_winner, index: i };
                                         updatedSemiFinalistsRef.current = updatedSemiFinalists;
                                         return updatedSemiFinalists;
@@ -97,7 +104,7 @@ function TournamentStats() {
             } else {
                 console.log('currentTournament.matchList is not defined or does not have enough elements');
             }
-            if (Array.isArray(matchList) && matchList.length >= 3) {
+            if (Array.isArray(matchList) && matchList.length > 4) {
                 for (let i = 4; i < 6; i++) {
                     const match = matchList[i];
                     if (match && match.id != null) {
@@ -126,8 +133,7 @@ function TournamentStats() {
             } else {
                 console.log('currentTournament.matchList is not defined or does not have enough elements');
             }
-            if (Array.isArray(matchList) && matchList.length >= 7) {
-                matchList.sort((a, b) => a.id - b.id);
+            if (Array.isArray(matchList) && matchList.length == 7) {
                 const match = matchList[7];
                 api.get(`api/tournament/${match.id}/match-info/`)
                 .then(response => {
@@ -173,9 +179,6 @@ function TournamentStats() {
     };
 
     const renderQuarterfinals = () => {
-        if (Array.isArray(currentTournament.matchList)) {
-            currentTournament.matchList.sort((a, b) => a.id - b.id);
-        }
         return (
             <div className="d-flex justify-content-between w-100">
                 {Array.isArray(currentTournament.matchList) && currentTournament.matchList.length > 0 &&
@@ -262,7 +265,7 @@ function TournamentStats() {
                 {renderPlayerBox(updatedFinalistsRef.current[0]?.nickname || "FINALIST 1", 0)}
                 </div>
             </div>
-            <div className="finals-vs-label pb-5">VS.</div>
+            <div className="finals-vs-label me-2">VS.</div>
             <div className="player-column right-column finals">
                 <div className="player-group">
                 {renderPlayerBox(updatedFinalistsRef.current[1]?.nickname || "FINALIST 2",1)}
@@ -273,14 +276,7 @@ function TournamentStats() {
             </div>
         );
     };
-
-    const advanceRound = async(tournamentID) => {
-        try {
-            await api.post(`api/tournament/${tournamentID}/advance-round/`);
-        } catch (error) {
-            console.log("error advance round : ", error);
-        }
-    }
+    
     const setMatchIndex = async() => {
         try {
             const response = await api.get(`api/tournament/${tournamentID}/needed-matches/`)
@@ -289,13 +285,35 @@ function TournamentStats() {
             console.log('Error while searching index', error);
         }
     }
+    const advanceRound = async(tournamentID) => {
+        try {
+            await api.post(`api/tournament/${tournamentID}/advance-round/`);
+            await setMatchIndex();
+        } catch (error) {
+            console.log("error advance round : ", error);
+        }
+    }
+
+    const getMatches = async() => {
+        try {
+            const response = await api.get(`api/tournament/${tournamentID}/tournament-matches/`)
+            setCurrentTournament(prevState => ({
+                ...prevState,
+                matchList: response.data.sort((a, b) => a.id - b.id),
+            }));
+            
+        } catch (error) {
+            console.log('Error while getting matches :', error);
+        }
+    }
+
     const playGame = async () => {
 	    try {
             const response = await api.get(`api/tournament/${tournamentID}/needed-matches/`);
+            await getMatches();
             console.log("needed matches :", response.data);
-            if (response.data.length == 0) {
-                advanceRound(tournamentID);
-                setMatchIndex();
+            if (Array.isArray(response.data) && response.data.length === 0) {
+                await advanceRound(tournamentID);
             }
             else
                 matchIndex = response.data[0].id;
@@ -325,7 +343,7 @@ function TournamentStats() {
             <div className="container-fluid">
                 <h1 className="text-center text-white mb-4">{t('tournament.scoreboardTitle')}</h1>
                 <button className="btn btn-dark mb-4" onClick={handleBack}>{t('tournament.backButton')}</button>
-                <button type="button" className="btn btn-primary mb-4 ms-2" onClick={playGame}>Play Match</button>
+                {!winnerUser && <button type="button" className="btn btn-primary mb-4 ms-2" onClick={playGame}>Play Match</button>}
                 <div className="flex-container">
                     <div className="col-12 d-flex justify-content-start">
                         <div className="players-container">
@@ -339,8 +357,9 @@ function TournamentStats() {
                         {renderFinalists()}
                     </div>
                 </div>
-                <div className="text-center position-absolute bottom-0 start-50 translate-middle-x mb-3">
-                    <button className="btn btn-success btn-lg">{winnerUser}</button>
+                <div className="text-center position-absolute bottom-50 start-50 translate-middle-x mb-3">
+                    {winnerUser ? <button className="btn btn-success btn-lg">{winnerUser}</button>
+                    : <button className="btn btn-success btn-lg">WINNER</button>}
                 </div>
             </div>
         </div>

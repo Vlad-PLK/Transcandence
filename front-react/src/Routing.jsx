@@ -98,7 +98,7 @@ const router = createBrowserRouter([
             {
                 path: "oauth_callback/",
                 element: (
-                    <OAuth/>
+                        <OAuth/>
                 )
             }
         ]

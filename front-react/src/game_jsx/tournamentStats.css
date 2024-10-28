@@ -83,7 +83,7 @@
     position: absolute;
     align-items: center; /* Center vertically */
     justify-content: center; /* Center horizontally */
-    top: 10%;;
-    margin: 186px 48.7%; /* Adjust horizontal spacing as needed */
+    top: 5px;
+    margin: 182px 48.7%; /* Adjust horizontal spacing as needed */
 }
 

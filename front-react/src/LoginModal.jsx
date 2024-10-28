@@ -92,10 +92,6 @@ function LoginModal()
     }
 
 	const loginbutton42 = () => {
-		//api.get('api/42api/keys)
-		//.then(response =>
-			// const api_key = response.data.key;
-			// const callback = response.data.callback;
 		window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id='
     	+ encodeURIComponent("u-s4t2ud-f2e4eed0fe85865ea95e27e9d857816c8276ac645887e9b68c2cf33ea18f24d7") + '&redirect_uri=' +
     	encodeURIComponent("https://localhost:1443/oauth_callback") + '&response_type=code'

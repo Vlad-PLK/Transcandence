@@ -833,8 +833,7 @@ function UserGame()
         }
     };
     }, [setScoreP1, setScoreP2]);
-
-  return (
+    return (
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
         {
@@ -842,7 +841,9 @@ function UserGame()
             <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
             <CustomTimer 
                     flag={0}
-                    seconds={15} 
+                    tournamentID={0}
+                    matchID={0}
+                    seconds={200} 
                     player1={userData.id} 
                     player1_nick={userData.username}
                     player2={guestData.id} 
@@ -856,8 +857,9 @@ function UserGame()
             <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
             <CustomTimer 
                     flag={1}
-                    tournamentID={tournamentPairData.match_id}
-                    seconds={3} 
+                    tournamentID={tournamentPairData.tournament_id}
+                    matchID={tournamentPairData.match_id}
+                    seconds={7} 
                     player1={tournamentPairData.player1_id} 
                     player1_nick={tournamentPairData.player1_name}
                     player2={tournamentPairData.player2_id} 
