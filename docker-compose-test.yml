@@ -23,8 +23,8 @@ services:
       - 3000:3000
     volumes:
       - frontend:/app
-    # depends_on:
-      # - backend
+    depends_on:
+      - backend
     networks:
       - transcendance
     
@@ -43,6 +43,8 @@ services:
         DBPASSWORD: ${DBPASSWORD} 
     ports:
       - 8000:8000
+    depends_on:
+      - postgres
     networks:
       - transcendance
     command: sh -c "python manage.py makemigrations && python manage.py migrate && daphne -b 0.0.0.0 -p 8000 backend.asgi:application"

@@ -11,6 +11,7 @@ from django.db import models
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from users.models import CustomUser
+import math
 
 
 class CreateTournamentView(APIView):
@@ -80,8 +81,7 @@ class AdvanceToNextRoundView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        tournament = Tournament.objects.get(pk=pk)
-
+        tournament = get_object_or_404(Tournament, pk=pk)
         current_round = request.data.get('round', 1)
 
         matches = TournamentMatch.objects.filter(tournament=tournament, round=current_round)
@@ -94,18 +94,55 @@ class AdvanceToNextRoundView(APIView):
         if len(winners) < 2:
             return Response({'error': 'Not enough players for the next round'}, status=400)
 
-        random.shuffle(winners)
+        midpoint = len(winners) // 2
+        left_bracket = winners[:midpoint]
+        right_bracket = winners[midpoint:]
 
-        for i in range(0, len(winners), 2):
-            if i + 1 < len(winners):
+        for i in range(0, len(left_bracket) - 1, 2):
+            if i + 1 < len(left_bracket):
                 TournamentMatch.objects.create(
                     tournament=tournament,
-                    player1=winners[i],
-                    player2=winners[i + 1],
+                    player1=left_bracket[i],
+                    player2=left_bracket[i + 1],
+                    round=next_round
+                )
+
+        for i in range(0, len(right_bracket) - 1, 2):
+            if i + 1 < len(right_bracket):
+                TournamentMatch.objects.create(
+                    tournament=tournament,
+                    player1=right_bracket[i],
+                    player2=right_bracket[i + 1],
                     round=next_round
                 )
 
         return Response({'status': f'Round {next_round} matches created!'})
+
+
+class FinalizeTournamentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            tournament = Tournament.objects.get(pk=pk)
+            
+            second_round_matches = TournamentMatch.objects.filter(tournament=tournament, round=2)
+            winners = [match.winner for match in second_round_matches if match.winner]
+            
+            if len(winners) != 2:
+                return Response({'error': 'Not enough winners to create the final match'}, status=400)
+            
+            final_match = TournamentMatch.objects.create(
+                tournament=tournament,
+                player1=winners[0],
+                player2=winners[1],
+                round=3  
+            )
+            
+            return Response({'status': 'Final match created successfully!', 'match_id': final_match.id})
+
+        except Tournament.DoesNotExist:
+            return Response({'error': 'Tournament not found'}, status=404)
 
 
 class MatchResultView(APIView):

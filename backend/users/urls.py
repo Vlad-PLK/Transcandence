@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (AvatarUploadView, ChangePasswordView, CreateUserView, UsernameUpdateView, 
-                    CustomTokenObtainPairView, Enable2FAView, Disable2FAView, Get2FAStatusView, Register42APIView)
+                    CustomTokenObtainPairView, Enable2FAView, Disable2FAView, Get2FAStatusView, Register42APIView,
+                    GetEnvVariables)
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path('users/user/disable-2fa/', Disable2FAView.as_view(), name='disable-2fa'),
     path('users/user/status-2fa/', Get2FAStatusView.as_view(), name='stauts-2fa'),
     path('users/user/oauth/', Register42APIView.as_view(), name='login-api'),
+    path('get-env/', GetEnvVariables.as_view(), name='env')
 ]

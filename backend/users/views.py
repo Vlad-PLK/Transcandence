@@ -20,7 +20,7 @@ import os
 import random
 import requests
 from rest_framework_simplejwt.tokens import RefreshToken
-
+import os
 
 class CreateUserView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -215,3 +215,16 @@ class Register42APIView(APIView):
             'access_token': access_token,
             'refresh_token': refresh_token
         }, status=status.HTTP_200_OK)
+    
+
+class GetEnvVariables(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        all_data = {
+            "client_id": os.getenv('OAUTH_UID'),
+            "callback_url" : os.getenv('OAUTH_CALLBACK')
+        }
+
+        return Response(all_data, status=status.HTTP_200_OK)
