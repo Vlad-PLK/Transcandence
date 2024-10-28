@@ -26,15 +26,18 @@ function SettingsModal() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        api.get('api/users/user/status-2fa/')
-        .then(response => {
-            setTwoFA(response.data.is_2fa_enabled);
-            //console.log(response.data);
-        })
-        .catch(error => {
-            console.log('Error:', error);
-          // alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
-        });
+        if (userData)
+        {
+            api.get('api/users/user/status-2fa/')
+            .then(response => {
+                setTwoFA(response.data.is_2fa_enabled);
+                //console.log(response.data);
+            })
+            .catch(error => {
+                console.log('Error:', error);
+              // alert('Login successful'); // Всплывающее уведомление или другой способ уведомления пользователя
+            });
+        }
     }, [])
 
     const clearNick = () => {

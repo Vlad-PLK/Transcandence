@@ -60,7 +60,7 @@ function LoginModal()
             const response = await api.post('api/users/user/token/', { username, password, otp_code });
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-			takeData(setUserData, NULL, setGameData);
+			takeData(setUserData);
 			setTwoFA(true);
             navigate("userPage/");
 		} catch (error) {
@@ -78,7 +78,7 @@ function LoginModal()
             const response = await api.post('api/users/user/token/', { username, password });
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-			takeData(setUserData, NULL, setGameData);
+			takeData(setUserData);
 			navigate("userPage/");
             setUsername('');
             setPassword('');

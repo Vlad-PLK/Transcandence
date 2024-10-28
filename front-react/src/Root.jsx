@@ -38,7 +38,7 @@ function Root({children}){
       if (!token)
         setIsUserReady(true);
       else
-        takeData(setUserData, setIsUserReady, setGameData);
+        takeData(setUserData, setIsUserReady);
     }
   }, [isUserReady])
 
@@ -51,8 +51,7 @@ function Root({children}){
       <GameContext.Provider value={{gameData, setGameData}}>
       <TwoFaContext.Provider value={{TwoFA, setTwoFA}}>
       <CurrentTournamentContext.Provider value={{currentTournament, setCurrentTournament}}>
-        {isUserReady &&
-        <div>{children}</div>}
+        <div>{children}</div>
       </CurrentTournamentContext.Provider>
       </TwoFaContext.Provider>
       </GameContext.Provider>

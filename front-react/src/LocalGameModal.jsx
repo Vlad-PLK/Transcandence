@@ -1,51 +1,72 @@
-import { useContext, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserDataContext } from "./UserDataContext";
 import GuestModal from "./GuestModal";
 import PlayerModal from "./PlayerModal";
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from "react-router-dom";
+import { GuestDataContext } from "./GuestDataContext";
+import api from "./api";
 
 function LocalGameModal() {
     const { t } = useTranslation();
     
     const { userData } = useContext(UserDataContext);
-    // useEffect(() => {
-        // const handleModalShown = () => {
-            // Handle modal shown event if needed
-        // };
-// 
-        // const handleModalHidden = () => {
-            // Manually remove any extra backdrops
-            // const backdrops = document.querySelectorAll('.modal-backdrop');
-            // if (backdrops.length > 1) {
-                // backdrops[backdrops.length - 1].remove();
-            // }
-        // };
-// 
-        // const guestModal = document.getElementById('guestModal');
-        // const playerModal = document.getElementById('playerModal');
-// 
-        // if (guestModal) {
-            // guestModal.addEventListener('shown.bs.modal', handleModalShown);
-            // guestModal.addEventListener('hidden.bs.modal', handleModalHidden);
-        // }
-// 
-        // if (playerModal) {
-            // playerModal.addEventListener('shown.bs.modal', handleModalShown);
-            // playerModal.addEventListener('hidden.bs.modal', handleModalHidden);
-        // }
-// 
-        // return () => {
-            // if (guestModal) {
-                // guestModal.removeEventListener('shown.bs.modal', handleModalShown);
-                // guestModal.removeEventListener('hidden.bs.modal', handleModalHidden);
-            // }
-// 
-            // if (playerModal) {
-                // playerModal.removeEventListener('shown.bs.modal', handleModalShown);
-                // playerModal.removeEventListener('hidden.bs.modal', handleModalHidden);
-            // }
-        // };
-    // }, []);
+    const [local, setLocal] = useState(false);
+    const [user, setUser] = useState(false);
+    const [nickname, setNickname] = useState('');
+    const [username, setUsername] = useState('');
+
+    const { setGuestData } = useContext(GuestDataContext);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+
+    const handleLocalGame = () => {
+        setUser(false);
+        setLocal(!local);
+    }
+    const handleUserGame = () => {
+        setLocal(false);
+        setUser(!user);
+    }
+
+    const handleStartGame = (e) => {
+        e.preventDefault();
+        if (!nickname) {
+            setError(t('nicknameRequired'));
+            return;
+        }
+        setGuestData(prevState => ({ ...prevState, guestNickname: nickname }));
+        document.getElementById("guestUsernameNoLogin").value = "";
+        navigate("/userGameWindow/");
+    };
+
+    const launchGame = async (e) => {
+        e.preventDefault();
+        if (!username) {
+            setError(t('usernameRequired'));
+            return;
+        }
+        try
+        {
+            const response = await api.post('/api/get-user-id/', {username});
+            setGuestData(prevState => ({
+                ...prevState,
+                guestNickname: username,
+                nickname: username,
+                id: response.data.user_id,
+                isGuest: false
+            }));
+            navigate("/userGameWindow/");
+            setUsername('');
+            setError('');
+        }
+        catch(error)
+        {
+            console.log('Error:', error);
+            setError(t('userNotFound'));
+        }
+    };
+
     return (
         <>
             <div className="modal fade" id="localGame" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style={{ fontFamily: 'cyber4' }}>
@@ -60,25 +81,59 @@ function LocalGameModal() {
                             </svg>
                         </div>
                         <div className="modal-body mt-3 p-5 pt-0">
-                            <div className="">
+                            <div className="mb-4">
                                 {userData && <p className="" style={{ color: 'blue' }}>{t('localGame.player1')}: {userData.username}</p>} 
                                 <div className="row g-3 align-items-center" style={{ color: 'red' }}>
                                     <div className="col-auto">
                                         <label className="col-form-label">{t('localGame.player2')}:</label> 
                                     </div>
                                     <div className="col-auto d-flex flex-row">
-                                        <button className="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#guestModal">{t('localGame.playAsAGuest')}</button> 
+                                        <button className="btn btn-sm btn-warning" onClick={handleLocalGame}>{t('localGame.playAsAGuest')}</button> 
                                         <p className="m-2" style={{ color: "#000" }}>{t('localGame.OR')}</p>
-                                        <button className="ms-2 btn btn-sm btn-danger" style={{ color: "#000" }} data-bs-toggle="modal" data-bs-target="#playerModal">{t('login')}</button> 
+                                        <button className="ms-2 btn btn-sm btn-danger" onClick={handleUserGame} style={{ color: "#000" }}>{t('login')}</button> 
                                     </div>
                                 </div>
                             </div>
+                            {local == true &&
+                                <form onSubmit={handleStartGame}>
+                                    <div className="form-floating mb-2">
+                                        <input
+                                            type="text"
+                                            className="form-control rounded-3"
+                                            id="guestUsernameNoLogin"
+                                            placeholder={t('nicknamePlaceholder')}
+                                            autoComplete='nickname'
+                                            value={nickname}
+                                            onChange={(e) => setNickname(e.target.value)}
+                                        />
+                                        <label htmlFor="guestUsernameNoLogin">{t('nickname')}</label>
+                                    </div>
+                                    <button className="w-90 mt-2 btn rounded-3 btn-warning" type="submit" data-bs-dismiss="modal">{t('startTheGame')}</button>
+                                    {error && <p className="text-danger">{error}</p>}
+                                </form>
+                            }
+                            {user == true && 
+                                <form onSubmit={launchGame}>
+                                    <div className="form-floating mb-2">
+                                        <input
+                                            type="text"
+                                            className="form-control rounded-3"
+                                            id="guestUsernameLogin"
+                                            placeholder={t('usernamePlaceholder')}
+                                            autoComplete='username'
+                                            value={username}
+                                            onChange={(e) => setUsername(e.target.value)}
+                                        />
+                                        <label htmlFor="guestUsernameLogin">{t('username')}</label>
+                                    </div>
+                                    <button className="w-90 mt-2 btn rounded-3 btn-danger" type="submit" data-bs-dismiss="modal">{t('startTheGame')}</button>
+                                    {error && <p className="text-danger ms-1 mt-2">{error}</p>}
+                                </form>
+                            }
                         </div>
                     </div>
                 </div>
             </div>
-            <GuestModal/>
-            <PlayerModal/>
         </>
     );
 }

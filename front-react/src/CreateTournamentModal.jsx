@@ -131,7 +131,8 @@ function CreateTournamentModal() {
 			playerList: playerList,
 		}))
 		try {
-			await api.post(url);
+			const response = await api.post(url);
+			console.log(response.data);
 			const url2 = `api/tournament/${id}/tournament-matches/`;
 			api.get(url2)
         	.then(response => {

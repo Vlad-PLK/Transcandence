@@ -10,8 +10,8 @@ import SettingsModal from "./SettingsModal";
 import { useNavigate } from "react-router-dom";
 import api from "./api";
 import { GameContext } from "./GameContext";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 function UserHomePage() {
 	const { userData, setUserData } = useContext(UserDataContext);
@@ -25,13 +25,16 @@ function UserHomePage() {
 		backgroundPosition: 'center',
 	};
 	useEffect(() => {
-		api.get('api/player-info/')
-		.then(response => {
-			setUserData(response.data)
-		  })
-		.catch(error => {
-			setUserData(null);
-		  });
+		if (localStorage.getItem(ACCESS_TOKEN) != null)
+		{
+			api.get('api/player-info/')
+			.then(response => {
+				setUserData(response.data)
+			  })
+			.catch(error => {
+				setUserData(null);
+			  });
+		}
 	}, [])
 	useEffect(() => {
 		if (userData == null)
@@ -43,30 +46,23 @@ function UserHomePage() {
 	}
 	const stats_page = () => {
 		if (userData) {
-			try {
-				api.get('api/player-stats/')
-					.then(response => {
-						setUserStats(response.data)
-					})
-					.catch(error => {
-						console.log('Error:', error);
-					});
-			} catch (error) {
-				alert(error);
-			}
-		}
-		navigate('../userSettings');
-	}
-	const game_setup = async(e) => {
-		try{
-			await api.get('api/update-game-settings/')
+			api.get('api/player-stats/')
 			.then(response => {
-				setGameData(response.data);
-				navigate('../userGameSetup/')
+				setUserStats(response.data)
+				navigate('../userSettings');
+			})
+			.then(() => {
 			})
 			.catch(error => {
 				console.log('Error:', error);
 			});
+		}
+	}
+	const game_setup = async() => {
+		try{
+			const response = await api.get('api/update-game-settings/')
+			setGameData(response.data);
+			navigate('../userGameSetup/')
 		}catch(error){
 			console.log(error);
 		}	
