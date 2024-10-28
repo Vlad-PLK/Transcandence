@@ -26,8 +26,7 @@ function CustomTimer({ flag, tournamentID, seconds, player1, player1_nick, playe
                 console.log(response.data);
             } else {
                 console.log(tournamentID, player1, player2, player1_score, player2_score);
-                const url = `api/tournament/match/${tournamentID}/result/`;
-                const response = await api.post(url, { player1_goals: player1_score, player2_goals: player2_score });
+                const response = await api.post(`api/tournament/match/${tournamentID}/result/`, { player1_goals: player1_score, player2_goals: player2_score });
                 console.log(response);
             }
         } catch (error) {
@@ -44,10 +43,10 @@ function CustomTimer({ flag, tournamentID, seconds, player1, player1_nick, playe
 
     useEffect(() => {
         if (count === 0) {
-            if (player1_score === player2_score && flag === 1 && !extraTimeAdded) {
+            if (player1_score === player2_score && flag === 1) {
                 setCount(1);
                 setExtraTimeAdded(true);
-            } else if (player1_score !== player2_score) {
+            } else {
                 console.log(player1, player1_nick, player2, player2_nick, player1_score, player2_score);
                 if (!isGuest) gameData();
                 clearInterval(timerId.current);
@@ -55,6 +54,7 @@ function CustomTimer({ flag, tournamentID, seconds, player1, player1_nick, playe
                     replace: true,
                     state: {
                         flag: flag,
+                        tournamentID: tournamentID,
                         player1: player1,
                         player1_nick: player1_nick,
                         player2: player2,
@@ -65,7 +65,7 @@ function CustomTimer({ flag, tournamentID, seconds, player1, player1_nick, playe
                 });
             }
         }
-    }, [count, player1_score, player2_score, flag, extraTimeAdded]);
+    }, [count]);
 
     return (
         <div>

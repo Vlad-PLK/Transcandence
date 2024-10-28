@@ -38,7 +38,16 @@ function Root({children}){
       if (!token)
         setIsUserReady(true);
       else
+      {
         takeData(setUserData, setIsUserReady);
+        api.get('api/update-game-settings/')
+			  .then(response => {
+			  	setGameData(response.data);
+			  })
+			  .catch(error => {
+			  	console.log('Error:', error);
+			  });
+      }
     }
   }, [isUserReady])
 

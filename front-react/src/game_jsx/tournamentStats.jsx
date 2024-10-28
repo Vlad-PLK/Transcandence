@@ -12,7 +12,7 @@ function TournamentStats() {
     const { t } = useTranslation();
     const location = useLocation();
     const {tournamentID} = location.state || {};
-    var matchIndex;
+    var matchIndex = 0;
     const {tournamentPairData, setTournamentPairData} = useContext(TournamentPairDataContext);
     const {currentTournament, setCurrentTournament} = useContext(CurrentTournamentContext);
     const [semiFinalists, setSemiFinalists] = useState([]);
@@ -20,6 +20,7 @@ function TournamentStats() {
     const [toogleIndex, setToogleIndex] = useState(false);
 
     useEffect(() => {
+        console.log("tournament id = ", tournamentID);
         api.get('api/tournament/list-tournaments/')
 		.then(response => {
 			for (let i = 0; i < response.data.length; i++) {
@@ -28,31 +29,30 @@ function TournamentStats() {
                         ...prevState,
                         creator: response.data[i].creator,
                         name: response.data[i].name,
-                        id: tournamentID,
                     }))
-					api.get(`api/tournament/${tournamentID}/participants/`)
-					.then(response => {
-						setCurrentTournament(prevState => ({
+                    api.get(`api/tournament/${tournamentID}/participants/`)
+                    .then(response => {
+                        setCurrentTournament(prevState => ({
                             ...prevState,
                             playerList: response.data[i],
                         }))
-		                api.get(`api/tournament/${tournamentID}/tournament-matches/`)
-                        .then(response => {
-		                	setCurrentTournament(prevState => ({
-                                ...prevState,
-                                matchList: response.data,
-                            }));
-		                    })
-		                .catch(error => {
-		                	console.log('Error:', error);
-		                });
-					  })
-					.catch(error => {
-						console.log('Error:', error);
-					});
+                    })
+                    .catch(error => {
+                        console.log('Error:', error);
+                    })
 				}
 			}
 		})
+        .catch(error => {
+			console.log('Error:', error);
+		});
+        api.get(`api/tournament/${tournamentID}/tournament-matches/`)
+        .then(response => {
+            setCurrentTournament(prevState => ({
+                ...prevState,
+                matchList: response.data,
+            }));
+            })
 		.catch(error => {
 			console.log('Error:', error);
 		});
@@ -172,29 +172,31 @@ function TournamentStats() {
     };
 
     const renderSemifinals = () => {
-        if (currentTournament && Array.isArray(currentTournament.matchList) && currentTournament.matchList.length >= 4) {
-            currentTournament.matchList.sort((a, b) => a.id - b.id);
-            //console.log(currentTournament.matchList);
-            for (let i = 0; i < 4; i++) {
-                const match = currentTournament.matchList[i];
-                if (match && match.id != null) {
-                    const winners = `api/tournament/${match.id}/match-info/`;
-                    api.get(winners)
-                        .then(response => {
-                            console.log("info about match", response.data);
-                            if (response.data.winner != null)
-			                    setSemiFinalists([...semiFinalists, response.data.winner]);
-                        })
-                        .catch(error => {
-                            console.log('Error', error);
-                        });
-                } else {
-                    console.log(`Match or match.id is undefined at index ${i}`);
+        useEffect(() => {
+            if (currentTournament && Array.isArray(currentTournament.matchList) && currentTournament.matchList.length >= 4) {
+                currentTournament.matchList.sort((a, b) => a.id - b.id);
+                console.log(currentTournament.matchList);
+                for (let i = 0; i < 4; i++) {
+                    const match = currentTournament.matchList[i];
+                    if (match && match.id != null) {
+                        const winners = `api/tournament/${match.id}/match-info/`;
+                        api.get(winners)
+                            .then(response => {
+                                console.log("info about match", response.data);
+                                if (response.data.winner != null)
+                                    setSemiFinalists(prevSemiFinalists => [...prevSemiFinalists, response.data.winner]);
+                            })
+                            .catch(error => {
+                                console.log('Error', error);
+                            });
+                    } else {
+                        console.log(`Match or match.id is undefined at index ${i}`);
+                    }
                 }
+            } else {
+                console.log('currentTournament.matchList is not defined or does not have enough elements');
             }
-        } else {
-            console.log('currentTournament.matchList is not defined or does not have enough elements');
-        }
+        },[])
         return (
             <div className="d-flex justify-content-between w-100 mt-3">
                 {(semiFinalists && Array.isArray(currentTournament.semiFinalists) && semiFinalists.length > 0) ?
@@ -253,28 +255,30 @@ function TournamentStats() {
     };
 
     const renderFinalists = () => {
-        if (currentTournament && Array.isArray(currentTournament.matchList) && currentTournament.matchList.length >= 6) {
-            currentTournament.matchList.sort((a, b) => a.id - b.id);
-            //console.log(currentTournament.matchList);
-            const match = currentTournament.matchList[6];
-            if (match && match.id != null) {
-                const winners = `api/tournament/${match.id}/match-info/`;
-                api.get(winners)
-                    .then(response => {
-                        console.log("info about semi finals", response.data);
-                        if (response.data.winner != null) {
-                            setFinalists([...Finalists, response.data.winner]);
-                        }
-                    })
-                    .catch(error => {
-                        console.log('Error', error);
-                    });
+        useEffect(() => {
+            if (currentTournament && Array.isArray(currentTournament.matchList) && currentTournament.matchList.length >= 6) {
+                currentTournament.matchList.sort((a, b) => a.id - b.id);
+                //console.log(currentTournament.matchList);
+                const match = currentTournament.matchList[6];
+                if (match && match.id != null) {
+                    const winners = `api/tournament/${match.id}/match-info/`;
+                    api.get(winners)
+                        .then(response => {
+                            console.log("info about semi finals", response.data);
+                            if (response.data.winner != null) {
+                                setFinalists(prevFinalists => [...prevFinalists, response.data.winner]);
+                            }
+                        })
+                        .catch(error => {
+                            console.log('Error', error);
+                        });
+                } else {
+                    console.log(`Match or match.id is undefined at index 6`);
+                }
             } else {
-                console.log(`Match or match.id is undefined at index 6`);
+                console.log('currentTournament.matchList is not defined or does not have enough elements');
             }
-        } else {
-            console.log('currentTournament.matchList is not defined or does not have enough elements');
-        }
+        },[])
         return (
             <div className="d-flex justify-content-between w-100 mt-3">
             {(Finalists && Array.isArray(Finalists) && Finalists.length > 0)
@@ -325,8 +329,7 @@ function TournamentStats() {
     }
     const setMatchIndex = async() => {
         try {
-            const url3 = `api/tournament/${tournamentID}/needed-matches/`;
-            const response = await api.get(url3)
+            const response = await api.get(`api/tournament/${tournamentID}/needed-matches/`)
             console.log("needed matches", response.data);
             console.log("first match of the list index", response.data[0].id);
             matchIndex = response.data[0].id;
@@ -344,9 +347,8 @@ function TournamentStats() {
         return null;
     }
     const playGame = async () => {
-        const url2 = `api/tournament/${tournamentID}/needed-matches/`;
 	    try {
-            const response = await api.get(url2);
+            const response = await api.get(`api/tournament/${tournamentID}/needed-matches/`);
             if (response.data.length === 0) {
                 advanceRound(tournamentID);
                 setMatchIndex();

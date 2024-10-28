@@ -22,6 +22,7 @@ import CustomTimer from './CustomTimer.jsx';
 import { use } from 'i18next';
 import { GameContext } from '../GameContext.jsx';
 import { TournamentPairDataContext } from '../TournamentPairDataContext.jsx';
+import api from '../api.jsx';
 
 
 let cameraKeyIsPressed = false;
@@ -376,12 +377,12 @@ function updateStarfield(stars, camera)
 }
   
 
-function UserGame()
+function UserGame({gameData})
 {
     const {userData} = useContext(UserDataContext);
     const {guestData} = useContext(GuestDataContext);
     const {tournamentPairData} = useContext(TournamentPairDataContext);
-    const {gameData} = useContext(GameContext);
+    //const {gameData} = useContext(GameContext);
     const [scoreP1, setScoreP1] = useState(0);
     const [scoreP2, setScoreP2] = useState(0);
     const animationFrameId = useRef(null);
@@ -841,7 +842,7 @@ function UserGame()
             <CustomTimer 
                     flag={0}
                     tournamentID={0}
-                    seconds={3} 
+                    seconds={5} 
                     player1={userData.id} 
                     player1_nick={userData.username}
                     player2={guestData.id} 
@@ -855,7 +856,8 @@ function UserGame()
             <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
             <CustomTimer 
                     flag={1}
-                    seconds={15} 
+                    tournamentID={tournamentPairData.tournament_id}
+                    seconds={7} 
                     player1={tournamentPairData.player1_id} 
                     player1_nick={tournamentPairData.player1_name}
                     player2={tournamentPairData.player2_id} 

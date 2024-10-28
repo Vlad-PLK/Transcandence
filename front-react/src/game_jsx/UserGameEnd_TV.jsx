@@ -28,7 +28,7 @@ function UserGameEnd()
 		backgroundPosition: 'center',
 	};
 
-    const { flag, player1, player1_nick, player2, player2_nick, player1_score, player2_score } = location.state || {};
+    const { flag, tournamentID, player1, player1_nick, player2, player2_nick, player1_score, player2_score } = location.state || {};
 	const isPlayer1Winner = player1_score > player2_score;
     const isPlayer2Winner = player2_score > player1_score;
 
@@ -44,7 +44,7 @@ function UserGameEnd()
 
 	const handleTournamentStats = () => {
         const winner = isPlayer1Winner ? player1_nick : player2_nick;
-        navigate("../tournamentStats", { state: { winner } });
+        navigate("../tournamentStats", { state: { tournamentID } });
     };
 
 	console.log("GAME_END ",flag, player1, player1_score, player2, player2_score);

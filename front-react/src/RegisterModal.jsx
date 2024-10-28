@@ -33,13 +33,6 @@ function RegisterModal() {
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
 			takeData(setUserData);
-            api.get('api/update-game-settings/')
-			.then(response => {
-				setGameData(response.data);
-			})
-			.catch(error => {
-				console.log('Error:', error);
-			});
             setUsername('');
             setPassword('');
 		} catch (error) {

@@ -23,20 +23,6 @@ function LoginModal()
 	const [otp_code, setCode] = useState('');
     const inputRefs = useRef([]);
 	const navigate = useNavigate();
-	const [showModal, setShowModal] = useState(false);
-
-    // useEffect(() => {
-        // const modalElement = document.getElementById('loginModal');
-        // if (modalElement) {
-			// const modal = new bootstrap.Modal(modalElement);
-
-        	// if (showModal) {
-        	    // modal.show();
-        	// } else {
-        	    // modal.hide();
-        	// }
-		// }
-    // }, [showModal]);
 
 	const cleanForm = () => {
 		document.getElementById('usernameLogin').value = '';
@@ -61,6 +47,13 @@ function LoginModal()
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
 			takeData(setUserData);
+			api.get('api/update-game-settings/')
+			.then(response => {
+				setGameData(response.data);
+			})
+			.catch(error => {
+				console.log('Error:', error);
+			});
 			setTwoFA(true);
             navigate("userPage/");
 		} catch (error) {
