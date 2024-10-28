@@ -404,7 +404,7 @@ function UserGame()
     rendererRef.current = new THREE.WebGLRenderer();
     setRenderer(rendererRef.current);
     mountRef.current.appendChild(rendererRef.current.domElement);
-    const milky = textureLoader.load('../../milkyway.jpg', (texture) => {
+    const milky = textureLoader.load('../../public/milkyway.jpg', (texture) => {
         texture.mapping = THREE.EquirectangularReflectionMapping;
     });
     // ambient light //

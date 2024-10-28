@@ -343,7 +343,7 @@ function TournamentStats() {
             <div className="container-fluid">
                 <h1 className="text-center text-white mb-4">{t('tournament.scoreboardTitle')}</h1>
                 <button className="btn btn-dark mb-4" onClick={handleBack}>{t('tournament.backButton')}</button>
-                {!winnerUser && <button type="button" className="btn btn-primary mb-4 ms-2" onClick={playGame}>Play Match</button>}
+                {!winnerUser && <button type="button" className="btn btn-primary mb-4 ms-2" onClick={playGame}>{t('tournament.playMatchButton')}</button>}
                 <div className="flex-container">
                     <div className="col-12 d-flex justify-content-start">
                         <div className="players-container">
@@ -358,8 +358,10 @@ function TournamentStats() {
                     </div>
                 </div>
                 <div className="text-center position-absolute bottom-50 start-50 translate-middle-x mb-3">
-                    {winnerUser ? <button className="btn btn-success btn-lg">{winnerUser}</button>
-                    : <button className="btn btn-success btn-lg">WINNER</button>}
+                    {winnerUser ? 
+                        <button className="btn btn-success btn-lg">{winnerUser}</button> :
+                        <button className="btn btn-success btn-lg">{t('tournament.winnerButton')}</button>
+                    }
                 </div>
             </div>
         </div>

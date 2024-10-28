@@ -4,6 +4,7 @@
     "signup": "S'inscrire",
     "login_error": "Les donnees saisies sont incorrectes !",
     "draw_result": "Egalite",
+    "error404": "Erreur 40",
     "register": {
         "title": "Creez votre compte maintenant!",
         "username": "Nom d'utilisateur",
@@ -45,7 +46,15 @@
         "cancel": "ANNULER",
         "default": "PAR DEFAULT",
         "save_msg": "Nouveaux parametres de jeu sauvegardes !",
-        "default_msg": "Parametres reinitialises !"
+        "default_msg": "Parametres reinitialises !",
+        "enabled": "Activé",
+        "disabled": "Désactivé"
+      },
+      "2FA": {
+        "two_step_verification": "Vérification en deux étapes",
+        "verification_message": "Nous avons envoyé un code de vérification à votre adresse e-mail. Veuillez saisir le code dans le champ ci-dessous.",
+        "verify": "Vérifier",
+        "invalid_2fa": "Code 2FA invalide. Veuillez réessayer."
       },
       "localGame":
       {
@@ -163,9 +172,18 @@
         "winnerCrown": "👑"
     },
     "two_fa": "2FA by email : ",
-    "tournament":
-    {
-        "scoreboardTitle": "Tableau des scores",
-        "backButton": "Retour"
-    }
+    "tournament": {
+        "scoreboardTitle": "Tableau des tournois",
+        "backButton": "Retour",
+        "List": "Liste des tournois",
+        "name": "Nom du tournoi",
+        "noTournament": "Aucun tournoi disponible",
+        "watch": "Regarder",
+        "new": "Nouveau tournoi",
+        "creator": "Créateur",
+        "placeHolder": "Nom du tournoi",
+        "placeHolderSearch": "Nom du tournoi inachevé",
+        "users": "Utilisateurs",
+        "winnerButton": "Gagnant"
+      }
 }
