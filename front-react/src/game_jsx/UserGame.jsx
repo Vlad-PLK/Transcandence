@@ -76,6 +76,7 @@ let speedBoostGeometry, speedBoost1, speedBoost2;
 const speedBoostSpeed = 0.8;
 let velocity = vec.vectorize(0, 0, 0);
 let setFlag = 0;
+let timeoutId;
 
 
 // PowerUps
@@ -103,42 +104,22 @@ document.addEventListener('keydown', handleKeyDown);
 document.addEventListener('keyup', handleKeyUp);
 
 
-function setSphere(scene, sphere, sphereGeometry, setFlag)
+function setSphere(scene, sphere, sphereGeometry, timeOutRef)
 {
-    if (setFlag == 0)
+    console.log("SETSPHERE 0");
+    sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
+    const sphereMaterial = new THREE.MeshStandardMaterial({color:0xFFFFFF});
+    sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphere.position.set(0, sphereGeometry.parameters.radius, 0);
+    //sphere.receiveShadow = true;
+    //sphere.castShadow = true; 
+    scene.add(sphere);
+    timeOutRef = setTimeout(() =>
     {
-        console.log("SETSPHERE 0");
-        sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
-        const sphereMaterial = new THREE.MeshStandardMaterial({color:0xFFFFFF});
-        sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-        sphere.position.set(0, sphereGeometry.parameters.radius, 0);
-        sphere.receiveShadow = true;
-        sphere.castShadow = true; 
-        // scene.add(sphere);
-        // setTimeout(() =>
-        // {
-        //     let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
-        //     velocity.x = Math.cos(randomAngle);
-        //     velocity.z = Math.sin(randomAngle);
-        // }, 6000);
-        setFlag = 1;
-    }
-    else
-    {
-        console.log("SETSPHERE 1");
-        setFlag = 0;
-        sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
-        const sphereMaterial = new THREE.MeshStandardMaterial({color:0xFFFFFF});
-        sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-        sphere.position.set(0, sphereGeometry.parameters.radius, 0);
-        scene.add(sphere);
-        setTimeout(() =>
-        {
-            let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
-            velocity.x = Math.cos(randomAngle);
-            velocity.z = Math.sin(randomAngle);
-        }, 6000);
-    }
+        let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
+        velocity.x = Math.cos(randomAngle);
+        velocity.z = Math.sin(randomAngle);
+    }, 6000);
 
     return { sphere, sphereGeometry, setFlag};
 }
@@ -390,6 +371,7 @@ function UserGame({gameData})
     const sceneRef = useRef(null);
     const cameraRef = useRef(null);
     const rendererRef = useRef(null);
+    const timeroutIdRef = useRef(null);
 
     useEffect(() => {
 
@@ -516,7 +498,7 @@ function UserGame({gameData})
     }
     let sphere = null;
     let sphereGeometry = null;
-    ({ sphere, sphereGeometry, setFlag} = setSphere(sceneRef.current, sphere, sphereGeometry, setFlag));
+    ({ sphere, sphereGeometry, setFlag} = setSphere(sceneRef.current, sphere, sphereGeometry, timeroutIdRef.current));
 
     // animation
     const animate = () =>
@@ -689,8 +671,15 @@ function UserGame({gameData})
     return () => {
         //if (sceneRef.current) sceneRef.current.dispose();
         cancelAnimationFrame(animationFrameId.current);
+        velocity = vec.vectorize(0, 0, 0);
+        sphere.position.set(0, sphereGeometry.parameters.radius, 0);
         player1Score = 0;
         player2Score = 0;
+        if (timeroutIdRef.current)
+        {
+            clearTimeout(timeroutIdRef.current);
+            timeroutIdRef = null;
+        }
         if (sceneRef.current){
             sceneRef.current.remove(planeGeometry);
             sceneRef.current.remove(bottomPaddle);
@@ -843,7 +832,7 @@ function UserGame({gameData})
                     flag={0}
                     tournamentID={0}
                     matchID={0}
-                    seconds={5} 
+                    seconds={200} 
                     player1={userData.id} 
                     player1_nick={userData.username}
                     player2={guestData.id} 

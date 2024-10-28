@@ -1,6 +1,6 @@
 import { useParams } from "react-router";
 import PlayerStats from "./PlayerStats";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserDataContext } from "./UserDataContext";
 import { useTranslation } from "react-i18next";
 import TranslationSelect from "./TranslationSelect";

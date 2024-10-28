@@ -257,17 +257,17 @@ function TournamentStats() {
             <div className="d-flex justify-content-between w-100 mt-3">
             {Array.isArray(updatedFinalistsRef.current) &&
             <>
-                <div className="player-column left-column finals">
-                    <div className="player-group">
-                        {renderPlayerBox(updatedFinalistsRef.current[0]?.nickname || "FINALIST 1", 0)}
-                    </div>
+            <div className="player-column left-column finals">
+                <div className="player-group">
+                {renderPlayerBox(updatedFinalistsRef.current[0]?.nickname || "FINALIST 1", 0)}
                 </div>
-                <div className="finals-vs-label">VS.</div>
-                <div className="player-column right-column finals">
-                    <div className="player-group">
-                        {renderPlayerBox(updatedFinalistsRef.current[1]?.nickname || "FINALIST 2",1)}
-                    </div>
+            </div>
+            <div className="finals-vs-label pb-5">VS.</div>
+            <div className="player-column right-column finals">
+                <div className="player-group">
+                {renderPlayerBox(updatedFinalistsRef.current[1]?.nickname || "FINALIST 2",1)}
                 </div>
+            </div>
             </>
             }
             </div>
