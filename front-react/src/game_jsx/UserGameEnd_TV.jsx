@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useContext} from "react";
+import { useContext, useEffect} from "react";
 import './UserGameEnd_TV.css';
 import { useTranslation } from "react-i18next";
 import TranslationSelect from "../TranslationSelect.jsx";
@@ -15,18 +15,24 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 function UserGameEnd()
 {
     const navigate = useNavigate();
-	const { userData } = useContext(UserDataContext);
+	const { userData, setUserData } = useContext(UserDataContext);
     const location = useLocation();
 	const { t } = useTranslation();
-	const disconnect = () => {
-        localStorage.clear();
-        navigate("/");
-    }
+
     const main_image = {
 		backgroundImage: `url('/cyber4.jpg')`,
 		backgroundSize: 'cover',
 		backgroundPosition: 'center',
 	};
+
+    useEffect(() => {
+		if (userData == null)
+			navigate("/");
+	}, [userData])
+	const disconnect = () => {
+		localStorage.clear();
+		setUserData(null);
+	}
 
     const { flag, tournamentID, player1, player1_nick, player2, player2_nick, player1_score, player2_score } = location.state || {};
 	const isPlayer1Winner = player1_score > player2_score;
@@ -117,11 +123,10 @@ function UserGameEnd()
                     ) : (
                         <p>{t('gameEnd.scoreboard.scoresUnavailable')}</p>
                     )}
-                    {/* A FAIRE, SUPPRIMER CES BOUTTONS SI GAME DE TOURNOI */}
                     {flag == 0 && 
                     <>
-                        <button className="restart-btn" onClick={handleRestart}>{t('gameEnd.scoreboard.restartButton')}</button>
-					    <button className="newgame-btn" onClick={handleNewGame}>{t('gameEnd.scoreboard.newGameButton')}</button>
+                        <button className="restart-btn me-2" onClick={handleRestart}>{t('gameEnd.scoreboard.restartButton')}</button>
+					    <button className="newgame-btn ms-2" onClick={handleNewGame}>{t('gameEnd.scoreboard.newGameButton')}</button>
                     </>
                     }
                     {flag === 1 && (

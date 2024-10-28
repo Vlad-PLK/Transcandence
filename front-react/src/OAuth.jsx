@@ -16,8 +16,6 @@ function OAuth() {
 
         api.get("/api/users/user/oauth/?code="+code)
         .then(response => {
-            localStorage.removeItem(ACCESS_TOKEN);
-			localStorage.removeItem(REFRESH_TOKEN);
             console.log(response);
             localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh_token);
@@ -26,6 +24,8 @@ function OAuth() {
         })
         .catch(error => {
             console.log('Error:', error);
+            localStorage.clear();
+			navigate("/");
         });
     })
 }

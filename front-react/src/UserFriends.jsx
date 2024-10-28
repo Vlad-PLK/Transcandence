@@ -37,10 +37,14 @@ function UserFriends() {
         setNotFriend(!isNotFriend);
     }
 
-    const disconnect = () => {
-        localStorage.clear();
-        navigate("/");
-    }
+    useEffect(() => {
+		if (userData == null)
+			navigate("/");
+	}, [userData])
+	const disconnect = () => {
+		localStorage.clear();
+		setUserData(null);
+	}
 
     const toggleVisible = () => {
         setVisible(!isVisible);

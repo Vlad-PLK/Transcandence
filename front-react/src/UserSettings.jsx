@@ -23,9 +23,13 @@ function UserSettings()
 		backgroundPosition: 'center', // Adjust background position as needed
 		fontFamily: 'cyber4'
 	};
-    const disconnect=() => {
+    useEffect(() => {
+		if (userData == null)
+			navigate("/");
+	}, [userData])
+	const disconnect = () => {
 		localStorage.clear();
-		navigate("/");
+		setUserData(null);
 	}
 
     return (

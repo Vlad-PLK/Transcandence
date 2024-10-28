@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -15,8 +15,15 @@ function TournamentStats() {
     var matchIndex = 0;
     const {tournamentPairData, setTournamentPairData} = useContext(TournamentPairDataContext);
     const {currentTournament, setCurrentTournament} = useContext(CurrentTournamentContext);
-    const [semiFinalists, setSemiFinalists] = useState({nickname: '', index: 0});
-    const [Finalists, setFinalists] = useState({nickname: '', index: 0});
+    const [semiFinalists, setSemiFinalists] = useState(Array.from({ length: 4 }, () => ({ nickname: '', index: 0 })));
+    const [Finalists, setFinalists] = useState(Array.from({ length: 2 }, () => ({ nickname: '', index: 0 })));
+    const [winnerUser, setWinnerUser] = useState('');
+    const updatedSemiFinalistsRef = useRef([]);
+    const updatedFinalistsRef = useRef([]);
+
+    useEffect(() => {
+        console.log("Updated semiFinalists:", semiFinalists);
+    }, [semiFinalists]);
 
     useEffect(() => {
         console.log("tournament id = ", tournamentID);
@@ -61,21 +68,24 @@ function TournamentStats() {
                 else
                     return match.player2_name
             }
-            if (Array.isArray(matchList) && matchList.length >= 4) {
+            if (Array.isArray(matchList) && matchList.length >= 0) {
                 for (let i = 0; i < 4; i++) {
                     const match = matchList[i];
                     if (match && match.id != null) {
                         api.get(`api/tournament/${match.id}/match-info/`)
                             .then(response => {
-                                console.log("info about quarter-finals", response.data);
+                                //console.log("info about quarter-finals", response.data);
                                 if (response.data.winner != null)
+                                {
                                     var nick_winner = setWinner(response.data.winner, match);
-                                    setSemiFinalists(prevSemiFinalists => ({
-                                        ...prevSemiFinalists,
-                                        nickname: nick_winner,
-                                        index: i,
-                                    }));
-                                    console.log(nick_winner, i);
+                                    setSemiFinalists(prevSemiFinalists => {
+                                        const updatedSemiFinalists = [...prevSemiFinalists];
+                                        updatedSemiFinalists[i] = { nickname: nick_winner, index: i };
+                                        updatedSemiFinalistsRef.current = updatedSemiFinalists;
+                                        return updatedSemiFinalists;
+                                    });
+                                }
+                                    
                             })
                             .catch(error => {
                                 console.log('Error', error);
@@ -87,32 +97,50 @@ function TournamentStats() {
             } else {
                 console.log('currentTournament.matchList is not defined or does not have enough elements');
             }
-            if (Array.isArray(matchList) && matchList.length >= 6) {
-                console.log(matchList);
-                const match = matchList[5];
-                if (match && match.id != null) {
-                    const winners = `api/tournament/${match.id}/match-info/`;
-                    api.get(winners)
-                        .then(response => {
-                            console.log("info about semi finals", response.data);
-                            if (response.data.winner != null) {
-                                var nick_winner = setWinner(response.data.winner, match);
-                                setFinalists(prevSemiFinalists => ({
-                                    ...prevSemiFinalists,
-                                    nickname: nick_winner,
-                                    index: i,
-                                }));
-                                console.log(nick_winner, i);
-                            }
-                        })
-                        .catch(error => {
-                            console.log('Error', error);
-                        });
-                } else {
-                    console.log(`Match or match.id is undefined at index 6`);
+            if (Array.isArray(matchList) && matchList.length >= 3) {
+                for (let i = 4; i < 6; i++) {
+                    const match = matchList[i];
+                    if (match && match.id != null) {
+                        api.get(`api/tournament/${match.id}/match-info/`)
+                            .then(response => {
+                                console.log("info about semi-finals", response.data);
+                                if (response.data.winner != null)
+                                {
+                                    var nick_winner = setWinner(response.data.winner, match);
+                                    setFinalists(prevFinalists => {
+                                        const updatedFinalists = [...prevFinalists];
+                                        updatedFinalists[i - 4] = { nickname: nick_winner, index: i - 4};
+                                        updatedFinalistsRef.current = updatedFinalists;
+                                        return updatedFinalists;
+                                    });
+                                }
+                                    
+                            })
+                            .catch(error => {
+                                console.log('Error', error);
+                            });
+                    } else {
+                        console.log(`Match or match.id is undefined at index ${i}`);
+                    }
                 }
             } else {
                 console.log('currentTournament.matchList is not defined or does not have enough elements');
+            }
+            if (Array.isArray(matchList) && matchList.length >= 7) {
+                matchList.sort((a, b) => a.id - b.id);
+                const match = matchList[7];
+                api.get(`api/tournament/${match.id}/match-info/`)
+                .then(response => {
+                    console.log("winner", response.data);
+                    if (response.data.winner != null)
+                    {
+                        var nick_winner = setWinner(response.data.winner, match);
+                        setWinnerUser(nick_winner);
+                    }   
+                })
+                .catch(error => {
+                    console.log('Error', error);
+                });
             }
         })
 		.catch(error => {
@@ -150,7 +178,7 @@ function TournamentStats() {
         }
         return (
             <div className="d-flex justify-content-between w-100">
-                {Array.isArray(currentTournament.matchList) && currentTournament.matchList.length > 0 ?
+                {Array.isArray(currentTournament.matchList) && currentTournament.matchList.length > 0 &&
                 <>
                 <div className="player-column left-column">
                     {currentTournament.matchList[0] &&
@@ -190,45 +218,7 @@ function TournamentStats() {
                     </div>
                     </>}
                 </div>
-                </>
-                :
-                <>
-                <div className="player-column left-column">
-                    <>
-                    {/* a traduire */}
-                    <div className="player-group">
-                        {renderPlayerBox("player1", 0)}
-                        <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox("player2", 1)}
-                    </div>
-                    </>
-                    <div className="quarter-spacer "></div>
-                    <>
-                    <div className="player-group">
-                        {renderPlayerBox("player3", 0)}
-                        <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox("player4", 1)}
-                    </div>
-                    </>
-                </div>
-                <div className="player-column right-column">
-                    <>
-                    <div className="player-group">
-                        {renderPlayerBox("player5", 0)}
-                        <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox("player6", 1)}
-                    </div>
-                    </>
-                    <>
-                    <div className="player-group">
-                        {renderPlayerBox("player7", 0)}
-                        <div className="quarter-vs-label">VS.</div>
-                        {renderPlayerBox("player8", 1)}
-                    </div>
-                    </>
-                </div>
-                </>
-                }
+                </>}
             </div>
         );
     };
@@ -236,57 +226,28 @@ function TournamentStats() {
     const renderSemifinals = () => {
         return (
             <div className="d-flex justify-content-between w-100 mt-3">
-                {(semiFinalists && Array.isArray(currentTournament.semiFinalists) && semiFinalists.length > 0) ?
-                <>
-                    <div className="player-column left-column semifinals">
-                    <div className="player-group">
-                        {renderPlayerBox(semiFinalists[0],0)}
-                        <div className="semi-spacer "></div>
-                        <div className="semi-vs-label">VS.</div>
-                        <div className="semi-spacer "></div>
-                        {renderPlayerBox(semiFinalists[1],1)}
-                    </div>
+            {Array.isArray(updatedSemiFinalistsRef.current) &&
+            <>
+                <div className="player-column left-column semifinals">
+                <div className="player-group">
+                    {renderPlayerBox(updatedSemiFinalistsRef.current[0]?.nickname || "Semi Finalist 1", 0)}
+                    <div className="semi-spacer "></div>
+                    <div className="semi-vs-label">VS.</div>
+                    <div className="semi-spacer "></div>
+                    {renderPlayerBox(updatedSemiFinalistsRef.current[1]?.nickname || "Semi Finalist 2", 1)}
+                </div>
                 </div>
                 <div className="player-column right-column semifinals">
-                    <div className="player-group">
-                        {renderPlayerBox(semiFinalists[2],2)}
-                        <div className="semi-spacer "></div>
-                        <div className="semi-vs-label">VS.</div>
-                        <div className="semi-spacer "></div>
-                        {renderPlayerBox(semiFinalists[3],3)}
-                    </div>
+                <div className="player-group">
+                    {renderPlayerBox(updatedSemiFinalistsRef.current[2]?.nickname || "Semi Finalist 3", 2)}
+                    <div className="semi-spacer "></div>
+                    <div className="semi-vs-label">VS.</div>
+                    <div className="semi-spacer "></div>
+                    {renderPlayerBox(updatedSemiFinalistsRef.current[3]?.nickname || "Semi Finalist 4", 3)}
                 </div>
-                </>
-                :
-                <>
-                    <div className="player-column left-column semifinals">
-                        <div className="player-group">
-                            <div className="player-box semi-player-box p-3 mb-2 bg-light border rounded text-center">
-                                <div className="player-name">Semifinalist 1</div>
-                            </div>
-                            <div className="semi-spacer "></div>
-                            <div className="semi-vs-label">VS.</div>
-                            <div className="semi-spacer "></div>
-                            <div className="player-box semi-player-box p-3 mb-2 bg-light border rounded text-center">
-                                <div className="player-name">Semifinalist 2</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="player-column right-column semifinals">
-                        <div className="player-group">
-                            <div className="player-box semi-player-box p-3 mb-2 bg-light border rounded text-center">
-                                <div className="player-name">Semifinalist 3</div>
-                            </div>
-                            <div className="semi-spacer "></div>
-                            <div className="semi-vs-label">VS.</div>
-                            <div className="semi-spacer "></div>
-                            <div className="player-box semi-player-box p-3 mb-2 bg-light border rounded text-center">
-                                <div className="player-name">Semifinalist 4</div>
-                            </div>
-                        </div>
-                    </div>
-                    </>
-                }
+                </div>
+            </>
+            }
             </div>
         );
     };
@@ -294,36 +255,17 @@ function TournamentStats() {
     const renderFinalists = () => {
         return (
             <div className="d-flex justify-content-between w-100 mt-3">
-            {(Finalists && Array.isArray(Finalists) && Finalists.length > 0)
-            ?
+            {Array.isArray(updatedFinalistsRef.current) &&
             <>
                 <div className="player-column left-column finals">
                     <div className="player-group">
-                        {renderPlayerBox(Finalists[0],0)}
+                        {renderPlayerBox(updatedFinalistsRef.current[0]?.nickname || "FINALIST 1", 0)}
                     </div>
                 </div>
                 <div className="finals-vs-label">VS.</div>
                 <div className="player-column right-column finals">
                     <div className="player-group">
-                        {renderPlayerBox(Finalists[1],1)}
-                    </div>
-                </div>
-            </>
-            :
-            <>
-                <div className="player-column left-column finals">
-                    <div className="player-group">
-                        <div className="player-box finals-player-box p-3 mb-2 bg-light border rounded text-center">
-                            <div className="player-name">Finalist 1</div>
-                        </div>
-                    </div>
-                </div>
-                <div className="finals-vs-label">VS.</div>
-                <div className="player-column right-column finals">
-                    <div className="player-group">
-                        <div className="player-box finals-player-box p-3 mb-2 bg-light border rounded text-center">
-                            <div className="player-name">Finalist 2</div>
-                        </div>
+                        {renderPlayerBox(updatedFinalistsRef.current[1]?.nickname || "FINALIST 2",1)}
                     </div>
                 </div>
             </>
@@ -342,8 +284,6 @@ function TournamentStats() {
     const setMatchIndex = async() => {
         try {
             const response = await api.get(`api/tournament/${tournamentID}/needed-matches/`)
-            //console.log("needed matches", response.data);
-            //console.log("first match of the list index", response.data[0].id);
             matchIndex = response.data[0].id;
         } catch (error) {
             console.log('Error while searching index', error);
@@ -353,7 +293,7 @@ function TournamentStats() {
 	    try {
             const response = await api.get(`api/tournament/${tournamentID}/needed-matches/`);
             console.log("needed matches :", response.data);
-            if (response.data == null) {
+            if (response.data.length == 0) {
                 advanceRound(tournamentID);
                 setMatchIndex();
             }
@@ -399,14 +339,9 @@ function TournamentStats() {
                         {renderFinalists()}
                     </div>
                 </div>
-                {/* <div className="text-center position-absolute bottom-0 start-50 translate-middle-x mb-3"> */}
-                    {/* <img  */}
-                        {/* src="../../public/trophy.png" */}
-                        {/* alt="Description" */}
-                        {/* className="img-fluid" */}
-                        {/* style={{ maxWidth: '150px', height: 'auto' }} */}
-                    {/* /> */}
-                {/* </div> */}
+                <div className="text-center position-absolute bottom-0 start-50 translate-middle-x mb-3">
+                    <button className="btn btn-success btn-lg">{winnerUser}</button>
+                </div>
             </div>
         </div>
     );
