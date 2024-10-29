@@ -16,7 +16,6 @@ function UserGameWindow()
 		fontFamily: 'cyber4'
 	};
 
-	window.location.reload();
 	useEffect(() => {
 		const fetchGameData = async () => {
 		  try {

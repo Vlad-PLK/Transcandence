@@ -68,6 +68,16 @@ function TournamentStats() {
                 else
                     return match.player2_name
             }
+            if (updatedSemiFinalistsRef.current)
+            {
+                for (let i = 0; i != updatedSemiFinalistsRef.current.length; i++)
+                {
+                    if (updatedSemiFinalistsRef.current[i].nickname != '')
+                        break ;
+                    updatedSemiFinalistsRef.current.push(undefined);
+                }
+            }
+            
             if (Array.isArray(matchList) && matchList.length >= 0) {
                 for (let i = 0; i < 4; i++) {
                     const match = matchList[i];
@@ -336,6 +346,7 @@ function TournamentStats() {
                 else {
                     await createFinalMatch(tournamentID);
                 }
+                await getMatches();
             }
             else
                 matchIndex = response.data[0].id;
