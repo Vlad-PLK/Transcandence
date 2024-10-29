@@ -1,4 +1,4 @@
 server.host: "0.0.0.0"
-elasticsearch.hosts: ["http://elasticsearch:9200"]
-elasticsearch.username: "elastic"
-elasticsearch.password: "some_secure_password"
+elasticsearch.hosts: ["${ELASTICSEARCH_HOSTS}"]
+elasticsearch.username: "${ELASTICSEARCH_USERNAME}"
+elasticsearch.password: "${ELASTICSEARCH_PASSWORD}"
