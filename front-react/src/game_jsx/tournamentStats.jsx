@@ -17,7 +17,7 @@ function TournamentStats() {
     const {currentTournament, setCurrentTournament} = useContext(CurrentTournamentContext);
     const [semiFinalists, setSemiFinalists] = useState(Array.from({ length: 4 }, () => ({ nickname: '', index: 0 })));
     const [Finalists, setFinalists] = useState(Array.from({ length: 2 }, () => ({ nickname: '', index: 0 })));
-    const [winnerUser, setWinnerUser] = useState('');
+    const [winnerUser, setWinnerUser] = useState({id: 0, nickname: ''});
     const updatedSemiFinalistsRef = useRef([]);
     const updatedFinalistsRef = useRef([]);
 
@@ -134,14 +134,23 @@ function TournamentStats() {
                 console.log('currentTournament.matchList is not defined or does not have enough elements');
             }
             if (Array.isArray(matchList) && matchList.length == 7) {
-                const match = matchList[7];
+                const match = matchList[6];
                 api.get(`api/tournament/${match.id}/match-info/`)
                 .then(response => {
                     console.log("winner", response.data);
                     if (response.data.winner != null)
                     {
                         var nick_winner = setWinner(response.data.winner, match);
-                        setWinnerUser(nick_winner);
+                        var nick_id;
+                        if (nick_winner == match.player1_name)
+                            nick_id = match.player1;
+                        else
+                            nick_id = match.player2
+                        setWinnerUser(prevState => ({
+                            ...prevState,
+                            nickname: nick_winner,
+                            nick_id: nick_id
+                        }));
                     }   
                 })
                 .catch(error => {
@@ -307,32 +316,62 @@ function TournamentStats() {
         }
     }
 
+    const createFinalMatch = async(tournamentID) => {
+        try {
+            const response = await api.post(`api/tournament/${tournamentID}/finalize/`)
+            matchIndex = response.data.match_id;
+        } catch (error) {
+            console.log("error while creating the final :", error);
+        }
+    }
+
     const playGame = async () => {
 	    try {
             const response = await api.get(`api/tournament/${tournamentID}/needed-matches/`);
-            await getMatches();
             console.log("needed matches :", response.data);
             if (Array.isArray(response.data) && response.data.length === 0) {
-                await advanceRound(tournamentID);
+                if (currentTournament.matchList.length === 4) {
+                    await advanceRound(tournamentID);
+                }
+                else {
+                    await createFinalMatch(tournamentID);
+                }
             }
             else
                 matchIndex = response.data[0].id;
-            console.log("id of the next match :", matchIndex);
-            for (let match of currentTournament.matchList) {
-                //console.log(match.id);
-                    if (match.id === matchIndex) {
-                        setTournamentPairData(prevState => ({
-                            ...prevState,
-                            tournament_id: tournamentID,
-                            match_id: match.id,
-                            player1_name: match.player1_name,
-                            player2_name: match.player2_name,
-                            player1_id: match.player1,
-                            player2_id: match.player2
-                        }));
-                        navigate("../userGameWindow/");
+            api.get(`api/tournament/${tournamentID}/tournament-matches/`)
+            .then(response => {
+                const new_match_list = response.data.sort((a, b) => a.id - b.id);
+                return new_match_list ;
+            })
+            .then(new_match_list => {
+                setCurrentTournament(prevState => ({
+                    ...prevState,
+                    matchList: new_match_list,
+                }));
+                return new_match_list ;
+            })
+            .then(matchList => {
+                console.log("id of the next match :", matchIndex);
+                for (let match of matchList) {
+                        if (match.id === matchIndex) {
+                            setTournamentPairData(prevState => ({
+                                ...prevState,
+                                tournament_id: tournamentID,
+                                match_id: match.id,
+                                player1_name: match.player1_name,
+                                player2_name: match.player2_name,
+                                player1_id: match.player1,
+                                player2_id: match.player2
+                            }));
+                            navigate("../userGameWindow/");
+                            break;
+                        }
                     }
-                }
+            })
+            .catch(error => {
+                console.log("error while getting matches : ", error);
+            })
         } catch (error) {
             console.log('Error:', error);
         }
@@ -343,7 +382,7 @@ function TournamentStats() {
             <div className="container-fluid">
                 <h1 className="text-center text-white mb-4">{t('tournament.scoreboardTitle')}</h1>
                 <button className="btn btn-dark mb-4" onClick={handleBack}>{t('tournament.backButton')}</button>
-                {!winnerUser && <button type="button" className="btn btn-primary mb-4 ms-2" onClick={playGame}>{t('tournament.playMatchButton')}</button>}
+                {!winnerUser.nickname && <button type="button" className="btn btn-primary mb-4 ms-2" onClick={playGame}>Play Match</button>}
                 <div className="flex-container">
                     <div className="col-12 d-flex justify-content-start">
                         <div className="players-container">
@@ -358,9 +397,25 @@ function TournamentStats() {
                     </div>
                 </div>
                 <div className="text-center position-absolute bottom-50 start-50 translate-middle-x mb-3">
-                    {winnerUser ? 
-                        <button className="btn btn-success btn-lg">{winnerUser}</button> :
-                        <button className="btn btn-success btn-lg">{t('tournament.winnerButton')}</button>
+                    {winnerUser.nickname 
+                    ? 
+                    <>
+                        <button className="d-flex flex-column align-items-center btn btn-success btn-lg">
+                            {winnerUser.nickname}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-trophy mt-2" viewBox="0 0 16 16">
+                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
+                            </svg>
+                        </button>
+                    </>
+                    : 
+                    <>
+                    <button className="d-flex flex-column align-items-center btn btn-success btn-lg">
+                        WINNER
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-trophy mt-2" viewBox="0 0 16 16">
+                            <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
+                        </svg>
+                    </button>
+                    </>
                     }
                 </div>
             </div>

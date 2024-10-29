@@ -105,10 +105,7 @@ let setSphereFlag = false;
 
 function setSphere(scene, sphere, sphereGeometry, setSphereFlag, sphereTimeoutID)
 {
-    console.log("SETSPHERE FLAG AVANT = ", setSphereFlag);
-
-    if (sphereTimeoutID)
-        clearTimeout(sphereTimeoutID);
+    console.log("SETSPHERE FLAG = ", setSphereFlag);
     sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
     const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
     sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
@@ -123,8 +120,8 @@ function setSphere(scene, sphere, sphereGeometry, setSphereFlag, sphereTimeoutID
             velocity.z = Math.sin(randomAngle);
             setSphereFlag = true;
         }
-    }, 4000);
-    console.log("SETSPHERE FLAG APRES = ", setSphereFlag);
+    }, 6000);
+
     return { sphere, sphereGeometry, setSphereFlag, sphereTimeoutID};
 }
 
@@ -155,38 +152,21 @@ const calculateCollisionNormal = (sphere, sphereGeometry, topPaddle, bottomPaddl
 let resphereTimeoutID;
 let resetSphereFlag = false;
 
-function resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID) {
-    console.log("RESET FLAG BEFORE = ", resetSphereFlag);
-    
-    // Clear any existing timeout
-    if (resphereTimeoutID)
-        clearTimeout(resphereTimeoutID);
-
-    if (sphere)
-    {
-        scene.remove(sphere);
-        sphere.geometry.dispose();
-        sphere.material.dispose();
-    }
-
-    let newSphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
-    const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
-    let newSphere = new THREE.Mesh(newSphereGeometry, sphereMaterial);
-    newSphere.position.set(0, newSphereGeometry.parameters.radius, 0);
-    scene.add(newSphere);
-
+function resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID)
+{
+    console.log("RESET FLAG = ", resetSphereFlag);
     velocity = vec.vectorize(0, 0, 0);
-
-    resphereTimeoutID = setTimeout(() => {
-        if (!resetSphereFlag) {
-            let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
-            velocity.x = Math.cos(randomAngle);
-            velocity.z = Math.sin(randomAngle);
-            resetSphereFlag = true;
-        }
-    }, 4000);
-
-    return { sphere: newSphere, sphereGeometry: newSphereGeometry, resetSphereFlag, resphereTimeoutID };
+    sphere.position.set(0, sphereGeometry.parameters.radius, 0);
+        resphereTimeoutID = setTimeout(() => {
+            if (resetSphereFlag == false)
+            {
+                let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
+                velocity.x = Math.cos(randomAngle);
+                velocity.z = Math.sin(randomAngle);
+                resetSphereFlag = true;
+            }
+        }, 6000);
+    return (resetSphereFlag, resphereTimeoutID);
 }
 
 function resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower)
@@ -282,55 +262,67 @@ function updateScoreText(scene, font, player1ID, player2ID, player1Score, player
 function checkCollision(scene, sphere, sphereGeometry, 
     planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag, resphereTimeoutID)
 {
-    const { normal, flag } = calculateCollisionNormal(sphere, sphereGeometry, topPaddle, bottomPaddle, planeGeometry);
+    // console.log("RESETFLAG : ", resetSphereFlag);
+    const { normal, flag } = calculateCollisionNormal(sphere, sphereGeometry, 
+        topPaddle, bottomPaddle, planeGeometry);
 
-    if (normal != null && flag > 0) {
-        if (paddle1Left && flag == 3) velocity.x += 0.3;
-        else if (paddle1Right && flag == 3) velocity.x -= 0.3;
-        else if (paddle2Left && flag == 4) velocity.x += 0.3;
-        else if (paddle2Right && flag == 4) velocity.x -= 0.3;
-        
-        velocity = vec.reflectVector(velocity, normal);
-    }
+        if (normal != null && flag > 0)
+        {
+            if (paddle1Left == true && flag == 3)
+                velocity.x += 0.3;
+            else if (paddle1Right == true && flag == 3)
+                velocity.x -= 0.3;
+            else if (paddle2Left == true && flag == 4)
+                velocity.x += 0.3;
+            else if (paddle2Right == true && flag == 4)
+                velocity.x -= 0.3;
+            velocity = vec.reflectVector(velocity, normal);
+        }
 
-    if (sphere.position.z + sphereGeometry.parameters.radius >= planeGeometry.parameters.height / 2 + 0.01) {
+    if (sphere.position.z + sphereGeometry.parameters.radius >= planeGeometry.parameters.height / 2 + 0.01)
+    {
         player2Streak = 0;
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, topWall.position.z);
         shockWave(scene, contactPoint, planeGeometry);
         player2Score += 1;
         resetSphereFlag = false;
-        
         if (scoreFlag == 1)
         {
             player1Streak += 1;
-            streakPower = player1Streak == 2 ? 2 : 0;
+            if (player1Streak == 2)
+                streakPower = 2;
+            else
+                streakPower = 0;
+            console.log("scoreFlag 1 ", player1Streak, streakPower);
+
         }
         scoreFlag = 1;
-
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
-        ({ sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID } = resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID));
+        resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower);
     }
-    else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2 - 0.01) {
+    else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2 - 0.01)
+    {
         player1Streak = 0;
         let contactPoint = new THREE.Vector3(sphere.position.x, sphere.position.y + 0.25, bottomWall.position.z);
         shockWave(scene, contactPoint, planeGeometry);
         player1Score += 1;
         resetSphereFlag = false;
-
         if (scoreFlag == 2)
         {
             player2Streak += 1;
-            streakPower = player2Streak == 2 ? 1 : 0;
+            if (player2Streak == 2)
+                streakPower = 1;
+            else
+                streakPower = 0;
+            console.log("scoreFlag 2 ", player2Streak, streakPower);
         }
         scoreFlag = 2;
-
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
-        ({ sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID } = resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID));
+        resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower);
     }
-
-    return { player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag, resphereTimeoutID, sphere, sphereGeometry };
+    return {player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag};
 }
 
 function calculateRotationSpeed(radius, sunRotationSpeed)
@@ -404,7 +396,7 @@ function UserGame()
     rendererRef.current = new THREE.WebGLRenderer();
     setRenderer(rendererRef.current);
     mountRef.current.appendChild(rendererRef.current.domElement);
-    const milky = textureLoader.load('../../public/milkyway.jpg', (texture) => {
+    const milky = textureLoader.load('../../milkyway.jpg', (texture) => {
         texture.mapping = THREE.EquirectangularReflectionMapping;
     });
     // ambient light //
@@ -541,12 +533,12 @@ function UserGame()
             // planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag));
         if (tournamentPairData.player1_name != '' && tournamentPairData.player2_name != '')
         {
-        ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag, resphereTimeoutID, sphere, sphereGeometry} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
+        ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
             planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, tournamentPairData.player1_name, tournamentPairData.player2_name, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag, resphereTimeoutID));
         }
         else if ((guestData.guestNickname != '' || guestData.nickname != '') && userData)
         {
-            ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag, resphereTimeoutID, sphere, sphereGeometry} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
+            ({player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag} = checkCollision(sceneRef.current, sphere, sphereGeometry, 
                  planeGeometry, topPaddle, bottomPaddle, bottomWall, topWall, userData.username, guestData.guestNickname, player1Score, player2Score, scoreTextMesh, font, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag, resphereTimeoutID));
         }
 
@@ -696,12 +688,10 @@ function UserGame()
         setSphereFlag = false;
         resetSphereFlag = false;
         velocity = vec.vectorize(0,0,0);
-        if (sphereTimeoutID) {
+        if (sphereTimeoutID)
             clearTimeout(sphereTimeoutID);
-        }
-        if (resphereTimeoutID) {
+        if (resphereTimeoutID)
             clearTimeout(resphereTimeoutID);
-        }
         if (sceneRef.current){
             sceneRef.current.remove(planeGeometry);
             sceneRef.current.remove(bottomPaddle);
@@ -843,46 +833,45 @@ function UserGame()
         }
     };
     }, [setScoreP1, setScoreP2]);
-
     return (
-        <>
-            {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
-            {
-                (userData && (guestData.nickname != '' || guestData.guestNickname != '')) ? (
-                <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
-                <CustomTimer 
-                        flag={0}
-                        tournamentID={0}
-                        matchID={0}
-                        seconds={200} 
-                        player1={userData.id} 
-                        player1_nick={userData.username}
-                        player2={guestData.id} 
-                        player2_nick={guestData.guestNickname}
-                        player1_score={scoreP1} 
-                        player2_score={scoreP2} 
-                        isGuest={guestData.isGuest}
-                    />
-                </div>
-                ) : (userData && (tournamentPairData.player1_name != '' && tournamentPairData.player2_name != '')) ? (
-                <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
-                <CustomTimer 
-                        flag={1}
-                        tournamentID={tournamentPairData.tournament_id}
-                        matchID={tournamentPairData.match_id}
-                        seconds={7} 
-                        player1={tournamentPairData.player1_id} 
-                        player1_nick={tournamentPairData.player1_name}
-                        player2={tournamentPairData.player2_id} 
-                        player2_nick={tournamentPairData.player2_name}
-                        player1_score={scoreP1} 
-                        player2_score={scoreP2}
-                        isGuest={false}
-                    />
-                </div>) : (<></>)}
-            <div className="d-flex justify-content-center" ref={mountRef}/>;
-        </>
-      )
+    <>
+        {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
+        {
+            (userData && (guestData.nickname != '' || guestData.guestNickname != '')) ? (
+            <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
+            <CustomTimer 
+                    flag={0}
+                    tournamentID={0}
+                    matchID={0}
+                    seconds={20} 
+                    player1={userData.id} 
+                    player1_nick={userData.username}
+                    player2={guestData.id} 
+                    player2_nick={guestData.guestNickname}
+                    player1_score={scoreP1} 
+                    player2_score={scoreP2} 
+                    isGuest={guestData.isGuest}
+                />
+            </div>
+            ) : (userData && (tournamentPairData.player1_name != '' && tournamentPairData.player2_name != '')) ? (
+            <div className="d-flex justify-content-center" style={{color:'white', fontSize:'50px'}}>
+            <CustomTimer 
+                    flag={1}
+                    tournamentID={tournamentPairData.tournament_id}
+                    matchID={tournamentPairData.match_id}
+                    seconds={10} 
+                    player1={tournamentPairData.player1_id} 
+                    player1_nick={tournamentPairData.player1_name}
+                    player2={tournamentPairData.player2_id} 
+                    player2_nick={tournamentPairData.player2_name}
+                    player1_score={scoreP1} 
+                    player2_score={scoreP2}
+                    isGuest={false}
+                />
+            </div>) : (<></>)}
+        <div className="d-flex justify-content-center" ref={mountRef}/>;
+    </>
+  )
 };
 
 export default UserGame

@@ -5,7 +5,7 @@
     "signup": "Take me there!",
     "login_error": "The provided credentials are wrong",
     "draw_result": "Draw",
-    "error404": "Error 40",
+    "error404": "Error 404",
     "register": {
         "title": "Create your account now!",
         "username": "Username",
@@ -91,16 +91,8 @@
     "passwordUpdateSuccess": "Password updated successfully",
     "passwordUpdateFailed": "Password update failed",
     "cancel": "CANCEL",
-    "save": "SAVE",
-    "enabled": "Enabled",
-    "disabled": "Disabled"
+    "save": "SAVE"
 },
-"2FA": {
-    "two_step_verification": "Two Step Verification",
-    "verification_message": "We sent a verification code to your email. Please enter the code in the field below.",
-    "verify": "Verify",
-    "invalid_2fa": "Invalid 2FA code. Please try again."
-  },
     "userFriends": {
         "addFriend": "Add friend",
         "deleteFriend": "Delete friend",
@@ -187,8 +179,7 @@
         "creator" : "Creator",
         "placeHolder" : "Tournament Name",
         "placeHolderSearch": "Unfinished Tournament Name",
-        "users": "Users",
-        "winnerButton": "WINNER"
+        "users": "Users"
     },
     "two_fa": "2FA by email : "
 }

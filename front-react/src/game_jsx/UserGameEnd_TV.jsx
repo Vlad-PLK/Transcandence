@@ -9,7 +9,6 @@ import { UserDataContext } from "../UserDataContext.jsx";
 import SettingsModal from "../SettingsModal.jsx";
 import TournamentStats from './tournamentStats.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 
 function UserGameEnd()

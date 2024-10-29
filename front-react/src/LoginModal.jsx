@@ -91,10 +91,19 @@ function LoginModal()
         }
     }
 
-	const loginbutton42 = () => {
-		window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id='
-    	+ encodeURIComponent("u-s4t2ud-f2e4eed0fe85865ea95e27e9d857816c8276ac645887e9b68c2cf33ea18f24d7") + '&redirect_uri=' +
-    	encodeURIComponent("https://localhost:1443/oauth_callback") + '&response_type=code'
+	const loginbutton42 = async () => {
+		try {
+			// the path in back should be in public so i can access api key witoout token //
+			const response = await api.get('api/get-env/');
+			const api_client_uid = response.data.client_id;
+			const api_client_callback = response.data.callback_url;
+			window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id='
+			+ encodeURIComponent(api_client_uid) + '&redirect_uri=' +
+			encodeURIComponent(api_client_callback) + '&response_type=code'
+		} catch (error) {
+			console.log("error while getting api42 credentials : ", error);
+		}
+		
 	}
 
 	return (
@@ -110,7 +119,7 @@ function LoginModal()
   						<path d="M10.828.122A.5.5 0 0 1 11 .5V1h.5A1.5 1.5 0 0 1 13 2.5V15h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V1.5a.5.5 0 0 1 .43-.495l7-1a.5.5 0 0 1 .398.117M11.5 2H11v13h1V2.5a.5.5 0 0 0-.5-.5M4 1.934V15h6V1.077z"/>
 					</svg>
 				  </div>
-        		  <div className="modal-body p-5 pt-0 pb-4">
+        		  <div className="modal-body p-5 pt-0 pb-3">
         		      <div className="form-floating mb-2">
         		        <input type="text" className="form-control rounded-3" id="usernameLogin" placeholder={t('username')} autoComplete='username' value={username} onChange={(e) => setUsername(e.target.value)}/>
         		        <label htmlFor="usernameLogin">{t('username')}</label>
@@ -123,7 +132,7 @@ function LoginModal()
         		  	 </div>
 					 {show2FA == true ?
 					 <>
-					 <div className="d-flex flex-column align-items-center ms-4 me-4 ps-4 pt-3 pe-4 pb-4 border-bottom-0">
+					 <div className="d-flex flex-column align-items-center ms-3 me-3 ps-4 pt-3 pe-4 pb-4 border-bottom-0">
 					 <svg className="mb-3 bi bi-file-lock" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M8 5a1 1 0 0 1 1 1v1H7V6a1 1 0 0 1 1-1m2 2.076V6a2 2 0 1 0-4 0v1.076c-.54.166-1 .597-1 1.224v2.4c0 .816.781 1.3 1.5 1.3h3c.719 0 1.5-.484 1.5-1.3V8.3c0-.627-.46-1.058-1-1.224M6.105 8.125A.64.64 0 0 1 6.5 8h3a.64.64 0 0 1 .395.125c.085.068.105.133.105.175v2.4c0 .042-.02.107-.105.175A.64.64 0 0 1 9.5 11h-3a.64.64 0 0 1-.395-.125C6.02 10.807 6 10.742 6 10.7V8.3c0-.042.02-.107.105-.175"/>
                             <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1"/>
@@ -148,7 +157,7 @@ function LoginModal()
 					 </div>
 				 	 </div>
 					 <div className="d-flex flex-column align-items-center">
-					 <button className="btn btn-success btn-lg mt-4 align-items-center" data-bs-dismiss="modal" onClick={send_otp}>Verify</button>
+					 <button className="btn btn-success btn-lg mt-3 mb-3 align-items-center" data-bs-dismiss="modal" onClick={send_otp}>Verify</button>
 				 	 </div>
 					</>
 					:
@@ -158,7 +167,7 @@ function LoginModal()
   							<img src="/42.png" alt="" height="100" width="100"/>
 					 	</button>
 						<p className="fs-4 mt-4 ms-3 me-4">OR</p>
-						<div className="d-flex flex-column ms-3 mt-3">
+						<div className="d-flex flex-column ms-2 mt-2">
 					 		<button className="btn btn-lg rounded-3 btn-primary" data-bs-dismiss="modal" onClick={loginbutton}>{t('login_login')}</button>
 						</div>
 					</div>

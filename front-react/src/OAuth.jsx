@@ -26,7 +26,6 @@ function OAuth() {
         })
         .catch(error => {
             console.log('Error:', error);
-            navigate("/");
         });
     })
 }

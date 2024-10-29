@@ -183,11 +183,11 @@ function SettingsModal() {
                                 <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked={isTwoFAEnabled} onChange={handle2FA}/>
                                 <label className="form-check-label" htmlFor="flexSwitchCheckChecked">
                                     {t('two_fa')}
-                                    {isTwoFAEnabled == 1 ? (
-                                        <span className="text-success">{t('userSettings.enabled')}</span>
-                                    ) : (
-                                        <span className="text-danger">{t('userSettings.disabled')}</span>
-                                    )}
+                                    {isTwoFAEnabled == 1 ? 
+                                    <span className='text-success'>Enabled</span>
+                                     :
+                                    <span className='text-danger'>Disabled</span>
+                                    }
                                 </label>
                         </div>
                         {userData && <div className="modal-body p-5 pt-0">

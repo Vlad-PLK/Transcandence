@@ -67,8 +67,8 @@ function PlayerStats(){
 					<div className="card-header bg-dark">
 						<h2>{t('playerStats.matchHistory')}</h2>
 					</div>
-					{Array.isArray(userMatch) && userMatch.length > 0 ?
-					<ul className="match-history list-group">
+					{Array.isArray(userMatch) && userData && userMatch.length > 0 ?
+					<ul className="match-history list-group overflow-auto" style={{ maxHeight: '170px' }}>
 						{userMatch.map((match, index) => (
 							(userData.username === match.player1_name) ?
 							<li key={index} className="list-group-item">
