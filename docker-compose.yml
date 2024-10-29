@@ -13,6 +13,7 @@ services:
     depends_on:
       - backend
       - frontend
+      - logstash
     networks:
       - transcendance
 
@@ -29,6 +30,7 @@ services:
     container_name: backend
     volumes:
       - backend:/app
+      - shared-logs:/app/tmp
     build: 
       context: ./backend
       args:
@@ -40,10 +42,10 @@ services:
         DBNAME: ${DBNAME}       
         DBUSER: ${DBUSER}        
         DBPASSWORD: ${DBPASSWORD} 
-
     command: sh -c "python manage.py makemigrations && python manage.py migrate && daphne -b 0.0.0.0 -p 8000 backend.asgi:application"
     depends_on:
       - postgres
+      - logstash
     networks:
       - transcendance
   postgres:
@@ -57,6 +59,50 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - transcendance
+  
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=some_secure_password
+    networks:
+      - transcendance
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.10.1
+    container_name: logstash
+    volumes:
+      - shared-logs:/app/tmp
+      - ./logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./logstash/pipeline/logs:/usr/share/logstash/pipeline/logs
+    depends_on:
+      - elasticsearch
+    networks:
+      - transcendance
+    user: "root"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.1
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=some_secure_password
+    ports:
+      - 5601:5601
+    networks:
+      - transcendance
+    volumes:
+    - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    
+
     
 volumes:
   frontend:
@@ -69,5 +115,9 @@ volumes:
     driver: local
   backend:
     driver: local
-      
-    
+  es_data:
+    driver: local
+  grafana_data:
+    driver: local
+  shared-logs:
+    driver: local
