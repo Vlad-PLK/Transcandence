@@ -18,6 +18,7 @@
         },
         "success": "Inscription reussie!"
     },
+    "verify": "Verifier",
     "gameSettings": {
         "selectStar": "Selectionnez le type d'etoile que vous voulez",
         "sun": "Le Soleil",
@@ -123,14 +124,12 @@
         "delete": "SUPPRIMER",
         "no_Friends": "Pas encore d'amis..."
     },
-
     "dropdown": {
         "toggle": "Basculer Dropstart",
         "settings": "Parametres",
         "friends": "Amis",
         "disconnect": "Se deconnecter"
     },
-
     "playerStats": {
         "stats": "Statistiques",
         "wins": "Victoires",
@@ -146,7 +145,6 @@
         "hide": "Cacher",
         "show": "Afficher"
     },
-
     "welcomeBack": "Bon retour parmi nous !",
     "username": "Nom d'utilisateur",
     "password": "Mot de passe",
