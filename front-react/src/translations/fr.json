@@ -5,6 +5,7 @@
     "login_error": "Les donnees saisies sont incorrectes !",
     "draw_result": "Egalite",
     "error404": "Erreur 40",
+    "error": "Erreur",
     "register": {
         "title": "Creez votre compte maintenant!",
         "username": "Nom d'utilisateur",
@@ -185,6 +186,9 @@
         "placeHolderSearch": "Nom du tournoi inachevé",
         "users": "Utilisateurs",
         "winnerButton": "Gagnant",
-        "playMatchButton": "JOUER"
+        "playMatchButton": "JOUER",
+        "userAlreadyInTournament": "Utilisateur déjà inscrit au tournoi!",
+        "tournamentAlreadyExists": "Le tournoi existe déjà!",
+        "tournamentNotFound": "Tournoi non trouvé!"
       }
 }

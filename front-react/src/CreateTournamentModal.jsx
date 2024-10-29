@@ -40,8 +40,7 @@ function CreateTournamentModal() {
 			setTournament(tournamentArray.id);
 			for (let i = 0; i < playerList.length; i++) {
 				if (playerList[i].nickname == nickname) {
-					//a traduire//
-					setError("User already in the tournament !");
+					setError(t('tournament.userAlreadyInTournament'));
 					setNickname('');
 					return ;
 				}
@@ -75,8 +74,7 @@ function CreateTournamentModal() {
 			setName('');
 		}catch(error){
 			setName('');
-			//a traduire//
-			setMsg("Tournament Already exists !");
+			setMsg(t('tournament.tournamentAlreadyExists'));
 			console.log(error);
 		}
 	};
@@ -111,7 +109,7 @@ function CreateTournamentModal() {
 				}
 				if (i == response.data.length) {
 					//a traduire//
-					setErrorTournament("Tournament not found !");
+					setErrorTournament(t('tournament.tournamentNotFound'));
 				}
 			})
 			.catch(error => {

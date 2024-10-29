@@ -6,6 +6,7 @@
     "login_error": "The provided credentials are wrong",
     "draw_result": "Draw",
     "error404": "Error 40",
+    "error": "Error",
     "register": {
         "title": "Create your account now!",
         "username": "Username",
@@ -189,7 +190,10 @@
         "placeHolderSearch": "Unfinished Tournament Name",
         "users": "Users",
         "winnerButton": "WINNER",
-        "playMatchButton": "PLAY MATCH"
+        "playMatchButton": "PLAY MATCH",
+        "userAlreadyInTournament": "User already in the tournament!",
+        "tournamentAlreadyExists": "Tournament already exists!",
+        "tournamentNotFound": "Tournament not found!"
     },
     "two_fa": "2FA by email : "
 }

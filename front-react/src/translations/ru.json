@@ -5,6 +5,7 @@
     "signup": "Перейти!",
     "draw_result": "Лошара",
     "error404": "Ошибка 40",
+    "error": "Error",
     "register": {
         "title": "Создайте свой аккаунт прямо сейчас!",
         "username": "Имя пользователя",
@@ -177,6 +178,9 @@
         "placeHolderSearch": "Название незавершенного турнира",
         "users": "Пользователи",
         "winnerButton": "Победитель",
-        "playMatchButton": ""
+        "playMatchButton": "",
+        "userAlreadyInTournament": "Пользователь уже в турнире!",
+        "tournamentAlreadyExists": "Турнир уже существует!",
+        "tournamentNotFound": "Турнир не найден!"
       }
 }
