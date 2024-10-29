@@ -13,12 +13,12 @@ import DeleteFriendModal from "./DeleteFriendModal";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function UserFriends() {
-    const { userData } = useContext(UserDataContext);
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [isVisible, setVisible] = useState(false);
     const [isDeleted, setDeleted] = useState(false);
     const [isNotFriend, setNotFriend] = useState(false);
+    const {userData, setUserData} = useContext(UserDataContext);
     const [isFr, setFr] = useState(false);
     const [isAccepted, setAccepted] = useState(false);
     const [userFriends, setUserFriends] = useState([]);
