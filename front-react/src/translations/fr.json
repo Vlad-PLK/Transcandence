@@ -49,14 +49,14 @@
         "default": "PAR DEFAULT",
         "save_msg": "Nouveaux parametres de jeu sauvegardes !",
         "default_msg": "Parametres reinitialises !",
-        "enabled": "Activé",
-        "disabled": "Désactivé"
+        "enabled": "Active",
+        "disabled": "Desactive"
       },
       "2FA": {
-        "two_step_verification": "Vérification en deux étapes",
-        "verification_message": "Nous avons envoyé un code de vérification à votre adresse e-mail. Veuillez saisir le code dans le champ ci-dessous.",
-        "verify": "Vérifier",
-        "invalid_2fa": "Code 2FA invalide. Veuillez réessayer."
+        "two_step_verification": "Verification en deux etapes",
+        "verification_message": "Nous avons envoye un code de verification a votre adresse e-mail. Veuillez saisir le code dans le champ ci-dessous.",
+        "verify": "Verifier",
+        "invalid_2fa": "Code 2FA invalide. Veuillez reessayer."
       },
       "localGame":
       {
@@ -133,7 +133,7 @@
     "playerStats": {
         "stats": "Statistiques",
         "wins": "Victoires",
-        "losses": "Défaites",
+        "losses": "Defaites",
         "draws": "Matchs nuls",
         "totalGoals": "Total des buts",
         "noStats": "Pas encore de statistiques de jeu !",
@@ -158,8 +158,8 @@
     "game_settings": "PARAMETRES DU JEU",
     "gameEnd":
     {
-        "title": "Partie terminée",
-        "thanks": "Merci d'avoir joué !",
+        "title": "Partie terminee",
+        "thanks": "Merci d'avoir joue !",
         "scoreboard":
         {
             "player": "Joueur",
@@ -179,14 +179,14 @@
         "noTournament": "Aucun tournoi disponible",
         "watch": "Regarder",
         "new": "Nouveau tournoi",
-        "creator": "Créateur",
+        "creator": "Createur",
         "placeHolder": "Nom du tournoi",
-        "placeHolderSearch": "Nom du tournoi inachevé",
+        "placeHolderSearch": "Nom du tournoi inacheve",
         "users": "Utilisateurs",
         "winnerButton": "Gagnant",
         "playMatchButton": "JOUER",
-        "userAlreadyInTournament": "Utilisateur déjà inscrit au tournoi!",
-        "tournamentAlreadyExists": "Le tournoi existe déjà!",
-        "tournamentNotFound": "Tournoi non trouvé!"
+        "userAlreadyInTournament": "Utilisateur deja inscrit au tournoi!",
+        "tournamentAlreadyExists": "Le tournoi existe deja!",
+        "tournamentNotFound": "Tournoi non trouve!"
       }
 }
