@@ -1,6 +1,6 @@
 NAME = TRANSCENDANCE
 
-VOLUME_PATH = /home/vpolojie/volumes
+VOLUME_PATH = /home/vkuzmin/volumes
 
 all: ${NAME}
 

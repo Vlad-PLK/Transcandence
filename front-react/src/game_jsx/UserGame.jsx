@@ -696,6 +696,7 @@ function UserGame()
         setSphereFlag = false;
         resetSphereFlag = false;
         velocity = vec.vectorize(0,0,0);
+        cameraPosition = 0;
         if (sphereTimeoutID) {
             clearTimeout(sphereTimeoutID);
         }

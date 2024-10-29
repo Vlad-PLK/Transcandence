@@ -19,6 +19,7 @@
         },
         "success": "Registration successful!"
     },
+    "verify": "Verify",
     "welcomeBack": "Welcome back!",
     "username": "Username",
     "password": "Password",

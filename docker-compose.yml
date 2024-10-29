@@ -84,6 +84,8 @@ services:
       - elasticsearch
     networks:
       - transcendance
+    env_file:
+      - .env
     user: "root"
 
   kibana:
@@ -99,10 +101,11 @@ services:
       - 5601:5601
     networks:
       - transcendance
+    env_file:
+      - .env
     volumes:
     - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     
-
     
 volumes:
   frontend:
