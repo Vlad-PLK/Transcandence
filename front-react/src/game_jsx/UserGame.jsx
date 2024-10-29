@@ -112,15 +112,15 @@ function setSphere(scene, sphere, sphereGeometry, setSphereFlag, sphereTimeoutID
     sphere.position.set(0, sphereGeometry.parameters.radius, 0);
     scene.add(sphere);
 
-    sphereTimeoutID = setTimeout(() => {
-        if (setSphereFlag == false)
-        {
-            let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
-            velocity.x = Math.cos(randomAngle);
-            velocity.z = Math.sin(randomAngle);
-            setSphereFlag = true;
-        }
-    }, 6000);
+    // sphereTimeoutID = setTimeout(() => {
+        // if (setSphereFlag == false)
+        // {
+            // let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
+            // velocity.x = Math.cos(randomAngle);
+            // velocity.z = Math.sin(randomAngle);
+            // setSphereFlag = true;
+        // }
+    // }, 6000);
 
     return { sphere, sphereGeometry, setSphereFlag, sphereTimeoutID};
 }
@@ -157,7 +157,10 @@ function resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTim
     console.log("RESET FLAG = ", resetSphereFlag);
     velocity = vec.vectorize(0, 0, 0);
     sphere.position.set(0, sphereGeometry.parameters.radius, 0);
-        resphereTimeoutID = setTimeout(() => {
+    // Clear any existing timeout
+    if (resphereTimeoutID) clearTimeout(resphereTimeoutID);
+        
+    resphereTimeoutID = setTimeout(() => {
             if (resetSphereFlag == false)
             {
                 let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
@@ -298,8 +301,10 @@ function checkCollision(scene, sphere, sphereGeometry,
         }
         scoreFlag = 1;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
-        resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID);
+        const { resetSphereFlag, resphereTimeoutID } = resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower);
+        if (resphereTimeoutID)
+            clearTimeout(resphereTimeoutID);
     }
     else if (sphere.position.z - sphereGeometry.parameters.radius <= -planeGeometry.parameters.height / 2 - 0.01)
     {
@@ -319,8 +324,10 @@ function checkCollision(scene, sphere, sphereGeometry,
         }
         scoreFlag = 2;
         updateScoreText(scene, font, player1ID, player2ID, player1Score, player2Score, scoreTextMesh, cameraPosition);
-        resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID);
+        const { resetSphereFlag, resphereTimeoutID } = resetSphere(scene, sphere, sphereGeometry, resetSphereFlag, resphereTimeoutID);
         resetPaddles(topPaddle, bottomPaddle, planeGeometry, streakPower);
+        if (resphereTimeoutID)
+            clearTimeout(resphereTimeoutID);
     }
     return {player1Score, player2Score, player1Streak, player2Streak, scoreFlag, streakPower, resetSphereFlag};
 }
@@ -384,11 +391,7 @@ function UserGame()
     const rendererRef = useRef(null);
 
     useEffect(() => {
-    // let velocity = vec.vectorize(0,0,0);
-    // let setSphereFlag = false;
-    // let resetSphereFlag = false;
-    // scene, lights, textures  //
-    // scene //
+
     sceneRef.current = new THREE.Scene();
     const textureLoader = new THREE.TextureLoader();
     sceneRef.current.background = new THREE.Color(0x000000);
@@ -427,7 +430,6 @@ function UserGame()
     const starType = gameData.startFlag;
     let BHsize, sizeChecker, BHcolor, BHintensity;
     let starRadius, starIntensity, starColor, starCorona;
-
     if (starType == 3)
     {
         sizeChecker = parseFloat(gameData.gargantuaSize) 
@@ -444,38 +446,14 @@ function UserGame()
         starColor = gameData.customStarColor;
         starCorona = gameData.customCoronaType;
     }
-
     const Boost = gameData.boostsEnabled;
-
     const BoostPower = gameData.boostFactor;
-
     const PowerUp = gameData.powerEnabled;
-
-
-
-
-    // // TESTING SETTINGS
-
-    // if (gameData)
-    // {
-    //     console.log("Current Star FLAG", starType);
-    //     console.log("Current size BH", BHsize);
-    //     console.log("Current color BH", BHcolor);
-    //     console.log("Current custom size", starRadius);
-    //     console.log("Current custom intensity", starIntensity);
-    //     console.log("Current custom color", starColor);
-    //     console.log("Current custom corona", starCorona);
-    //     console.log("Current boosts status", Boost);
-    //     console.log("Current Boost factor", boostPower);
-    //     console.log("Current powerup", powerUp);
-    // }
-
     let maxDistance = 0;
-
     let whiteDwarfRotationSpeed = 0;
     let redGiantRotationSpeed = 0;
     let customRotationSpeed = 0;
-
+    // SETTINGS
 
     // ... Add geometry, materials, lights, etc.
     const planeGeometry = setPlane(sceneRef.current);
@@ -661,6 +639,26 @@ function UserGame()
         rendererRef.current.render(sceneRef.current, cameraRef.current);
     };
 
+    const resetSphereState = () => {
+        if (sphere) {
+            sphere.position.set(0, sphereGeometry.parameters.radius, 0);
+        }
+        velocity = vec.vectorize(0, 0, 0);
+        setSphereFlag = false;
+        resetSphereFlag = false;
+        if (sphereTimeoutID) clearTimeout(sphereTimeoutID);
+        if (resphereTimeoutID) clearTimeout(resphereTimeoutID);
+        sphereTimeoutID = setTimeout(() => {
+            if (!setSphereFlag) {
+                let randomAngle = (Math.floor(Math.random() * 2) * Math.PI) + (Math.PI / 4) + (Math.random() * (Math.PI / 2));
+                velocity.x = Math.cos(randomAngle);
+                velocity.z = Math.sin(randomAngle);
+                setSphereFlag = true;
+            }
+        }, 6000);
+    };
+
+    resetSphereState();
     animate();
 
     const onWindowResize = () => {
@@ -678,20 +676,16 @@ function UserGame()
         initialMousePos.y = event.clientY / window.innerHeight;
     });
     
-
+    const handleBeforeUnload = () => {
+        resetGlobalVariables();
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
     window.addEventListener('resize', onWindowResize)
     return () => {
         //if (sceneRef.current) sceneRef.current.dispose();
         cancelAnimationFrame(animationFrameId.current);
-        player1Score = 0;
-        player2Score = 0;
-        setSphereFlag = false;
-        resetSphereFlag = false;
-        velocity = vec.vectorize(0,0,0);
-        if (sphereTimeoutID)
-            clearTimeout(sphereTimeoutID);
-        if (resphereTimeoutID)
-            clearTimeout(resphereTimeoutID);
+        resetGlobalVariables();
+        resetSphereState();
         if (sceneRef.current){
             sceneRef.current.remove(planeGeometry);
             sceneRef.current.remove(bottomPaddle);
@@ -825,6 +819,7 @@ function UserGame()
             }
         }
         window.removeEventListener('resize', onWindowResize);
+        window.removeEventListener('beforeunload', handleBeforeUnload);
         if (rendererRef.current) {
             rendererRef.current.dispose();
         }
@@ -833,6 +828,33 @@ function UserGame()
         }
     };
     }, [setScoreP1, setScoreP2]);
+    const resetGlobalVariables = () => {
+        cameraKeyIsPressed = false;
+        paddle1Right = false;
+        paddle1Left = false;
+        paddle2Right = false;
+        paddle2Left = false;
+        streakPowerIsPressed = false;
+        cameraPosition = 0;
+        player1Score = 0;
+        player2Score = 0;
+        player1Streak = 0;
+        player2Streak = 0;
+        scoreFlag = 0;
+        streakPower = 0;
+        isPaddlePowered = false;
+        boostMultiplier = 1;
+        boost1Flag = 0.5; 
+        boost2Flag = -0.5; 
+        initialMousePos = { x: 0, y: 0 };
+        earthRotationSpeed = 0.005;
+        sunRotationSpeed = 0.0002;
+        moonOrbitSpeed = earthRotationSpeed / 2;
+        angle = 0;
+        velocity = vec.vectorize(0, 0, 0);
+        if (sphereTimeoutID) clearTimeout(sphereTimeoutID);
+        if (resphereTimeoutID) clearTimeout(resphereTimeoutID);
+    };
     return (
     <>
         {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}
