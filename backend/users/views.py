@@ -173,8 +173,8 @@ class Register42APIView(APIView):
             "https://api.intra.42.fr/oauth/token",
             data={
                 "grant_type": "authorization_code",
-                "client_id": "u-s4t2ud-f2e4eed0fe85865ea95e27e9d857816c8276ac645887e9b68c2cf33ea18f24d7",
-                "client_secret": "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",
+                "client_id": os.getenv("OAUTH_UID"),
+                "client_secret": os.getenv("OAUTH_SECRET"),
                 "code": code,
                 "redirect_uri": os.getenv("OAUTH_CALLBACK")
             }
@@ -218,7 +218,6 @@ class Register42APIView(APIView):
     
 
 class GetEnvVariables(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
 
