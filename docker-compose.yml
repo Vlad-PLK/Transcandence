@@ -2,8 +2,31 @@ networks:
   transcendance:
     driver: bridge
 
-services:
+secrets:
+  ca.crt:
+    file: ./secrets/certificate_authority/ca/ca.crt
+  elasticsearch.keystore:
+    file: ./secrets/elasticsearch.keystore
+  elastic-stack-ca.p12:
+    file: ./secrets/certificate_authority/elastic-stack-ca.p12
+  elasticsearch.key:
+    file: ./secrets/certificates/elasticsearch/elasticsearch.key
+  elasticsearch.cert:
+    file: ./secrets/certificates/elasticsearch/elasticsearch.crt
+  kibana.key:
+    file: ./secrets/certificates/kibana/kibana.key
+  kibana.cert:
+    file: ./secrets/certificates/kibana/kibana.crt
+  logstash.pkcs8.key:
+    file: ./secrets/certificates/logstash/logstash.pkcs8.key
+  logstash.key:
+    file: ./secrets/certificates/logstash/logstash.key
+  logstash.p12:
+    file: ./secrets/keystores/logstash/logstash.p12
+  logstash.cert:
+    file: ./secrets/certificates/logstash/logstash.crt
 
+services:
   nginx:
     container_name: nginx
     build: ./nginx
@@ -61,51 +84,98 @@ services:
       - transcendance
   
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     container_name: elasticsearch
+    hostname: elasticsearch
+    build: ./elasticsearch
     environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=true
+      - CONFIG_DIR=${ELASTIC_DIR}/config
       - ELASTIC_USERNAME=${ELASTICSEARCH_USERNAME}
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
     networks:
       - transcendance
     volumes:
+      - data:${ELASTIC_DIR}
+      - ./elasticsearch/config/elasticsearch.yml:${ELASTIC_DIR}/config/elasticsearch.yml:ro
       - es_data:/usr/share/elasticsearch/data
+    secrets:
+      - source: elasticsearch.keystore
+        target: ${ELASTIC_DIR}/config/elasticsearch.keystore
+      - source: ca.crt
+        target: ${ELASTIC_DIR}/config/ca.crt
+      - source: elasticsearch.cert
+        target: ${ELASTIC_DIR}/config/elasticsearch.crt
+      - source: elasticsearch.key
+        target: ${ELASTIC_DIR}/config/elasticsearch.key
+    ports:
+      - "9200:9200"
+      - "9300:9300"
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:7.10.1
     container_name: logstash
+    hostname: logstash
     volumes:
       - shared-logs:/app/tmp
-      - ./logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - ./logstash/pipeline/logs:/usr/share/logstash/pipeline/logs
+      - ./logstash/config/logstash.yml:${LOGSTASH_DIR}/config/logstash.yml
+      - ./logstash/pipeline/logstash.conf:${LOGSTASH_DIR}/pipeline/logstash.conf
+      # - ./logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      # - ./logstash/pipeline/logs:/usr/share/logstash/pipeline/logs
+    environment:
+      - path.settings=null
+      - CONFIG_DIR=${LOGSTASH_DIR}/config
+      - ELASTIC_USERNAME=${ELASTIC_USERNAME}
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    secrets:
+      - source: ca.crt
+        target: ${LOGSTASH_DIR}/config/ca.crt
+      - source: logstash.cert
+        target: ${LOGSTASH_DIR}/config/logstash.crt
+      - source: logstash.pkcs8.key
+        target: ${LOGSTASH_DIR}/config/logstash.pkcs8.key
+      - source: logstash.key
+        target: ${LOGSTASH_DIR}/config/logstash.key
+      - source: logstash.p12
+        target: ${LOGSTASH_DIR}/config/logstash.p12
     depends_on:
       - elasticsearch
+      - kibana
     networks:
       - transcendance
-    env_file:
-      - .env
-    user: "root"
+    ports:
+      - 12201:12201/udp
+      - 5044:5044
+      - 5045:5045/tcp
+      - 5046:5046
+      - 9600:9600
+      - 5000:5000/tcp
+      - 5000:5000/udp
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.10.1
     container_name: kibana
+    hostname: kibana
+    build: ./kibana
     depends_on:
       - elasticsearch
     environment:
-      - ELASTICSEARCH_HOSTS=${ELASTICSEARCH_HOSTS}
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - KIBANA_URL=${KIBANA_URL}
+      - CONFIG_DIR=${KIBANA_DIR}/config
+    secrets:
+      - source: ca.crt
+        target: ${KIBANA_DIR}/config/ca.crt
+      - source: kibana.cert
+        target: ${KIBANA_DIR}/config/kibana.crt
+      - source: kibana.key
+        target: ${KIBANA_DIR}/config/kibana.key
     ports:
       - 5601:5601
     networks:
       - transcendance
-    env_file:
-      - .env
     volumes:
-    - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
-    
+      - ./kibana/config/kibana.yml:${KIBANA_DIR}/config/kibana.yml:ro
     
 volumes:
   frontend:
@@ -113,14 +183,34 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '${VOLUME_PATH}'
+      device: '${VOLUME_PATH}/frontend'
   postgres_data:
     driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '${VOLUME_PATH}/postgres'
   backend:
     driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '${VOLUME_PATH}/backend'
   es_data:
     driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '${VOLUME_PATH}/elasticsearch'
   grafana_data:
     driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '${VOLUME_PATH}/grafana'
   shared-logs:
     driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '${VOLUME_PATH}/shared-logs'

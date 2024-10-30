@@ -1,14 +1,24 @@
 NAME = TRANSCENDANCE
 
-VOLUME_PATH = /home/vkuzmin/volumes
+VOLUME_PATH = /Users/macbook/volumes
 
 all: ${NAME}
 
 #uncomment your own path and comment others in Makefile and docker-compose.yml
 ${NAME}:
 	@printf "Creating directories for Frontend Volume ! !\n"
-	mkdir -p ${VOLUME_PATH}
-	chmod -f 777 ${VOLUME_PATH}
+	mkdir -p ${VOLUME_PATH}/frontend
+	mkdir -p ${VOLUME_PATH}/backend
+	mkdir -p ${VOLUME_PATH}/postgres
+	mkdir -p ${VOLUME_PATH}/elasticsearch
+	mkdir -p ${VOLUME_PATH}/grafana
+	mkdir -p ${VOLUME_PATH}/shared-logs
+	chmod -f 777 ${VOLUME_PATH}/frontend
+	chmod -f 777 ${VOLUME_PATH}/backend
+	chmod -f 777 ${VOLUME_PATH}/postgres
+	chmod -f 777 ${VOLUME_PATH}/elasticsearch
+	chmod -f 777 ${VOLUME_PATH}/grafana
+	chmod -f 777 ${VOLUME_PATH}/shared-logs
 	@printf "\n"
 	@printf "Building up containers !\n"
 	docker-compose --env-file ./.env up --build 
@@ -21,17 +31,9 @@ clean:
 
 fclean: clean
 	docker-compose down
+	docker rm -f $$(docker ps -aq)
+	docker volume rm $$(docker volume ls -q)
 	docker system prune -a -f
-	@if docker volume inspect transcandence_backend > /dev/null 2>&1; then \
-        docker volume rm transcandence_backend; \
-    else \
-        echo "Volume transcandence_backend does not exist"; \
-    fi
-	@if docker volume inspect transcandence_postgres_data > /dev/null 2>&1; then \
-        docker volume rm transcandence_postgres_data; \
-    else \
-        echo "Volume transcandence_postgres_data does not exist"; \
-    fi
 	rm -rf ${VOLUME_PATH}
 
 re:	fclean all
