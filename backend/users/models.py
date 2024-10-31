@@ -6,7 +6,8 @@ class CustomUser(AbstractUser):
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     is_2fa_enabled = models.BooleanField(default=False)
     secret_key = models.CharField(max_length=32, blank=True, null=True)
-    
+    online_status = models.BooleanField(default=False)
+
     startFlag = models.DecimalField(max_digits=2, default=0, decimal_places=0)
     gargantuaSize = models.DecimalField(max_digits=2, default=0, decimal_places=0)
     gargantuaColor = models.CharField(default="#c5e0e2", max_length=10)
