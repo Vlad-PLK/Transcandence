@@ -1,6 +1,6 @@
 NAME = TRANSCENDANCE
 
-VOLUME_PATH = /Users/macbook/volumes
+VOLUME_PATH = /home/vpolojie/goinfre/volumes
 
 all: ${NAME}
 
@@ -10,15 +10,9 @@ ${NAME}:
 	mkdir -p ${VOLUME_PATH}/frontend
 	mkdir -p ${VOLUME_PATH}/backend
 	mkdir -p ${VOLUME_PATH}/postgres
-	mkdir -p ${VOLUME_PATH}/elasticsearch
-	mkdir -p ${VOLUME_PATH}/grafana
-	mkdir -p ${VOLUME_PATH}/shared-logs
 	chmod -f 777 ${VOLUME_PATH}/frontend
 	chmod -f 777 ${VOLUME_PATH}/backend
 	chmod -f 777 ${VOLUME_PATH}/postgres
-	chmod -f 777 ${VOLUME_PATH}/elasticsearch
-	chmod -f 777 ${VOLUME_PATH}/grafana
-	chmod -f 777 ${VOLUME_PATH}/shared-logs
 	@printf "\n"
 	@printf "Building up containers !\n"
 	docker-compose --env-file ./.env up --build 
@@ -31,8 +25,8 @@ clean:
 
 fclean: clean
 	docker-compose down
-	docker rm -f $$(docker ps -aq)
-	docker volume rm $$(docker volume ls -q)
+# docker rm -f $$(docker ps -aq)
+# docker volume rm $$(docker volume ls -q)
 	docker system prune -a -f
 	rm -rf ${VOLUME_PATH}
 
