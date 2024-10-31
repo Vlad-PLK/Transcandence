@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install
+RUN npm install react-charts@beta --save && npm install
 
 EXPOSE 3000
 

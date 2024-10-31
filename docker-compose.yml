@@ -3,6 +3,7 @@ networks:
     driver: bridge
 
 services:
+
   nginx:
     container_name: nginx
     build: ./nginx
@@ -24,7 +25,6 @@ services:
       - backend
     networks:
       - transcendance
-
   backend:
     container_name: backend
     volumes:
@@ -40,6 +40,7 @@ services:
         DBNAME: ${DBNAME}       
         DBUSER: ${DBUSER}        
         DBPASSWORD: ${DBPASSWORD} 
+
     command: sh -c "python manage.py makemigrations && python manage.py migrate && daphne -b 0.0.0.0 -p 8000 backend.asgi:application"
     depends_on:
       - postgres
@@ -63,16 +64,8 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '${VOLUME_PATH}/frontend'
+      device: '${VOLUME_PATH}'
   postgres_data:
     driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '${VOLUME_PATH}/postgres'
   backend:
     driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '${VOLUME_PATH}/backend'
