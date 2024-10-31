@@ -14,7 +14,7 @@ application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
         URLRouter([
-            path('ws/online/', OnlineStatusConsumer.as_asgi())
+            path('wss/online/', OnlineStatusConsumer.as_asgi())
         ])
     ),
 })

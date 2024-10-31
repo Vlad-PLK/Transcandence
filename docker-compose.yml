@@ -58,6 +58,13 @@ services:
     networks:
       - transcendance
     
+  redis:
+    image: redis:alpine
+    ports:
+      - "7777:6379"
+    networks:
+      - transcendance
+
 volumes:
   frontend:
     driver: local

@@ -24,6 +24,51 @@ function UserHomePage() {
 		backgroundSize: 'cover',
 		backgroundPosition: 'center',
 	};
+	const loggedin_user = userData ? userData.username : null;
+
+    useEffect(() => {
+        console.log(loggedin_user);
+        const online_status = new WebSocket('wss://'+window.location.host+'/wss/online/');
+
+        online_status.onopen = function(e) {
+            console.log('Connected to online status');
+            online_status.send(JSON.stringify({
+                'username': loggedin_user,
+                'type': 'open' // Corrected key
+            }));
+        };
+
+        window.addEventListener('beforeunload', function (e) {
+            online_status.send(JSON.stringify({
+                'username': loggedin_user,
+                'type': 'offline' // Corrected key
+            }));
+        });
+
+        online_status.onclose = function(e) {
+            console.log('Connection closed');
+        };
+
+        online_status.onmessage = function(e) {
+            var data = JSON.parse(e.data);
+            if (data.username !== loggedin_user) {
+				alert(`User connected: ${data.username}`);
+                //var user_to_change = document.getElementById(`${data.username}_status`);
+                //var small_status_to_change = document.getElementById(`${data.username}_small`);
+                //if (data.online_status === true) {
+                //    user_to_change.style.color = 'green';
+                //    small_status_to_change.innerHTML = 'Online';
+                //} else {
+                //    user_to_change.style.color = 'red';
+                //    small_status_to_change.innerHTML = 'Offline';
+                //}
+            }
+        };
+
+        return () => {
+            online_status.close();
+        };
+    }, []);
 	useEffect(() => {
 		if (localStorage.getItem(ACCESS_TOKEN) != null)
 		{
