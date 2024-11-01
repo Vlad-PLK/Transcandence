@@ -1,7 +1,7 @@
 from rest_framework import generics
 from gameinfo.models import PlayerStats
 from .models import Tournament, Participant, TournamentMatch
-from .serializers import TournamentSerializer, ParticipantSerializer, TournamentMatchSerializer
+from .serializers import TournamentSerializer, ParticipantSerializer, TournamentMatchSerializer, UserTournamentStatsSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -309,3 +309,13 @@ class GetAllTournamentMatches(APIView):
         serializer = TournamentMatchSerializer(matches, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class GetTournamentStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        participants = Participant.objects.filter(nickname=user.username)
+        serializer = UserTournamentStatsSerializer(participants, many=True)
+        return Response(serializer.data)

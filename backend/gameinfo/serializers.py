@@ -11,7 +11,7 @@ class PlayerStatsSerializer(serializers.ModelSerializer):
 class PlayerInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'avatar']
+        fields = ['id', 'username', 'email', 'avatar', 'online_status']
 
 
 class MatchSerializer(serializers.ModelSerializer):
