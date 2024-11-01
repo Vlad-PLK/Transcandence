@@ -101,11 +101,13 @@ class GetFriendProfileView(APIView):
         friend_profile_serializer = UserSerializer(friend)
         friend_matches = Match.objects.filter(Q(player1=friend) | Q(player2=friend))
         friend_matches_serializer = MatchSerializer(friend_matches, many=True)
+        friend_status = friend.online_status
 
         combined_data = {
             'profile_data': friend_profile_serializer.data,
             'profile_stats': friend_stats_serializer.data,
             'profile_matches': friend_matches_serializer.data,
+            'online_status': friend_status
         }
     
         return Response(combined_data, status=status.HTTP_200_OK)
