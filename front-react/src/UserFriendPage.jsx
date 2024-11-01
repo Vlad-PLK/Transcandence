@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "./api";
 import { ACCESS_TOKEN } from './constants';
+import { WebSocketContext } from "./WebSocketContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function UserFriendPage() {
@@ -22,6 +23,7 @@ function UserFriendPage() {
     const [friendData, setFriendData] = useState([]);
     const [friendStats, setFriendStats] = useState([]);
     const [friendGames, setFriendGames] = useState([]);
+	const { online_status, setOnlineStatus } = useContext(WebSocketContext);
     const navigate = useNavigate();
     const { t } = useTranslation();
     const main_image = {
@@ -29,9 +31,9 @@ function UserFriendPage() {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
     };
-
+	
     const toggleVisible = () => {
-        setVisible(!isVisible);
+		setVisible(!isVisible);
     };
 
     useEffect(() => {
@@ -51,9 +53,9 @@ function UserFriendPage() {
 
     useEffect(() => {
         if (localStorage.getItem(ACCESS_TOKEN) != null) {
-            api.get('api/player-info/')
-                .then(response => {
-                    setUserData(response.data);
+			api.get('api/player-info/')
+			.then(response => {
+				setUserData(response.data);
                 })
                 .catch(error => {
                     setUserData(null);
@@ -62,10 +64,16 @@ function UserFriendPage() {
     }, []);
 
     useEffect(() => {
-        if (userData == null) navigate("/");
+		if (userData == null) navigate("/");
     }, [userData]);
-
+	
     const disconnect = () => {
+		online_status.send(JSON.stringify({
+			'username': loggedin_user,
+			'type': 'offline' // Corrected key
+		}));
+		online_status.close();
+		console.log('Disconnected from websocket and closed connection');
         localStorage.clear();
         setUserData(null);
     };

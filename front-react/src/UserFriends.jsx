@@ -10,6 +10,7 @@ import SettingsModal from "./SettingsModal";
 import api from "./api";
 import FriendRequestModal from "./FriendRequestModal";
 import DeleteFriendModal from "./DeleteFriendModal";
+import { WebSocketContext } from "./WebSocketContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function UserFriends() {
@@ -24,7 +25,7 @@ function UserFriends() {
     const [userFriends, setUserFriends] = useState([]);
     const [userFriendRequest, setUserFriendRequest] = useState([]);
     const [userFriendRequestSent, setUserFriendRequestSent] = useState([]);
-    
+    const { online_status } = useContext(WebSocketContext);
     const main_image = {
         backgroundImage: `url('/friends2.jpg')`,
         backgroundSize: 'cover',
@@ -37,6 +38,12 @@ function UserFriends() {
 			navigate("/");
 	}, [userData])
 	const disconnect = () => {
+        online_status.send(JSON.stringify({
+			'username': userData.username,
+			'type': 'offline' // Corrected key
+		}));
+		online_status.close();
+		console.log('Disconnected from websocket and closed connection');
 		localStorage.clear();
 		setUserData(null);
 	}

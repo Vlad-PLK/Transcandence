@@ -21,7 +21,7 @@ function FriendRequestModal() {
                 console.log(response.data);
             }
             else
-                setError(t('lonely'));
+                setError("Are you lonely?");
         } catch (error) {
             alert(error);
         }

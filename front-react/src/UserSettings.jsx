@@ -8,13 +8,15 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import SettingsModal from "./SettingsModal";
 import { TwoFaContext } from "./TwoFaContext";
+import { WebSocketContext } from "./WebSocketContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 function UserSettings()
 {
     const {userData, setUserData} = useContext(UserDataContext);
-    const {TwoFA, setTwoFA} = useContext(TwoFaContext);
+    const {online_status} = useContext(WebSocketContext);
+	const {TwoFA, setTwoFA} = useContext(TwoFaContext);
 	const {t} = useTranslation();
 	const navigate = useNavigate();
     const main_image = {
@@ -28,6 +30,12 @@ function UserSettings()
 			navigate("/");
 	}, [userData])
 	const disconnect = () => {
+		online_status.send(JSON.stringify({
+			'username': userData.username,
+			'type': 'offline' // Corrected key
+		}));
+		online_status.close();
+		console.log('Disconnected from websocket and closed connection');
 		localStorage.clear();
 		setUserData(null);
 	}

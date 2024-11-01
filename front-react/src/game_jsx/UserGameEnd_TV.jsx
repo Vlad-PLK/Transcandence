@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import TranslationSelect from "../TranslationSelect.jsx";
 import { Link } from "react-router-dom";
 import { UserDataContext } from "../UserDataContext.jsx";
+import { WebSocketContext } from "../WebSocketContext.jsx";
 import SettingsModal from "../SettingsModal.jsx";
 import TournamentStats from './tournamentStats.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -15,6 +16,7 @@ function UserGameEnd()
 {
     const navigate = useNavigate();
 	const { userData, setUserData } = useContext(UserDataContext);
+    const { online_status } = useContext(WebSocketContext);
     const location = useLocation();
 	const { t } = useTranslation();
 
@@ -29,6 +31,12 @@ function UserGameEnd()
 			navigate("/");
 	}, [userData])
 	const disconnect = () => {
+        online_status.send(JSON.stringify({
+			'username': userData.username,
+			'type': 'offline' // Corrected key
+		}));
+		online_status.close();
+		console.log('Disconnected from websocket and closed connection');
 		localStorage.clear();
 		setUserData(null);
 	}

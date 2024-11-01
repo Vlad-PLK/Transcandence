@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { UserDataContext } from "./UserDataContext";
 import { GuestDataContext } from "./GuestDataContext";
+import { WebSocketContext } from "./WebSocketContext";
 import { TwoFaContext } from "./TwoFaContext";
 import takeData from "./takeData";
 import { ACCESS_TOKEN } from "./constants";
@@ -27,6 +28,7 @@ function Root({children}){
   const {i18n: {changeLanguage} } = useTranslation();
   const [gameData, setGameData] = useState(null);
   const [isUserReady, setIsUserReady] = useState(false);
+  const [online_status, setOnlineStatus] = useState(null);
   
   useEffect(() => {
     if (localStorage.getItem("language") != null)
@@ -54,7 +56,8 @@ function Root({children}){
   return (
   <>
     <UserDataContext.Provider value={{userData, setUserData}}>
-			<GuestDataContext.Provider value={{guestData, setGuestData}}>
+		<WebSocketContext.Provider value={{online_status, setOnlineStatus}}>
+    	<GuestDataContext.Provider value={{guestData, setGuestData}}>
       <UserStatsContext.Provider value={{userStats, setUserStats}}>
       <TournamentPairDataContext.Provider value={{tournamentPairData, setTournamentPairData}}>
       <GameContext.Provider value={{gameData, setGameData}}>
@@ -67,6 +70,7 @@ function Root({children}){
       </TournamentPairDataContext.Provider>
       </UserStatsContext.Provider>
 			</GuestDataContext.Provider>
+    </WebSocketContext.Provider>
     </UserDataContext.Provider>
   </>
   );

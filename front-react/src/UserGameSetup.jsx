@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import GameSettingsModal from "./GameSettingsModal";
 import LocalGameModal from "./LocalGameModal";
 import MultiplayerModal from "./MultiplayerModal";
+import { WebSocketContext } from "./WebSocketContext";
 import { GuestDataContext } from "./GuestDataContext";
 import { createContext } from "react";
 import { color } from "three/examples/jsm/nodes/Nodes.js";
@@ -26,6 +27,7 @@ function UserGameSetup()
 	const [tournamentList, setTournamentList] = useState([]);
 	const navigate = useNavigate();
 	const {t} = useTranslation();
+	const {online_status} = useContext(WebSocketContext);
 	const main_image = {
 		backgroundImage: `url('/cyber4.jpg')`,
 		backgroundSize: 'cover', // Adjust background size as needed
@@ -36,6 +38,12 @@ function UserGameSetup()
 			navigate("/");
 	}, [userData])
 	const disconnect=() => {
+		online_status.send(JSON.stringify({
+			'username': userData.username,
+			'type': 'offline' // Corrected key
+		}));
+		online_status.close();
+		console.log('Disconnected from websocket and closed connection');
 		localStorage.clear();
 		setUserData(null);
 	}

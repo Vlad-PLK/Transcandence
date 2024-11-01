@@ -11,12 +11,14 @@ import { useNavigate } from "react-router-dom";
 import api from "./api";
 import { GameContext } from "./GameContext";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
+import { WebSocketContext } from "./WebSocketContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function UserHomePage() {
 	const { userData, setUserData } = useContext(UserDataContext);
 	const { setUserStats } = useContext(UserStatsContext);
 	const { setGameData } = useContext(GameContext);
+	const { online_status, setOnlineStatus } = useContext(WebSocketContext);
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const main_image = {
@@ -24,50 +26,20 @@ function UserHomePage() {
 		backgroundSize: 'cover',
 		backgroundPosition: 'center',
 	};
-	const loggedin_user = userData ? userData.username : null;
 
     useEffect(() => {
-        console.log(loggedin_user);
-        const online_status = new WebSocket('wss://'+window.location.host+'/wss/online/');
-
-        online_status.onopen = function(e) {
-            console.log('Connected to online status');
-            online_status.send(JSON.stringify({
-                'username': loggedin_user,
-                'type': 'open' // Corrected key
-            }));
-        };
-
-        window.addEventListener('beforeunload', function (e) {
-            online_status.send(JSON.stringify({
-                'username': loggedin_user,
-                'type': 'offline' // Corrected key
-            }));
-        });
-
-        online_status.onclose = function(e) {
-            console.log('Connection closed');
-        };
-
-        online_status.onmessage = function(e) {
-            var data = JSON.parse(e.data);
-            if (data.username !== loggedin_user) {
-				alert(`User connected: ${data.username}`);
-                //var user_to_change = document.getElementById(`${data.username}_status`);
-                //var small_status_to_change = document.getElementById(`${data.username}_small`);
-                //if (data.online_status === true) {
-                //    user_to_change.style.color = 'green';
-                //    small_status_to_change.innerHTML = 'Online';
-                //} else {
-                //    user_to_change.style.color = 'red';
-                //    small_status_to_change.innerHTML = 'Offline';
-                //}
-            }
-        };
-
-        return () => {
-            online_status.close();
-        };
+		if (userData)
+		{
+        	const status = new WebSocket('wss://'+window.location.host+'/wss/online/');
+        	status.onopen = function(e) {
+        	    console.log('Connected to web socket : status online');
+        	    status.send(JSON.stringify({
+        	        'username': userData.username,
+        	        'type': 'open' // Corrected key
+        	    }));
+				setOnlineStatus(status);
+        	};
+		}
     }, []);
 	useEffect(() => {
 		if (localStorage.getItem(ACCESS_TOKEN) != null)
@@ -86,6 +58,15 @@ function UserHomePage() {
 			navigate("/");
 	}, [userData])
 	const disconnect = () => {
+		if (online_status != null)
+		{
+			online_status.send(JSON.stringify({
+				'username': userData.username,
+				'type': 'close' // Corrected key
+			}));
+			online_status.close();
+			console.log('Disconnected from websocket and closed connection');
+		}
 		localStorage.clear();
 		setUserData(null);
 	}
@@ -148,9 +129,11 @@ function UserHomePage() {
 						</div>
 					</div>
 				</header>
-				<div className="opacity-75" style={{ position: 'absolute', top: '50%', left: '51%', transform: 'translate(-50%, -50%)', fontFamily: 'cyber4' }}>
-					<button type="button" className="btn btn-dark rounded-3 me-2" onClick={game_setup}>{t('play_game')}</button>
-				</div>
+				{userData &&
+					<div className="opacity-75" style={{ position: 'absolute', top: '50%', left: '51%', transform: 'translate(-50%, -50%)', fontFamily: 'cyber4' }}>
+						<button type="button" className="btn btn-dark rounded-3 me-2" onClick={game_setup}>{t('play_game')}</button>
+					</div>
+				}
 			</div>
 			<SettingsModal />
 		</>
