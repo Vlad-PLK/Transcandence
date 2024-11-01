@@ -7,6 +7,9 @@
     "draw_result": "Draw",
     "error404": "Error 40",
     "error": "Error",
+    "lonely": "Are you feeling lonely?",
+    "online": "Online",
+    "offline": "Offline",
     "register": {
         "title": "Create your account now!",
         "username": "Username",
@@ -148,7 +151,8 @@
         "finalScore": "Final Score",
         "noHistory": "No match history available.",
         "hide": "Hide",
-        "show": "Show"
+        "show": "Show",
+        "nickname": "Nickname:"
     },
 
     "multiplayerComingSoon": "Multiplayer coming soon!",

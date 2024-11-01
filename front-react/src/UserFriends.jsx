@@ -169,6 +169,10 @@ function UserFriends() {
                                              <button href="" type="button" className="btn btn-outline-dark" onClick={() => visit_friend_page(friends.user2)}>{friends.user2.username}</button> 
                                              : 
                                              <button href="" type="button" className="btn btn-outline-dark" onClick={() => visit_friend_page(friends.user1)}>{friends.user1.username}</button>}
+                                            <span className="ms-3 me-3">
+                                                Status : 
+                                                <span className="text-success ms-3">{t('online')}</span>
+                                            </span>
                                         </li>
                                     ))}
                                 </ul>

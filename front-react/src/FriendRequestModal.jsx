@@ -16,8 +16,12 @@ function FriendRequestModal() {
 
         try {
             const to_user_username = friend;
-            const response = await api.post('api/friends/create-friend-request/', { to_user_username });
-            console.log(response.data);
+            if (to_user_username != userData.username) {
+                const response = await api.post('api/friends/create-friend-request/', { to_user_username });
+                console.log(response.data);
+            }
+            else
+                setError(t('lonely'));
         } catch (error) {
             alert(error);
         }
@@ -50,7 +54,7 @@ function FriendRequestModal() {
                                     <button className="w-90 mt-2 btn btn-lg rounded-3 btn-primary" type="submit" data-bs-dismiss="modal" onClick={sendInvite}>
                                         {t('userFriends.send')}
                                     </button>
-                                    {error && <p className="text-danger">{error}</p>}
+                                    {error && <p className="text-danger mt-2">{error}</p>}
                                 </form>
                             )}
                         </div>

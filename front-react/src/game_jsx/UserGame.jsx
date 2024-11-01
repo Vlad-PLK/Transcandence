@@ -22,6 +22,7 @@ import CustomTimer from './CustomTimer.jsx';
 import { use } from 'i18next';
 import { GameContext } from '../GameContext.jsx';
 import { TournamentPairDataContext } from '../TournamentPairDataContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 
 let cameraKeyIsPressed = false;
@@ -377,12 +378,12 @@ function updateStarfield(stars, camera)
 }
   
 
-function UserGame()
+function UserGame({gameData})
 {
     const {userData} = useContext(UserDataContext);
     const {guestData} = useContext(GuestDataContext);
     const {tournamentPairData} = useContext(TournamentPairDataContext);
-    const {gameData} = useContext(GameContext);
+    // const {gameData} = useContext(GameContext);
     const [scoreP1, setScoreP1] = useState(0);
     const [scoreP2, setScoreP2] = useState(0);
     const animationFrameId = useRef(null);
@@ -390,6 +391,7 @@ function UserGame()
     const sceneRef = useRef(null);
     const cameraRef = useRef(null);
     const rendererRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
     // let velocity = vec.vectorize(0,0,0);
@@ -397,6 +399,10 @@ function UserGame()
     // let resetSphereFlag = false;
     // scene, lights, textures  //
     // scene //
+    if (!gameData){
+        navigate('/userGameSetup');
+        return ;
+    }
     sceneRef.current = new THREE.Scene();
     const textureLoader = new THREE.TextureLoader();
     sceneRef.current.background = new THREE.Color(0x000000);
@@ -844,7 +850,6 @@ function UserGame()
         }
     };
     }, [setScoreP1, setScoreP2]);
-
     return (
         <>
             {/* il faut clear le score, et renvoyer le score final avec les 2 joeurs pour le endgame */}

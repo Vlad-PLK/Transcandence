@@ -6,6 +6,9 @@
     "draw_result": "Egalite",
     "error404": "Erreur 40",
     "error": "Erreur",
+    "lonely": "Vous sentez-vous seul?",
+    "online": "En ligne",
+    "offline": "Hors ligne",
     "register": {
         "title": "Creez votre compte maintenant!",
         "username": "Nom d'utilisateur",
