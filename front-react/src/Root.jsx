@@ -53,18 +53,57 @@ function Root({children}){
     }
   }, [isUserReady])
   useEffect(() => {
-		if (userData)
-		{
-        	const status = new WebSocket('wss://'+window.location.host+'/wss/online/');
-        	status.onopen = function(e) {
-        	    console.log('Connected to web socket : status online');
-        	    status.send(JSON.stringify({
-        	        'username': userData.username,
-        	        'type': 'open' // Corrected key
-        	    }))
-          };
-          return () => status.close();
-		}
+    if (userData) {
+      let status;
+      const connectWebSocket = () => {
+        status = new WebSocket('wss://' + window.location.host + '/wss/online/');
+  
+        status.onopen = function(e) {
+          console.log('Connected to web socket : status online');
+          status.send(JSON.stringify({
+            'username': userData.username,
+            'type': 'open'
+          }));
+        };
+  
+        status.onerror = function(e) {
+          console.error('WebSocket error:', e);
+        };
+  
+        status.onclose = function(e) {
+          console.log('WebSocket closed:', e);
+          if (!e.wasClean) {
+            console.log('Reconnecting...');
+            setTimeout(connectWebSocket, 5000); // Reconnect after 5 seconds
+          }
+        };
+      };
+  
+      connectWebSocket();
+  
+      const handleBeforeUnload = (e) => {
+        if (status.readyState === WebSocket.OPEN) {
+          status.send(JSON.stringify({
+            'username': userData.username,
+            'type': 'offline'
+          }));
+        }
+      };
+  
+      window.addEventListener('beforeunload', handleBeforeUnload);
+  
+      return () => {
+        if (status.readyState === WebSocket.OPEN) {
+          status.send(JSON.stringify({
+            'username': userData.username,
+            'type': 'offline'
+          }));
+        }
+        console.log('WebSocket connection closed');
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+        status.close();
+      };
+    }
   }, [userData]);
   return (
   <>

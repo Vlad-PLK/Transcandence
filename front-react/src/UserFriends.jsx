@@ -25,6 +25,7 @@ function UserFriends() {
     const [userFriends, setUserFriends] = useState([]);
     const [userFriendRequest, setUserFriendRequest] = useState([]);
     const [userFriendRequestSent, setUserFriendRequestSent] = useState([]);
+    const [playerInfo, setPlayerInfo] = useState([]);
     const { online_status } = useContext(WebSocketContext);
     const main_image = {
         backgroundImage: `url('/friends2.jpg')`,
@@ -33,6 +34,12 @@ function UserFriends() {
         fontFamily: 'cyber4'
     };
 
+    useEffect(() => {
+        api.get('api/friends/friend/' + 1 + '/get-profile/')
+        .then(response => {
+            console.log(response.data);
+        })
+    }, [])
     useEffect(() => {
 		if (userData == null)
 			navigate("/");
@@ -171,17 +178,25 @@ function UserFriends() {
                                             {friends.user1.id == userData.id ?
                                             <>
                                              <button href="" type="button" className="btn btn-outline-dark" onClick={() => visit_friend_page(friends.user2)}>{friends.user2.username}</button> 
-                                             <span className="ms-3 me-3">
-                                                    Status : 
-                                                    <span className="text-success ms-3">{friends.user2.status}</span>
+                                                <span className="ms-3 me-3">
+                                                Status : 
+                                                    {friends.user2.online_status == true ?
+                                                    <span className="text-success ms-3">{t('online')}</span>
+                                                    :
+                                                    <span className="text-danger ms-3">{t('offline')}</span>
+                                                    }
                                                 </span>
                                             </>
                                              :
                                             <>
                                              <button href="" type="button" className="btn btn-outline-dark" onClick={() => visit_friend_page(friends.user1)}>{friends.user1.username}</button>
                                                 <span className="ms-3 me-3">
-                                                    Status : 
-                                                    <span className="text-success ms-3">{friends.user1.username}</span>
+                                                Status : 
+                                                    {friends.user1.online_status == true ?
+                                                    <span className="text-success ms-3">{t('online')}</span>
+                                                    :
+                                                    <span className="text-danger ms-3">{t('offline')}</span>
+                                                    }
                                                 </span>
                                             </> 
                                             }
