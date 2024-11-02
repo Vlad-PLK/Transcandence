@@ -164,18 +164,27 @@ function UserFriends() {
                                     {isVisible ? t('userFriends.hide') : t('userFriends.show')}
                                 </button>
                             </div>
-                            {isVisible && (userFriends.length > 0 ? (
+                            {userData && isVisible && (userFriends.length > 0 ? (
                                 <ul className="friend-history list-group overflow-auto" style={{ maxHeight: '170px' }}>
                                     {Array.isArray(userFriends) && userFriends.map((friends, index) => (
                                         <li key={index} className="list-group-item">
                                             {friends.user1.id == userData.id ?
+                                            <>
                                              <button href="" type="button" className="btn btn-outline-dark" onClick={() => visit_friend_page(friends.user2)}>{friends.user2.username}</button> 
-                                             : 
-                                             <button href="" type="button" className="btn btn-outline-dark" onClick={() => visit_friend_page(friends.user1)}>{friends.user1.username}</button>}
-                                            <span className="ms-3 me-3">
-                                                Status : 
-                                                <span className="text-success ms-3">{t('online')}</span>
-                                            </span>
+                                             <span className="ms-3 me-3">
+                                                    Status : 
+                                                    <span className="text-success ms-3">{friends.user2.status}</span>
+                                                </span>
+                                            </>
+                                             :
+                                            <>
+                                             <button href="" type="button" className="btn btn-outline-dark" onClick={() => visit_friend_page(friends.user1)}>{friends.user1.username}</button>
+                                                <span className="ms-3 me-3">
+                                                    Status : 
+                                                    <span className="text-success ms-3">{friends.user1.username}</span>
+                                                </span>
+                                            </> 
+                                            }
                                         </li>
                                     ))}
                                 </ul>
