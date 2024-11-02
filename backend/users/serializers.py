@@ -8,7 +8,7 @@ from .utils import generate_otp, verify_otp
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "username", "password", "email", "avatar"]
+        fields = ["id", "username", "password", "email", "avatar", "online_status"]
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
