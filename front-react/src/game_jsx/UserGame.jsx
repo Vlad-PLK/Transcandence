@@ -410,7 +410,7 @@ function UserGame({gameData})
     rendererRef.current = new THREE.WebGLRenderer();
     setRenderer(rendererRef.current);
     mountRef.current.appendChild(rendererRef.current.domElement);
-    const milky = textureLoader.load('../../milkyway.jpg', (texture) => {
+    const milky = textureLoader.load('../../public/milkyway.jpg', (texture) => {
         texture.mapping = THREE.EquirectangularReflectionMapping;
     });
     // ambient light //
@@ -860,7 +860,7 @@ function UserGame({gameData})
                         flag={0}
                         tournamentID={0}
                         matchID={0}
-                        seconds={40} 
+                        seconds={45} 
                         player1={userData.id} 
                         player1_nick={userData.username}
                         player2={guestData.id} 
@@ -876,7 +876,7 @@ function UserGame({gameData})
                         flag={1}
                         tournamentID={tournamentPairData.tournament_id}
                         matchID={tournamentPairData.match_id}
-                        seconds={7} 
+                        seconds={45} 
                         player1={tournamentPairData.player1_id} 
                         player1_nick={tournamentPairData.player1_name}
                         player2={tournamentPairData.player2_id} 

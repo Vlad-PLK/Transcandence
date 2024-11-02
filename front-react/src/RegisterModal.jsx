@@ -61,7 +61,7 @@ function RegisterModal() {
         } catch (error) {
             setMsg('');
             setUsername('');
-            setError(error.response.data.username);
+            setError(t('errors.username_exists'));
         }
     }
 

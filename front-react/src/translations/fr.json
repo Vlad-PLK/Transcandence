@@ -55,6 +55,7 @@
         "enabled": "Active",
         "disabled": "Desactive"
       },
+      "invalid_type_file": "Type de fichier incorrect, mettez une image svp",
       "2FA": {
         "two_step_verification": "Verification en deux etapes",
         "verification_message": "Nous avons envoye un code de verification a votre adresse e-mail. Veuillez saisir le code dans le champ ci-dessous.",
@@ -133,22 +134,30 @@
         "friends": "Amis",
         "disconnect": "Se deconnecter"
     },
+
     "playerStats": {
         "stats": "Statistiques",
         "wins": "Victoires",
-        "losses": "Defaites",
-        "draws": "Matchs nuls",
-        "totalGoals": "Total des buts",
+        "losses": "Défaites",
+        "draws": "Nuls",
+        "totalGoals": "Buts Totaux",
         "noStats": "Pas encore de statistiques de jeu !",
-        "matchHistory": "Historique des matchs normaux",
-        "tournamentHistory": "Historique des tournois",
+        "matchHistory": "Historique des Matchs",
+        "tournamentHistory": "Historique des Tournois",
         "opponent": "Adversaire",
-        "winner": "Vainqueur",
-        "finalScore": "Score final",
+        "winner": "Gagnant",
+        "finalScore": "Score Final",
         "noHistory": "Aucun historique de match disponible.",
         "hide": "Cacher",
-        "show": "Afficher"
+        "show": "Afficher",
+        "nickname": "Surnom :",
+        "tournament_name": "Nom du tournoi :",
+        "rank": "Classement :",
+        "goals": "Buts :",
+        "match_rank": "Classement du match :",
+        "no_tournament": "Aucun tournoi disponible"
     },
+
     "welcomeBack": "Bon retour parmi nous !",
     "username": "Nom d'utilisateur",
     "password": "Mot de passe",
@@ -175,6 +184,8 @@
         "winnerCrown": "👑"
     },
     "two_fa": "2FA by email : ",
+    "needed_2fa": "Il faut le code 2FA",
+    "again": "Reassayer encore avec un nouveau code",
     "tournament": {
         "scoreboardTitle": "Tableau des tournois",
         "backButton": "Retour",

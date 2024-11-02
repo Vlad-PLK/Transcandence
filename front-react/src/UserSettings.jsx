@@ -57,7 +57,7 @@ function UserSettings()
 								<hr className="dropdown-divider"/>
 								<button className="dropdown-item" onClick={disconnect}>{t('dropdown.disconnect')}</button>
 							</ul>
-							{userData && <Link to={`.`} type="button" className="btn btn-outline-light me-2">{userData.username}
+							{userData && <Link to={`../userSettings/`} type="button" className="btn btn-outline-light me-2">{userData.username}
 								{userData.avatar != null ?
 									<img className="ms-2 rounded" src={"https://"+window.location.host+userData.avatar} alt="" height="40" widht="40"/>
 									:

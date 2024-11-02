@@ -72,9 +72,17 @@ function SettingsModal() {
 
     const AvatarState = (event) => {
         const file = event.target.files[0];
-        setSelectedFile(file);
-        if (event.target.files && event.target.files[0])
-            setUserAvatar(event.target.files[0]);
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
+
+        if (file && !allowedTypes.includes(file.type)) {
+            setErrorAvatar('Invalid file type. Please select an image file (jpeg, png, gif, bmp, webp).');
+        }
+        else {
+            setSelectedFile(file);
+            if (event.target.files && event.target.files[0]) {
+                setUserAvatar(event.target.files[0]);
+            }
+        }
     }
 
     const changeAvatar = async (e) => {

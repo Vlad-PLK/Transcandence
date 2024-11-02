@@ -100,6 +100,7 @@
     "enabled": "Enabled",
     "disabled": "Disabled"
 },
+"invalid_type_file": "Invalid file type. Please upload an image file.",
 "2FA": {
     "two_step_verification": "Two Step Verification",
     "verification_message": "We sent a verification code to your email. Please enter the code in the field below.",
@@ -138,6 +139,10 @@
         "disconnect": "Disconnect"
     },
 
+    "errors": {
+        "username_exists": "A user with that username already exists."
+    },
+
     "playerStats": {
         "stats": "Stats",
         "wins": "Wins",
@@ -153,7 +158,12 @@
         "noHistory": "No match history available.",
         "hide": "Hide",
         "show": "Show",
-        "nickname": "Nickname:"
+        "nickname": "Nickname:",
+        "tournament_name": "Tournament name :",
+        "rank": "Rank :",
+        "goals": "Goals :",
+        "match_rank": "Match rank :",
+        "no_tournament": "No tournament available"
     },
 
     "multiplayerComingSoon": "Multiplayer coming soon!",
@@ -201,5 +211,8 @@
         "tournamentAlreadyExists": "Tournament already exists!",
         "tournamentNotFound": "Tournament not found!"
     },
-    "two_fa": "2FA by email : "
+    "two_fa": "2FA by email : ",
+    "needed_2fa": "You need the 2fa code",
+    "again": "Try again"
+
 }

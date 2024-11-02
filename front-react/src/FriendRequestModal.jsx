@@ -23,7 +23,8 @@ function FriendRequestModal() {
             else
                 setError("Are you lonely?");
         } catch (error) {
-            alert(error);
+            console.log('Error:', error);
+            setError('User not found');
         }
     }
 

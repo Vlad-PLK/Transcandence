@@ -38,6 +38,31 @@ function LoginModal()
         }
     };
 
+	const send_otp_again = async(e) => {
+		e.preventDefault();
+        try {
+			localStorage.removeItem(ACCESS_TOKEN);
+			localStorage.removeItem(REFRESH_TOKEN);
+            const response = await api.post('api/users/user/token/', { username, password });
+			localStorage.setItem(ACCESS_TOKEN, response.data.access);
+			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
+			send_otp(e);
+		} catch (error) {
+			console.log(error);
+			if (error.response.data.non_field_errors != null && error.response.data.non_field_errors[0] === 'You need one time code.') {
+				setShow2FA(true);
+				setLogError(t('2FA_code_required'));
+			}
+			else
+			{
+				setLogError(t('login_error'));
+				setUsername('');
+            	setPassword('');
+			}
+			console.log(show2FA);
+        }
+	}
+
 	const send_otp = async(e) => {
         e.preventDefault();
         try {
@@ -58,7 +83,7 @@ function LoginModal()
             navigate("userPage/");
 		} catch (error) {
 			console.log(error);
-			setLogError(t('invalid_2FA_code'));
+			setLogError(t('2FA.invalid_2fa'));
         }
     }
 
@@ -79,7 +104,7 @@ function LoginModal()
 			console.log(error);
 			if (error.response.data.non_field_errors != null && error.response.data.non_field_errors[0] === 'You need one time code.') {
 				setShow2FA(true);
-				setLogError(t('2FA_code_required'));
+				setLogError(t('needed_2fa'));
 			}
 			else
 			{
@@ -157,6 +182,7 @@ function LoginModal()
 				 	 </div>
 					 <div className="d-flex flex-column align-items-center">
 					 <button className="btn btn-success btn-lg mt-3 mb-3 align-items-center" data-bs-dismiss="modal" onClick={send_otp}>{t('verify')}</button>
+					 <button className="btn btn-danger btn-lg mb-3 align-items-center" data-bs-dismiss="modal" onClick={send_otp_again}>{t('again')}</button>
 				 	 </div>
 					</>
 					:
