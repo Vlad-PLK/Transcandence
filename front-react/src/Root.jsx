@@ -52,7 +52,20 @@ function Root({children}){
       }
     }
   }, [isUserReady])
-
+  useEffect(() => {
+		if (userData)
+		{
+        	const status = new WebSocket('wss://'+window.location.host+'/wss/online/');
+        	status.onopen = function(e) {
+        	    console.log('Connected to web socket : status online');
+        	    status.send(JSON.stringify({
+        	        'username': userData.username,
+        	        'type': 'open' // Corrected key
+        	    }))
+          };
+          return () => status.close();
+		}
+  }, [userData]);
   return (
   <>
     <UserDataContext.Provider value={{userData, setUserData}}>

@@ -26,21 +26,6 @@ function UserHomePage() {
 		backgroundSize: 'cover',
 		backgroundPosition: 'center',
 	};
-
-    useEffect(() => {
-		if (userData)
-		{
-        	const status = new WebSocket('wss://'+window.location.host+'/wss/online/');
-        	status.onopen = function(e) {
-        	    console.log('Connected to web socket : status online');
-        	    status.send(JSON.stringify({
-        	        'username': userData.username,
-        	        'type': 'open' // Corrected key
-        	    }));
-				setOnlineStatus(status);
-        	};
-		}
-    }, []);
 	useEffect(() => {
 		if (localStorage.getItem(ACCESS_TOKEN) != null)
 		{
@@ -58,15 +43,7 @@ function UserHomePage() {
 			navigate("/");
 	}, [userData])
 	const disconnect = () => {
-		if (online_status != null)
-		{
-			online_status.send(JSON.stringify({
-				'username': userData.username,
-				'type': 'close' // Corrected key
-			}));
-			online_status.close();
-			console.log('Disconnected from websocket and closed connection');
-		}
+		console.log('Disconnected from websocket and closed connection');
 		localStorage.clear();
 		setUserData(null);
 	}

@@ -68,11 +68,6 @@ function UserFriendPage() {
     }, [userData]);
 	
     const disconnect = () => {
-		online_status.send(JSON.stringify({
-			'username': loggedin_user,
-			'type': 'offline' // Corrected key
-		}));
-		online_status.close();
 		console.log('Disconnected from websocket and closed connection');
         localStorage.clear();
         setUserData(null);

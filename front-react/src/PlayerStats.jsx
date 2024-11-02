@@ -9,10 +9,24 @@ function PlayerStats(){
 	const [isVisible, setVisible] = useState(false);
 	const {userData} = useContext(UserDataContext);
 	const {userStats, setUserStats} = useContext(UserStatsContext);
+	const [userTournamentStats, setUserTournamentStats] = useState([]);
 	const [userMatch, setUserMatch] = useState([]);
 	const toggleVisible = () => {
 		setVisible(!isVisible);
 	};
+	useEffect(() => {
+		if (userData)
+		{
+			api.get('api/tournaments/get-tournaments-stats/')
+			.then(response => {
+				console.log(response.data);
+				setUserTournamentStats(response.data)
+			})
+			.catch(error => {
+				console.log('Error:', error);
+			});
+		}
+	}, []);
 	useEffect(() => {
 		if (userData && isVisible)
 			{
@@ -40,7 +54,20 @@ function PlayerStats(){
 				} catch (error) {
 					alert(error);
 				}
-		}
+				try {
+					api.get('api/tournaments/get-tournaments-stats/')
+					.then(response => {
+						console.log(response.data);
+						setUserTournamentStats(response.data)
+					})
+					.catch(error => {
+						console.log('Error:', error);
+					});
+				}
+				catch (error) {
+					alert(error);
+				}
+			}
 	}, [isVisible])
 	
 	return (
