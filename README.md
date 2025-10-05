@@ -6,7 +6,7 @@
 ![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
-**A modern reimagining of the classic Pong game featuring stunning 3D graphics, real-time multiplayer, and tournament systems.**
+**A modern reimagining of the classic Pong game featuring stunning 3D graphics, real-time local and multiplayer games, and tournament systems.**
 
 [Features](#-key-features) •
 [Architecture](#-architecture) •
@@ -1079,7 +1079,7 @@ This project was collaboratively developed by three students at **42 Nice School
 
 ### Current Features ✅
 - [x] 3D Pong game with Three.js
-- [x] Local and online multiplayer
+- [x] Local multiplayer
 - [x] Tournament system with brackets
 - [x] User authentication (traditional + OAuth + 2FA)
 - [x] Friend system with online status
@@ -1090,41 +1090,12 @@ This project was collaboratively developed by three students at **42 Nice School
 
 ### Planned Enhancements 🚧
 
-#### Phase 1: Infrastructure (Q1 2025)
+#### Phase 1: Infrastructure
 - [ ] Deploy to VPS with SSL certificates
 - [ ] Set up CI/CD pipeline (GitHub Actions)
 - [ ] Implement automated testing (Jest + Pytest)
 - [ ] Add monitoring and logging (Prometheus + Grafana)
 - [ ] Database backup automation
-
-#### Phase 2: Features (Q2 2025)
-- [ ] Real-time spectator mode for ongoing matches
-- [ ] Global leaderboard system
-- [ ] Achievement system with badges
-- [ ] Replay system (save and playback matches)
-- [ ] In-game chat functionality
-- [ ] More game modes (speed mode, gravity mode, etc.)
-
-#### Phase 3: Enhancements (Q3 2025)
-- [ ] Mobile-responsive design
-- [ ] Progressive Web App (PWA) support
-- [ ] Social media sharing integration
-- [ ] User profile customization (themes, banners)
-- [ ] Advanced statistics (heat maps, trajectory analysis)
-- [ ] AI opponent with difficulty levels
-
-#### Phase 4: Community (Q4 2025)
-- [ ] Public API for third-party integrations
-- [ ] Modding support for custom celestial bodies
-- [ ] Community tournaments with prizes
-- [ ] User-generated content gallery
-- [ ] Discord bot integration
-
-### Long-term Vision 🌟
-- Expand to other classic games (Breakout, Snake, etc.)
-- Build a retro gaming platform with modern tech
-- Implement blockchain-based tournament rewards
-- VR/AR support for immersive gameplay
 
 ## 📊 Project Statistics
 
