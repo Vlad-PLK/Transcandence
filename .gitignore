@@ -5,6 +5,8 @@
 
 CLAUDE.md
 
+volumes/*
+
 ### Django ###
 *.log
 *.pot
