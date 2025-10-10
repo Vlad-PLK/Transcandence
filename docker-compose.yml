@@ -9,7 +9,7 @@ services:
     build: ./nginx
     ports:
       - 1080:80  # Forward HTTP traffic on port 80
-      - 1443:443
+      - 443:443
     depends_on:
       - backend
       - frontend
