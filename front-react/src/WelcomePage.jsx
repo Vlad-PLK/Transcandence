@@ -285,108 +285,113 @@ function WelcomePage()
                 </div>
               </div>
             </div>
+          </div>
+        </section>
 
-            {/* Footer - Inside Section 3 */}
-            <footer className="mt-4 py-4 text-white rounded-3" style={{backgroundColor: 'rgba(0, 0, 0, 0.9)'}}>
-              <div className="container">
-                <div className="row">
-                  <div className="col-md-4 mb-3">
-                    <h5 style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '1.2rem'}}>About the Project</h5>
-                    <p className="paragraph-text small">
-                      Transcendence is a collaborative full-stack web application developed at 42 Nice School.
-                      This project transforms the classic Pong game into a modern, immersive 3D experience.
-                    </p>
-                    <p className="paragraph-text small mt-2">
-                      <strong>Development Time:</strong> 4 months<br/>
-                      <strong>Team Size:</strong> 3 developers<br/>
-                      <strong>Lines of Code:</strong> 15,000+
-                    </p>
-                  </div>
-
-                  <div className="col-md-4 mb-3">
-                    <h5 style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '1.2rem'}}>Team Members</h5>
-                    <ul className="list-unstyled paragraph-text small">
-                      <li className="mb-2">
-                        <strong>Vlad-PLK</strong> (vpolojie)<br/>
-                        <span className="text-muted">Full-Stack Dev, Frontend, DevOps, Database</span>
-                      </li>
-                      <li className="mb-2">
-                        <strong>gendelize</strong><br/>
-                        <span className="text-muted">Backend Development, REST API, Authentication</span>
-                      </li>
-                      <li className="mb-2">
-                        <strong>TVincil</strong><br/>
-                        <span className="text-muted">Game Development, Three.js, Physics, Graphics</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="col-md-4 mb-3">
-                    <h5 style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '1.2rem'}}>Links & Contact</h5>
-                    <ul className="list-unstyled paragraph-text small">
-                      <li className="mb-2">
-                        <a href="https://github.com/Vlad-PLK/Transcendence"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           className="text-white text-decoration-none">
-                          📦 GitHub Repository
-                        </a>
-                      </li>
-                      <li className="mb-2">
-                        <a href="https://github.com/Vlad-PLK/Transcendence/issues"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           className="text-white text-decoration-none">
-                          🐛 Report Issues
-                        </a>
-                      </li>
-                      <li className="mb-2">
-                        <a href="https://42nice.fr/"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           className="text-white text-decoration-none">
-                          🎓 42 Nice School
-                        </a>
-                      </li>
-                      <li className="mb-2">
-                        <a href="https://github.com/Vlad-PLK"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           className="text-white text-decoration-none">
-                          👤 Vlad-PLK Profile
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+        {/* Full Width Footer Section */}
+        <section id="footer" className="section-full-footer">
+          <footer className="w-100 py-2 text-white" style={{backgroundColor: 'rgba(0, 0, 0, 0.9)', position: 'relative', zIndex: 100, minHeight: '100vh', display: 'flex', alignItems: 'center'}}>
+            <div className="container">
+              <div className="row">
+                <div className="col-md-4 mb-2">
+                  <h5 style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '1.1rem'}}>About the Project</h5>
+                  <p className="paragraph-text small" style={{fontSize: '0.85rem'}}>
+                    Transcendence is a collaborative full-stack web application developed at 42 Nice School.
+                    This project transforms the classic Pong game into a modern, immersive 3D experience.
+                  </p>
+                  <p className="paragraph-text small mt-1" style={{fontSize: '0.8rem'}}>
+                    <strong>Development Time:</strong> 4 months<br/>
+                    <strong>Team Size:</strong> 3 developers<br/>
+                    <strong>Lines of Code:</strong> 15,000+
+                  </p>
                 </div>
 
-                <hr className="my-3 border-secondary"/>
+                <div className="col-md-4 mb-2">
+                  <h5 style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '1.1rem'}}>Team Members</h5>
+                  <ul className="list-unstyled paragraph-text small">
+                    <li className="mb-1">
+                      <strong>Vlad-PLK</strong> (vpolojie)<br/>
+                      <span style={{color: 'white', fontSize: '0.8rem'}}>Full-Stack Dev, Frontend, DevOps, Database</span>
+                    </li>
+                    <li className="mb-1">
+                      <strong>gendelize</strong><br/>
+                      <span style={{color: 'white', fontSize: '0.8rem'}}>Backend Development, REST API, Authentication</span>
+                    </li>
+                    <li className="mb-1">
+                      <strong>TVincil</strong><br/>
+                      <span style={{color: 'white', fontSize: '0.8rem'}}>Game Development, Three.js, Physics, Graphics</span>
+                    </li>
+                  </ul>
+                </div>
 
-                <div className="row">
-                  <div className="col-md-6 small paragraph-text">
-                    <p className="mb-0">
-                      © 2024 Transcendence Project. Licensed under the MIT License.
-                    </p>
-                  </div>
-                  <div className="col-md-6 text-md-end small paragraph-text">
-                    <p className="mb-0">
-                      Made with ❤️ at <strong>42 Nice School</strong> |
+                <div className="col-md-4 mb-2">
+                  <h5 style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '1.1rem'}}>Links & Contact</h5>
+                  <ul className="list-unstyled paragraph-text small">
+                    <li className="mb-1">
                       <a href="https://github.com/Vlad-PLK/Transcendence"
-                         className="text-white text-decoration-none ms-2">
-                        ⭐ Star on GitHub
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         className="text-white text-decoration-none"
+                         style={{fontSize: '0.85rem'}}>
+                        📦 GitHub Repository
                       </a>
-                    </p>
-                  </div>
+                    </li>
+                    <li className="mb-1">
+                      <a href="https://github.com/Vlad-PLK/Transcendence/issues"
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         className="text-white text-decoration-none"
+                         style={{fontSize: '0.85rem'}}>
+                        🐛 Report Issues
+                      </a>
+                    </li>
+                    <li className="mb-1">
+                      <a href="https://42nice.fr/"
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         className="text-white text-decoration-none"
+                         style={{fontSize: '0.85rem'}}>
+                        🎓 42 Nice School
+                      </a>
+                    </li>
+                    <li className="mb-1">
+                      <a href="https://github.com/Vlad-PLK"
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         className="text-white text-decoration-none"
+                         style={{fontSize: '0.85rem'}}>
+                        👤 Vlad-PLK Profile
+                      </a>
+                    </li>
+                  </ul>
                 </div>
+              </div>
 
-                <div className="text-center mt-3">
-                  <p className="small text-muted mb-0 paragraph-text" style={{fontSize: '0.8rem'}}>
+              <hr className="my-2 border-secondary"/>
+
+              <div className="row align-items-center">
+                <div className="col-md-4 small paragraph-text">
+                  <p className="mb-0" style={{fontSize: '0.75rem'}}>
+                    © 2024 Transcendence Project. MIT License.
+                  </p>
+                </div>
+                <div className="col-md-4 text-center small paragraph-text">
+                  <p className="mb-0" style={{fontSize: '0.75rem', color: 'white'}}>
                     🎮 Transforming classic games into modern experiences 🎮
                   </p>
                 </div>
+                <div className="col-md-4 text-md-end small paragraph-text">
+                  <p className="mb-0" style={{fontSize: '0.75rem'}}>
+                    Made with ❤️ at <strong>42 Nice School</strong> | 
+                    <a href="https://github.com/Vlad-PLK/Transcendence"
+                       className="text-white text-decoration-none ms-1">
+                      ⭐ Star on GitHub
+                    </a>
+                  </p>
+                </div>
               </div>
-            </footer>
-          </div>
+            </div>
+          </footer>
         </section>
       </div>
 
@@ -430,11 +435,22 @@ function WelcomePage()
 
         .section-with-footer {
           display: block;
-          padding: 100px 20px 20px 20px;
+          padding: 100px 20px 0px 20px;
+          min-height: calc(100vh - 200px);
         }
 
         .section-with-footer .container {
-          min-height: calc(100vh - 120px);
+          min-height: auto;
+        }
+
+        .section-full-footer {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          scroll-snap-align: start;
+          position: relative;
+          padding: 0;
         }
 
         /* Content Boxes */
