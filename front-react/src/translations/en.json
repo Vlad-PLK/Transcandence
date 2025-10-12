@@ -213,6 +213,94 @@
     },
     "two_fa": "2FA by email : ",
     "needed_2fa": "You need the 2fa code",
-    "again": "Try again"
+    "again": "Try again",
+
+    "welcomePage": {
+        "hero": {
+            "title": "Welcome to Transcendence",
+            "subtitle": "A Next-Generation 3D Pong Experience",
+            "whatIsTitle": "🎮 What is Transcendence?",
+            "description1": "Transcendence is a full-stack web application that reimagines the classic Pong game with stunning 3D graphics, real-time multiplayer capabilities, and a comprehensive tournament system. Built with modern web technologies, this project showcases advanced full-stack development, real-time communication, and 3D graphics programming.",
+            "description2": "Developed at 42 Nice School as a final web development project, Transcendence demonstrates proficiency in modern full-stack development, real-time bidirectional communication, 3D graphics programming, containerization, and security best practices.",
+            "getStarted": "🚀 Get Started - Sign Up Now"
+        },
+        "features": {
+            "title": "✨ Key Features",
+            "graphics": {
+                "title": "🌌 Immersive 3D Graphics",
+                "description": "Custom-built game engine using Three.js featuring celestial themes (stars, black holes, custom bodies), dynamic lighting, and realistic physics simulation."
+            },
+            "gameModes": {
+                "title": "🎯 Multiple Game Modes",
+                "description": "Play local multiplayer (same device), online multiplayer via WebSockets, or compete in tournaments with automatic bracket generation."
+            },
+            "auth": {
+                "title": "🔐 Secure Authentication",
+                "description": "Multiple auth methods: traditional login, OAuth 2.0 (42 School), and Two-Factor Authentication (2FA) with TOTP support."
+            },
+            "customization": {
+                "title": "⚡ Customization Options",
+                "description": "Personalize your game with custom celestial bodies, adjustable boost mechanics, power-ups, game duration, and visual effects."
+            },
+            "social": {
+                "title": "👥 Social Features",
+                "description": "Create profiles with custom avatars, add friends, view real-time online status, and track comprehensive statistics and match history."
+            },
+            "languages": {
+                "title": "🌍 Multi-Language Support",
+                "description": "Full internationalization support with English, French, and Russian languages with dynamic switching."
+            }
+        },
+        "techStack": {
+            "title": "🏗 Technology Stack",
+            "frontend": {
+                "title": "Frontend",
+                "react": "⚛️ React 18 + Vite",
+                "threejs": "🎨 Three.js (3D Engine)",
+                "router": "🧭 React Router",
+                "bootstrap": "🎭 React Bootstrap",
+                "i18n": "🌐 i18next"
+            },
+            "backend": {
+                "title": "Backend",
+                "django": "🐍 Django 5.1",
+                "drf": "🔌 Django REST Framework",
+                "channels": "📡 Django Channels (WebSockets)",
+                "jwt": "🔐 JWT Authentication",
+                "postgres": "🗄️ PostgreSQL"
+            },
+            "infrastructure": {
+                "title": "Infrastructure",
+                "docker": "🐳 Docker + Docker Compose",
+                "nginx": "🔄 Nginx (Reverse Proxy)",
+                "redis": "⚡ Redis (Cache & Channels)",
+                "ssl": "🔒 SSL/TLS Encryption",
+                "daphne": "🚀 Daphne ASGI Server"
+            }
+        },
+        "footer": {
+            "aboutTitle": "About the Project",
+            "aboutDescription": "Transcendence is a collaborative full-stack web application developed at 42 Nice School. This project transforms the classic Pong game into a modern, immersive 3D experience.",
+            "developmentTime": "Development Time:",
+            "developmentTimeValue": "4 months",
+            "teamSize": "Team Size:",
+            "teamSizeValue": "3 developers",
+            "linesOfCode": "Lines of Code:",
+            "linesOfCodeValue": "15,000+",
+            "teamTitle": "Team Members",
+            "vlad": "Full-Stack Dev, Frontend, DevOps, Database",
+            "gendelize": "Backend Development, REST API, Authentication",
+            "tvincil": "Game Development, Three.js, Physics, Graphics",
+            "linksTitle": "Links & Contact",
+            "githubRepo": "📦 GitHub Repository",
+            "reportIssues": "🐛 Report Issues",
+            "school42": "🎓 42 Nice School",
+            "vladProfile": "👤 Vlad-PLK Profile",
+            "copyright": "© 2024 Transcendence Project. Licensed under the MIT License.",
+            "madeWith": "Made with ❤️ at",
+            "starOnGithub": "⭐ Star on GitHub",
+            "tagline": "🎮 Transforming classic games into modern experiences 🎮"
+        }
+    }
 
 }
