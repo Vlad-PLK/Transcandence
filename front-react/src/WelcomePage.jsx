@@ -17,6 +17,12 @@ function TypingEffect({ text, speed = 100, fontFamily = 'cyber4' }) {
   const [displayedText, setDisplayedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Reset animation when text changes (language switch)
+  useEffect(() => {
+    setDisplayedText('');
+    setCurrentIndex(0);
+  }, [text]);
+
   useEffect(() => {
     if (currentIndex < text.length) {
       const timeout = setTimeout(() => {
@@ -90,27 +96,21 @@ function WelcomePage()
             <div className="row w-100">
               <div className="col-lg-8 mx-auto text-center text-white">
                 <div className="hero-content p-5 rounded-4 shadow-lg">
-                  <TypingEffect text="Welcome to Transcendence" speed={80} fontFamily="cyber4" />
+                  <TypingEffect text={t('welcomePage.hero.title')} speed={80} fontFamily="cyber4" />
 
                   <p className="lead mb-4" style={{fontFamily: 'cyber4', fontSize: '1.2rem'}}>
-                    A Next-Generation 3D Pong Experience
+                    {t('welcomePage.hero.subtitle')}
                   </p>
 
                   <div className="hero-description mt-4">
                     <h4 className="mb-3" style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '1.5rem'}}>
-                      🎮 What is Transcendence?
+                      {t('welcomePage.hero.whatIsTitle')}
                     </h4>
                     <p className="paragraph-text">
-                      Transcendence is a full-stack web application that reimagines the classic Pong game
-                      with stunning <strong>3D graphics</strong>, real-time multiplayer capabilities, and a comprehensive
-                      tournament system. Built with modern web technologies, this project showcases
-                      advanced full-stack development, real-time communication, and 3D graphics programming.
+                      {t('welcomePage.hero.description1')}
                     </p>
                     <p className="paragraph-text mt-3">
-                      Developed at <strong>42 Nice School</strong> as a final web development project,
-                      Transcendence demonstrates proficiency in modern full-stack development,
-                      real-time bidirectional communication, 3D graphics programming, containerization,
-                      and security best practices.
+                      {t('welcomePage.hero.description2')}
                     </p>
                   </div>
 
@@ -118,7 +118,7 @@ function WelcomePage()
                     <button type="button" className="btn btn-lg btn-primary rounded-3 px-5 py-3 shadow"
                             data-bs-toggle="modal" data-bs-target="#signupModal"
                             style={{fontFamily: 'cyber4', fontSize: '1.1rem'}}>
-                      🚀 Get Started - Sign Up Now
+                      {t('welcomePage.hero.getStarted')}
                     </button>
                   </div>
                 </div>
@@ -135,18 +135,17 @@ function WelcomePage()
               <div className="col-lg-10 mx-auto text-white">
                 <div className="section-content p-5 rounded-4 shadow-lg">
                   <h2 className="text-center mb-5" style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '2.5rem'}}>
-                    ✨ Key Features
+                    {t('welcomePage.features.title')}
                   </h2>
 
                   <div className="row mt-4">
                     <div className="col-md-6 mb-4">
                       <div className="feature-card p-4 rounded-3">
                         <h5 className="feature-title" style={{fontFamily: 'cyber4', color: '#FFD700', fontSize: '1.3rem'}}>
-                          🌌 Immersive 3D Graphics
+                          {t('welcomePage.features.graphics.title')}
                         </h5>
                         <p className="paragraph-text">
-                          Custom-built game engine using <strong>Three.js</strong> featuring celestial themes
-                          (stars, black holes, custom bodies), dynamic lighting, and realistic physics simulation.
+                          {t('welcomePage.features.graphics.description')}
                         </p>
                       </div>
                     </div>
@@ -154,11 +153,10 @@ function WelcomePage()
                     <div className="col-md-6 mb-4">
                       <div className="feature-card p-4 rounded-3">
                         <h5 className="feature-title" style={{fontFamily: 'cyber4', color: '#FFD700', fontSize: '1.3rem'}}>
-                          🎯 Multiple Game Modes
+                          {t('welcomePage.features.gameModes.title')}
                         </h5>
                         <p className="paragraph-text">
-                          Play <strong>local multiplayer</strong> (same device), <strong>online multiplayer</strong> via
-                          WebSockets, or compete in <strong>tournaments</strong> with automatic bracket generation.
+                          {t('welcomePage.features.gameModes.description')}
                         </p>
                       </div>
                     </div>
@@ -166,11 +164,10 @@ function WelcomePage()
                     <div className="col-md-6 mb-4">
                       <div className="feature-card p-4 rounded-3">
                         <h5 className="feature-title" style={{fontFamily: 'cyber4', color: '#FFD700', fontSize: '1.3rem'}}>
-                          🔐 Secure Authentication
+                          {t('welcomePage.features.auth.title')}
                         </h5>
                         <p className="paragraph-text">
-                          Multiple auth methods: traditional login, <strong>OAuth 2.0</strong> (42 School),
-                          and <strong>Two-Factor Authentication (2FA)</strong> with TOTP support.
+                          {t('welcomePage.features.auth.description')}
                         </p>
                       </div>
                     </div>
@@ -178,11 +175,10 @@ function WelcomePage()
                     <div className="col-md-6 mb-4">
                       <div className="feature-card p-4 rounded-3">
                         <h5 className="feature-title" style={{fontFamily: 'cyber4', color: '#FFD700', fontSize: '1.3rem'}}>
-                          ⚡ Customization Options
+                          {t('welcomePage.features.customization.title')}
                         </h5>
                         <p className="paragraph-text">
-                          Personalize your game with <strong>custom celestial bodies</strong>, adjustable boost
-                          mechanics, power-ups, game duration, and visual effects.
+                          {t('welcomePage.features.customization.description')}
                         </p>
                       </div>
                     </div>
@@ -190,11 +186,10 @@ function WelcomePage()
                     <div className="col-md-6 mb-4">
                       <div className="feature-card p-4 rounded-3">
                         <h5 className="feature-title" style={{fontFamily: 'cyber4', color: '#FFD700', fontSize: '1.3rem'}}>
-                          👥 Social Features
+                          {t('welcomePage.features.social.title')}
                         </h5>
                         <p className="paragraph-text">
-                          Create profiles with custom avatars, add friends, view <strong>real-time online status</strong>,
-                          and track comprehensive statistics and match history.
+                          {t('welcomePage.features.social.description')}
                         </p>
                       </div>
                     </div>
@@ -202,11 +197,10 @@ function WelcomePage()
                     <div className="col-md-6 mb-4">
                       <div className="feature-card p-4 rounded-3">
                         <h5 className="feature-title" style={{fontFamily: 'cyber4', color: '#FFD700', fontSize: '1.3rem'}}>
-                          🌍 Multi-Language Support
+                          {t('welcomePage.features.languages.title')}
                         </h5>
                         <p className="paragraph-text">
-                          Full internationalization support with <strong>English</strong>, <strong>French</strong>,
-                          and <strong>Russian</strong> languages with dynamic switching.
+                          {t('welcomePage.features.languages.description')}
                         </p>
                       </div>
                     </div>
@@ -226,21 +220,21 @@ function WelcomePage()
               <div className="col-lg-10 mx-auto text-white">
                 <div className="section-content p-5 rounded-4 shadow-lg">
                   <h2 className="text-center mb-5" style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '2.5rem'}}>
-                    🏗 Technology Stack
+                    {t('welcomePage.techStack.title')}
                   </h2>
 
                   <div className="row mt-4">
                     <div className="col-md-4 mb-4">
                       <div className="tech-card p-4 rounded-3">
                         <h5 style={{fontFamily: 'cyber4', color: '#FFD700', fontSize: '1.4rem', textAlign: 'center', marginBottom: '1.5rem'}}>
-                          Frontend
+                          {t('welcomePage.techStack.frontend.title')}
                         </h5>
                         <ul className="tech-list paragraph-text">
-                          <li>⚛️ React 18 + Vite</li>
-                          <li>🎨 Three.js (3D Engine)</li>
-                          <li>🧭 React Router</li>
-                          <li>🎭 React Bootstrap</li>
-                          <li>🌐 i18next</li>
+                          <li>{t('welcomePage.techStack.frontend.react')}</li>
+                          <li>{t('welcomePage.techStack.frontend.threejs')}</li>
+                          <li>{t('welcomePage.techStack.frontend.router')}</li>
+                          <li>{t('welcomePage.techStack.frontend.bootstrap')}</li>
+                          <li>{t('welcomePage.techStack.frontend.i18n')}</li>
                         </ul>
                       </div>
                     </div>
@@ -248,14 +242,14 @@ function WelcomePage()
                     <div className="col-md-4 mb-4">
                       <div className="tech-card p-4 rounded-3">
                         <h5 style={{fontFamily: 'cyber4', color: '#FFD700', fontSize: '1.4rem', textAlign: 'center', marginBottom: '1.5rem'}}>
-                          Backend
+                          {t('welcomePage.techStack.backend.title')}
                         </h5>
                         <ul className="tech-list paragraph-text">
-                          <li>🐍 Django 5.1</li>
-                          <li>🔌 Django REST Framework</li>
-                          <li>📡 Django Channels (WebSockets)</li>
-                          <li>🔐 JWT Authentication</li>
-                          <li>🗄️ PostgreSQL</li>
+                          <li>{t('welcomePage.techStack.backend.django')}</li>
+                          <li>{t('welcomePage.techStack.backend.drf')}</li>
+                          <li>{t('welcomePage.techStack.backend.channels')}</li>
+                          <li>{t('welcomePage.techStack.backend.jwt')}</li>
+                          <li>{t('welcomePage.techStack.backend.postgres')}</li>
                         </ul>
                       </div>
                     </div>
@@ -263,14 +257,14 @@ function WelcomePage()
                     <div className="col-md-4 mb-4">
                       <div className="tech-card p-4 rounded-3">
                         <h5 style={{fontFamily: 'cyber4', color: '#FFD700', fontSize: '1.4rem', textAlign: 'center', marginBottom: '1.5rem'}}>
-                          Infrastructure
+                          {t('welcomePage.techStack.infrastructure.title')}
                         </h5>
                         <ul className="tech-list paragraph-text">
-                          <li>🐳 Docker + Docker Compose</li>
-                          <li>🔄 Nginx (Reverse Proxy)</li>
-                          <li>⚡ Redis (Cache & Channels)</li>
-                          <li>🔒 SSL/TLS Encryption</li>
-                          <li>🚀 Daphne ASGI Server</li>
+                          <li>{t('welcomePage.techStack.infrastructure.docker')}</li>
+                          <li>{t('welcomePage.techStack.infrastructure.nginx')}</li>
+                          <li>{t('welcomePage.techStack.infrastructure.redis')}</li>
+                          <li>{t('welcomePage.techStack.infrastructure.ssl')}</li>
+                          <li>{t('welcomePage.techStack.infrastructure.daphne')}</li>
                         </ul>
                       </div>
                     </div>
@@ -294,38 +288,37 @@ function WelcomePage()
             <div className="container">
               <div className="row">
                 <div className="col-md-4 mb-2">
-                  <h5 style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '1.1rem'}}>About the Project</h5>
+                  <h5 style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '1.1rem'}}>{t('welcomePage.footer.aboutTitle')}</h5>
                   <p className="paragraph-text small" style={{fontSize: '0.85rem'}}>
-                    Transcendence is a collaborative full-stack web application developed at 42 Nice School.
-                    This project transforms the classic Pong game into a modern, immersive 3D experience.
+                    {t('welcomePage.footer.aboutDescription')}
                   </p>
                   <p className="paragraph-text small mt-1" style={{fontSize: '0.8rem'}}>
-                    <strong>Development Time:</strong> 4 months<br/>
-                    <strong>Team Size:</strong> 3 developers<br/>
-                    <strong>Lines of Code:</strong> 15,000+
+                    <strong>{t('welcomePage.footer.developmentTime')}</strong> {t('welcomePage.footer.developmentTimeValue')}<br/>
+                    <strong>{t('welcomePage.footer.teamSize')}</strong> {t('welcomePage.footer.teamSizeValue')}<br/>
+                    <strong>{t('welcomePage.footer.linesOfCode')}</strong> {t('welcomePage.footer.linesOfCodeValue')}
                   </p>
                 </div>
 
                 <div className="col-md-4 mb-2">
-                  <h5 style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '1.1rem'}}>Team Members</h5>
+                  <h5 style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '1.1rem'}}>{t('welcomePage.footer.teamTitle')}</h5>
                   <ul className="list-unstyled paragraph-text small">
                     <li className="mb-1">
                       <strong>Vlad-PLK</strong> (vpolojie)<br/>
-                      <span style={{color: 'white', fontSize: '0.8rem'}}>Full-Stack Dev, Frontend, DevOps, Database</span>
+                      <span style={{color: 'white', fontSize: '0.8rem'}}>{t('welcomePage.footer.vlad')}</span>
                     </li>
                     <li className="mb-1">
                       <strong>gendelize</strong><br/>
-                      <span style={{color: 'white', fontSize: '0.8rem'}}>Backend Development, REST API, Authentication</span>
+                      <span style={{color: 'white', fontSize: '0.8rem'}}>{t('welcomePage.footer.gendelize')}</span>
                     </li>
                     <li className="mb-1">
                       <strong>TVincil</strong><br/>
-                      <span style={{color: 'white', fontSize: '0.8rem'}}>Game Development, Three.js, Physics, Graphics</span>
+                      <span style={{color: 'white', fontSize: '0.8rem'}}>{t('welcomePage.footer.tvincil')}</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="col-md-4 mb-2">
-                  <h5 style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '1.1rem'}}>Links & Contact</h5>
+                  <h5 style={{fontFamily: 'cyber4', color: '#61DAFB', fontSize: '1.1rem'}}>{t('welcomePage.footer.linksTitle')}</h5>
                   <ul className="list-unstyled paragraph-text small">
                     <li className="mb-1">
                       <a href="https://github.com/Vlad-PLK/Transcendence"
@@ -333,7 +326,7 @@ function WelcomePage()
                          rel="noopener noreferrer"
                          className="text-white text-decoration-none"
                          style={{fontSize: '0.85rem'}}>
-                        📦 GitHub Repository
+                        {t('welcomePage.footer.githubRepo')}
                       </a>
                     </li>
                     <li className="mb-1">
@@ -342,7 +335,7 @@ function WelcomePage()
                          rel="noopener noreferrer"
                          className="text-white text-decoration-none"
                          style={{fontSize: '0.85rem'}}>
-                        🐛 Report Issues
+                        {t('welcomePage.footer.reportIssues')}
                       </a>
                     </li>
                     <li className="mb-1">
@@ -351,7 +344,7 @@ function WelcomePage()
                          rel="noopener noreferrer"
                          className="text-white text-decoration-none"
                          style={{fontSize: '0.85rem'}}>
-                        🎓 42 Nice School
+                        {t('welcomePage.footer.school42')}
                       </a>
                     </li>
                     <li className="mb-1">
@@ -360,7 +353,7 @@ function WelcomePage()
                          rel="noopener noreferrer"
                          className="text-white text-decoration-none"
                          style={{fontSize: '0.85rem'}}>
-                        👤 Vlad-PLK Profile
+                        {t('welcomePage.footer.vladProfile')}
                       </a>
                     </li>
                   </ul>
@@ -372,20 +365,20 @@ function WelcomePage()
               <div className="row align-items-center">
                 <div className="col-md-4 small paragraph-text">
                   <p className="mb-0" style={{fontSize: '0.75rem'}}>
-                    © 2024 Transcendence Project. MIT License.
+                    {t('welcomePage.footer.copyright')}
                   </p>
                 </div>
                 <div className="col-md-4 text-center small paragraph-text">
                   <p className="mb-0" style={{fontSize: '0.75rem', color: 'white'}}>
-                    🎮 Transforming classic games into modern experiences 🎮
+                    {t('welcomePage.footer.tagline')}
                   </p>
                 </div>
                 <div className="col-md-4 text-md-end small paragraph-text">
                   <p className="mb-0" style={{fontSize: '0.75rem'}}>
-                    Made with ❤️ at <strong>42 Nice School</strong> | 
+                    {t('welcomePage.footer.madeWith')} <strong>42 Nice School</strong> | 
                     <a href="https://github.com/Vlad-PLK/Transcendence"
                        className="text-white text-decoration-none ms-1">
-                      ⭐ Star on GitHub
+                      {t('welcomePage.footer.starOnGithub')}
                     </a>
                   </p>
                 </div>
