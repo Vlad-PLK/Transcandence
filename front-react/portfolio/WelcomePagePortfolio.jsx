@@ -73,9 +73,9 @@ drwxr-xr-x  CUB3D/           3D game engine
 drwxr-xr-x  PHILOSOPHERS/    Threading project`,
     skills: `Technical Skills:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DevOps & Cloud    [████████░░] 85%
-Backend Systems   [█████████░] 90%
-Frontend & 3D     [███████░░░] 75%
+DevOps & Cloud    [████████░░] 80%
+SysAdmin          [██████░░░░] 75%
+Frontend & 3D     [█████░░░░░] 60%
 C/C++             [█████████░] 95%`,
     contact: `Contact Information:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -264,10 +264,10 @@ function WelcomePagePortfolio() {
     {
       id: "a3f5d9e2",
       name: "INCEPTION",
-      image: "nginx:alpine",
+      image: "debian:bullseye",
       status: "running",
       description: "Full web infrastructure with Docker Compose, NGINX, WordPress & MariaDB",
-      tech: ["Docker", "NGINX", "MariaDB"],
+      tech: ["Docker", "Docker-Compose", "NGINX", "MariaDB", "WordPress"],
       ports: "80:80, 443:443",
       uptime: "24h",
       link: "https://github.com/Vlad-PLK/INCEPTION",
@@ -275,9 +275,9 @@ function WelcomePagePortfolio() {
     {
       id: "b7e2c4f1",
       name: "Transcendence",
-      image: "react:django",
+      image: "node:18:alpine",
       status: "running",
-      description: "3D multiplayer Pong game with Three.js, Django & WebSockets",
+      description: "3D Pong game with Three.js, React as Frontend, Django & WebSockets",
       tech: ["React", "Django", "Three.js"],
       ports: "8000:8000",
       uptime: "18h",
@@ -299,7 +299,7 @@ function WelcomePagePortfolio() {
       name: "MINISHELL",
       image: "alpine:shell",
       status: "running",
-      description: "Bash-like shell with pipes, redirections & process management",
+      description: "Bash-like shell with pipes, builtins, redirections & process management",
       tech: ["C", "Linux", "Systems"],
       ports: "N/A",
       uptime: "120h",
@@ -310,22 +310,22 @@ function WelcomePagePortfolio() {
       name: "CUB3D",
       image: "c:graphics",
       status: "running",
-      description: "Raycasting 3D game engine inspired by Wolfenstein 3D",
-      tech: ["C", "Graphics", "Raycasting"],
+      description: "Raycasting 3D game engine coded from scratch in C, inspired by Wolfenstein 3D",
+      tech: ["C", "Graphics", "Raycasting", "Algorithms"],
       ports: "N/A",
       uptime: "96h",
-      link: "https://github.com/Vlad-PLK/CUB3D",
+      link: "https://github.com/Vlad-PLK/CUB_3D",
     },
     {
       id: "f2d7a4c8",
       name: "PHILOSOPHERS",
       image: "c:threads",
       status: "running",
-      description: "Solving the dining philosophers problem with multithreading",
+      description: "Solving the dining philosophers problem with multithreading in C",
       tech: ["C", "Threads", "Concurrency"],
       ports: "N/A",
       uptime: "48h",
-      link: "https://github.com/Vlad-PLK/PHILOSOPHERS",
+      link: "https://github.com/Vlad-PLK/PHILOSOPHER",
     }
   ];
 
@@ -334,22 +334,22 @@ function WelcomePagePortfolio() {
       category: "DevOps & Cloud",
       icon: "☁️",
       items: [
-        { name: "Docker", level: 85 },
+        { name: "Docker", level: 90 },
         { name: "Kubernetes", level: 70 },
         { name: "CI/CD", level: 80 },
         { name: "AWS", level: 65 },
-        { name: "IaC", level: 75 },
+        { name: "IaC", level: 65 },
       ]
     },
     {
       category: "Backend & Systems",
       icon: "⚙️",
       items: [
-        { name: "Django", level: 85 },
+        { name: "Django", level: 60 },
         { name: "REST APIs", level: 90 },
         { name: "PostgreSQL", level: 80 },
-        { name: "Redis", level: 75 },
-        { name: "Linux/Unix", level: 90 },
+        { name: "Redis", level: 65 },
+        { name: "Linux/Unix", level: 95 },
       ]
     },
     {
@@ -357,7 +357,7 @@ function WelcomePagePortfolio() {
       icon: "🎨",
       items: [
         { name: "React 18", level: 85 },
-        { name: "Three.js", level: 75 },
+        { name: "Three.js", level: 65 },
         { name: "Vite", level: 80 },
         { name: "Bootstrap", level: 85 },
       ]
@@ -367,10 +367,10 @@ function WelcomePagePortfolio() {
       icon: "💻",
       items: [
         { name: "C/C++", level: 95 },
-        { name: "Python", level: 85 },
+        { name: "Python", level: 70 },
         { name: "JavaScript", level: 85 },
         { name: "Bash/Shell", level: 90 },
-        { name: "SQL", level: 80 },
+        { name: "SQL", level: 65 },
       ]
     }
   ];
@@ -460,20 +460,23 @@ function WelcomePagePortfolio() {
                 <div className="about-text">
                   <p className="about-paragraph">
                     I'm a young developer living on the French Riviera, working as a freelance developer and entrepreneur.
-                    My journey into programming began in middle school with HTML/CSS, Python, and algorithms. In 2022,
-                    I joined <strong>42 Nice</strong>, where I successfully completed the intense "piscine" and dove deep
-                    into computer science fundamentals.
+                    My journey into programming began as a lot of kids, in middle school trying to code websites with HTML/CSS, then exploring Python, building games with PyGames and algorithms. As time goes, I continued to learn and grow, and in 2022,
+                    my adventure continues at <strong>42 Nice</strong>, where I successfully completed the intense "piscine" month selection process and dove deep
+                    into computer science fundamentals. The peer-to-peer learning model at 42 has been a game-changer, pushing me to collaborate, innovate, and think critically. It's here that I honed my skills in C and C++, mastering low-level programming, memory management, and algorithmic thinking.
+                    The experience has been both challenging and rewarding, shaping me into a versatile developer ready to tackle complex problems. I have built strong foundations in software engineering principles and best practices.
                   </p>
                   <p className="about-paragraph">
                     After completing the common core in mid-2024, I joined <strong>Etherscore</strong>, a blockchain startup,
-                    for my first internship. This experience solidified my passion for building scalable systems and
-                    infrastructure. Now, I'm transitioning into <strong>DevOps and Cloud Engineering</strong>, combining
+                    for my first internship. I worked as a Blockchain Data Developer and my job was to analyse onchain data to then create so-called "subgraphs", which are a way to organize and query blockchain data efficiently.
+                    I loved my time at Etherscore. It was an incredible learning experience that deepened my understanding of blockchain technology. Now, I've finished most of 42 cursus and my internship with great success and I decided
+                    to launch my own freelance career. I want to live a life of dreams, personnal projects and independancy. I realised that my love for system administration, linux and new Cloud perspectives should be the new great goal to reach for my carreer.
+                    That's why I'm transitioning into <strong>DevOps and Cloud Engineering</strong>, combining
                     my strong C/C++ and web development background with modern DevOps practices.
                   </p>
                   <p className="about-paragraph">
                     I decided to go freelance to create my own path and explore everything programming has to offer.
                     Check out my <a href="https://vlad-plk.github.io" target="_blank" rel="noopener noreferrer" className="inline-link">blog</a> where
-                    I document my coding journey day after day.
+                    I document my coding journey as much as it goes. I'm excited about the future and eager to see where this path takes me!
                   </p>
                 </div>
                 <div className="about-highlights">
@@ -481,14 +484,14 @@ function WelcomePagePortfolio() {
                     <div className="highlight-icon">🎓</div>
                     <div className="highlight-text">
                       <strong>42 Nice School</strong>
-                      <span>2022 - 2024</span>
+                      <span>2022 - 2025</span>
                     </div>
                   </div>
                   <div className="highlight-item">
                     <div className="highlight-icon">💼</div>
                     <div className="highlight-text">
                       <strong>Etherscore Internship</strong>
-                      <span>Blockchain Startup</span>
+                      <span>Blockchain Startup : <a href="https://etherscore.network" target="_blank" rel="noopener noreferrer" className="inline-link">etherscore.network</a> </span>
                     </div>
                   </div>
                   <div className="highlight-item">
@@ -667,8 +670,84 @@ function WelcomePagePortfolio() {
 
       {/* Global Styles */}
       <style>{`
-        /* Import Fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap');
+        /* Custom Font Declarations - Yapari */
+        @font-face {
+          font-family: 'Yapari';
+          src: url('/yapari/YapariTrial-Regular.ttf') format('truetype');
+          font-weight: 400;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: 'Yapari';
+          src: url('/yapari/YapariTrial-Medium.ttf') format('truetype');
+          font-weight: 500;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: 'Yapari';
+          src: url('/yapari/YapariTrial-SemiBold.ttf') format('truetype');
+          font-weight: 600;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: 'Yapari';
+          src: url('/yapari/YapariTrial-Bold.ttf') format('truetype');
+          font-weight: 700;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: 'Yapari';
+          src: url('/yapari/YapariTrial-ExtraBold.ttf') format('truetype');
+          font-weight: 800;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: 'Yapari';
+          src: url('/yapari/YapariTrial-Ultra.ttf') format('truetype');
+          font-weight: 900;
+          font-style: normal;
+        }
+
+        /* Custom Font Declarations - Noto Sans Mono */
+        @font-face {
+          font-family: 'Noto Sans Mono';
+          src: url('/Noto_Sans_Mono/static/NotoSansMono-Light.ttf') format('truetype');
+          font-weight: 300;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: 'Noto Sans Mono';
+          src: url('/Noto_Sans_Mono/static/NotoSansMono-Regular.ttf') format('truetype');
+          font-weight: 400;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: 'Noto Sans Mono';
+          src: url('/Noto_Sans_Mono/static/NotoSansMono-Medium.ttf') format('truetype');
+          font-weight: 500;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: 'Noto Sans Mono';
+          src: url('/Noto_Sans_Mono/static/NotoSansMono-SemiBold.ttf') format('truetype');
+          font-weight: 600;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: 'Noto Sans Mono';
+          src: url('/Noto_Sans_Mono/static/NotoSansMono-Bold.ttf') format('truetype');
+          font-weight: 700;
+          font-style: normal;
+        }
 
         /* Global Reset & Base */
         * {
@@ -678,7 +757,7 @@ function WelcomePagePortfolio() {
         }
 
         body, html {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-family: 'Noto Sans Mono', monospace, -apple-system, BlinkMacSystemFont, sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
@@ -744,7 +823,8 @@ function WelcomePagePortfolio() {
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          font-weight: 800;
+          font-weight: 900;
+          font-family: 'Yapari', sans-serif;
         }
 
         .nav-links {
@@ -757,6 +837,7 @@ function WelcomePagePortfolio() {
           text-decoration: none;
           font-size: 0.95rem;
           font-weight: 500;
+          font-family: 'Noto Sans Mono', monospace;
           transition: all 0.3s ease;
           position: relative;
           padding: 0.5rem 0;
@@ -807,13 +888,16 @@ function WelcomePagePortfolio() {
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
+          font-family: 'Yapari', sans-serif;
+          font-weight: 800;
         }
 
         .title-prompt {
           color: #10b981;
-          font-family: 'Fira Code', monospace;
+          font-family: 'Noto Sans Mono', monospace;
           font-size: 2rem;
           margin-right: 0.5rem;
+          font-weight: 600;
         }
 
         /* Hero Section */
@@ -841,6 +925,7 @@ function WelcomePagePortfolio() {
           color: #22d3ee;
           margin-bottom: 1rem;
           font-weight: 500;
+          font-family: 'Noto Sans Mono', monospace;
         }
 
         .hero-title {
@@ -851,6 +936,8 @@ function WelcomePagePortfolio() {
           -webkit-text-fill-color: transparent;
           background-clip: text;
           line-height: 1.2;
+          font-family: 'Yapari', sans-serif;
+          font-weight: 900;
         }
 
         .hero-subtitle {
@@ -858,6 +945,8 @@ function WelcomePagePortfolio() {
           color: #e2e8f0;
           margin-bottom: 2rem;
           min-height: 60px;
+          font-family: 'Yapari', sans-serif;
+          font-weight: 700;
         }
 
         .hero-description {
@@ -865,6 +954,7 @@ function WelcomePagePortfolio() {
           color: #94a3b8;
           line-height: 1.8;
           margin-bottom: 3rem;
+          font-family: 'Noto Sans Mono', monospace;
         }
 
         /* Metrics Grid */
@@ -937,7 +1027,7 @@ function WelcomePagePortfolio() {
         }
 
         .metric-value {
-          font-family: 'Fira Code', monospace;
+          font-family: 'Noto Sans Mono', monospace;
           font-size: 1.5rem;
           font-weight: 700;
           color: #e2e8f0;
@@ -948,6 +1038,7 @@ function WelcomePagePortfolio() {
           color: #94a3b8;
           text-transform: uppercase;
           letter-spacing: 0.05em;
+          font-family: 'Noto Sans Mono', monospace;
         }
 
         /* CTA Buttons */
@@ -961,11 +1052,11 @@ function WelcomePagePortfolio() {
         .btn-secondary {
           padding: 1rem 2.5rem;
           font-size: 1.1rem;
-          font-weight: 600;
+          font-weight: 700;
           border-radius: 4px;
           text-decoration: none;
           transition: all 0.3s ease;
-          font-family: 'Inter', sans-serif;
+          font-family: 'Yapari', sans-serif;
         }
 
         .btn-primary {
@@ -1034,14 +1125,14 @@ function WelcomePagePortfolio() {
         }
 
         .terminal-title {
-          font-family: 'Fira Code', monospace;
+          font-family: 'Noto Sans Mono', monospace;
           font-size: 0.9rem;
           color: #64748b;
         }
 
         .terminal-body {
           padding: 1.5rem;
-          font-family: 'Fira Code', monospace;
+          font-family: 'Noto Sans Mono', monospace;
           font-size: 0.9rem;
           height: 400px;
           overflow-y: auto;
@@ -1082,7 +1173,7 @@ function WelcomePagePortfolio() {
           border: none;
           outline: none;
           color: #e2e8f0;
-          font-family: 'Fira Code', monospace;
+          font-family: 'Noto Sans Mono', monospace;
           font-size: 0.9rem;
           padding: 0;
           caret-color: #22d3ee;
@@ -1136,11 +1227,13 @@ function WelcomePagePortfolio() {
           line-height: 1.9;
           color: #94a3b8;
           margin-bottom: 1.5rem;
+          font-family: 'Noto Sans Mono', monospace;
         }
 
         .about-paragraph strong {
           color: #22d3ee;
-          font-weight: 600;
+          font-weight: 700;
+          font-family: 'Yapari', sans-serif;
         }
 
         .inline-link {
@@ -1193,12 +1286,14 @@ function WelcomePagePortfolio() {
         .highlight-text strong {
           color: #e2e8f0;
           font-size: 1rem;
-          font-weight: 600;
+          font-weight: 700;
+          font-family: 'Yapari', sans-serif;
         }
 
         .highlight-text span {
           color: #94a3b8;
           font-size: 0.9rem;
+          font-family: 'Noto Sans Mono', monospace;
         }
 
         /* Skills Section */
@@ -1236,6 +1331,8 @@ function WelcomePagePortfolio() {
         .skill-category {
           font-size: 1.5rem;
           color: #a855f7;
+          font-family: 'Yapari', sans-serif;
+          font-weight: 800;
         }
 
         .skill-items {
@@ -1259,12 +1356,14 @@ function WelcomePagePortfolio() {
         .skill-name {
           color: #e2e8f0;
           font-weight: 500;
+          font-family: 'Noto Sans Mono', monospace;
         }
 
         .skill-percentage {
-          font-family: 'Fira Code', monospace;
+          font-family: 'Noto Sans Mono', monospace;
           color: #22d3ee;
           font-size: 0.9rem;
+          font-weight: 600;
         }
 
         .skill-progress-bar {
@@ -1291,8 +1390,9 @@ function WelcomePagePortfolio() {
           border: 2px solid rgba(34, 211, 238, 0.3);
           border-radius: 8px;
           margin-bottom: 2rem;
-          font-family: 'Fira Code', monospace;
+          font-family: 'Noto Sans Mono', monospace;
           font-size: 0.85rem;
+          font-weight: 600;
           color: #64748b;
           text-transform: uppercase;
           letter-spacing: 0.05em;
@@ -1335,14 +1435,14 @@ function WelcomePagePortfolio() {
         }
 
         .container-id {
-          font-family: 'Fira Code', monospace;
+          font-family: 'Noto Sans Mono', monospace;
           color: #22d3ee;
           font-size: 0.9rem;
-          font-weight: 600;
+          font-weight: 700;
         }
 
         .container-image {
-          font-family: 'Fira Code', monospace;
+          font-family: 'Noto Sans Mono', monospace;
           color: #94a3b8;
           font-size: 0.8rem;
         }
@@ -1377,7 +1477,7 @@ function WelcomePagePortfolio() {
         }
 
         .status-uptime {
-          font-family: 'Fira Code', monospace;
+          font-family: 'Noto Sans Mono', monospace;
           color: #64748b;
           font-size: 0.8rem;
         }
@@ -1390,6 +1490,8 @@ function WelcomePagePortfolio() {
           font-size: 1.5rem;
           color: #a855f7;
           margin-bottom: 0.75rem;
+          font-family: 'Yapari', sans-serif;
+          font-weight: 800;
         }
 
         .docker-card-description {
@@ -1397,6 +1499,7 @@ function WelcomePagePortfolio() {
           line-height: 1.6;
           margin-bottom: 1rem;
           font-size: 0.95rem;
+          font-family: 'Noto Sans Mono', monospace;
         }
 
         .docker-card-ports {
@@ -1404,7 +1507,7 @@ function WelcomePagePortfolio() {
           align-items: center;
           gap: 0.5rem;
           margin-bottom: 1rem;
-          font-family: 'Fira Code', monospace;
+          font-family: 'Noto Sans Mono', monospace;
           font-size: 0.85rem;
         }
 
@@ -1429,7 +1532,8 @@ function WelcomePagePortfolio() {
           border-radius: 4px;
           font-size: 0.8rem;
           border: 1px solid rgba(34, 211, 238, 0.3);
-          font-family: 'Fira Code', monospace;
+          font-family: 'Noto Sans Mono', monospace;
+          font-weight: 600;
         }
 
         .docker-card-footer {
@@ -1455,8 +1559,8 @@ function WelcomePagePortfolio() {
           text-decoration: none;
           border-radius: 4px;
           font-size: 1.1rem;
-          font-family: 'Fira Code', monospace;
-          font-weight: 600;
+          font-family: 'Noto Sans Mono', monospace;
+          font-weight: 700;
           transition: all 0.3s ease;
         }
 
@@ -1477,6 +1581,7 @@ function WelcomePagePortfolio() {
           max-width: 800px;
           margin-left: auto;
           margin-right: auto;
+          font-family: 'Noto Sans Mono', monospace;
         }
 
         .contact-grid {
@@ -1513,11 +1618,14 @@ function WelcomePagePortfolio() {
           color: #ec4899;
           font-size: 1.3rem;
           margin-bottom: 0.5rem;
+          font-family: 'Yapari', sans-serif;
+          font-weight: 700;
         }
 
         .contact-card p {
           color: #94a3b8;
           font-size: 0.95rem;
+          font-family: 'Noto Sans Mono', monospace;
         }
 
         /* Footer */
@@ -1535,18 +1643,21 @@ function WelcomePagePortfolio() {
           color: #94a3b8;
           font-size: 0.95rem;
           margin-bottom: 0.5rem;
+          font-family: 'Noto Sans Mono', monospace;
         }
 
         .footer-tagline {
           color: #22d3ee;
           font-size: 1.1rem;
           margin-bottom: 0.5rem;
+          font-family: 'Yapari', sans-serif;
+          font-weight: 700;
         }
 
         .footer-version {
           color: #64748b;
           font-size: 0.8rem;
-          font-family: 'Fira Code', monospace;
+          font-family: 'Noto Sans Mono', monospace;
         }
 
         /* Scroll Indicator */

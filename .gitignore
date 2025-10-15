@@ -5,6 +5,16 @@
 
 CLAUDE.md
 
+front-react/portfolio/public/*
+
+# Ignore all font files
+*.ttf
+*.otf
+*.woff
+*.woff2
+*.eot
+fonts/
+
 volumes/*
 
 ### Django ###
