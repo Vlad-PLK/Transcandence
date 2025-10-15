@@ -381,7 +381,7 @@ function WelcomePagePortfolio() {
         {/* Fixed Navigation */}
         <nav className="portfolio-nav">
           <div className="nav-brand">
-            <span className="brand-text" style={{fontFamily: 'cyber4'}}>VP</span>
+            <span className="brand-text">VP</span>
           </div>
           <div className="nav-links">
             <a href="#hero" className={activeSection === 'hero' ? 'active' : ''}>Home</a>
@@ -397,10 +397,10 @@ function WelcomePagePortfolio() {
           <div className="hero-grid">
             <div className="hero-left">
               <span className="hero-greeting">Hello, I'm</span>
-              <h1 className="hero-title" style={{fontFamily: 'cyber4'}}>
+              <h1 className="hero-title">
                 Vladimir Polojienko
               </h1>
-              <h2 className="hero-subtitle" style={{fontFamily: 'cyber4'}}>
+              <h2 className="hero-subtitle">
                 <TypingEffect text="DevOps Engineer & Full-Stack Developer" speed={80} />
               </h2>
               <p className="hero-description">
@@ -452,7 +452,7 @@ function WelcomePagePortfolio() {
         {/* About Section */}
         <section id="about" className="portfolio-section about-section">
           <div className="section-container">
-            <h2 className="section-title" style={{fontFamily: 'cyber4'}}>
+            <h2 className="section-title">
               <span className="title-prompt">$ cat</span> about.md
             </h2>
             <div className="about-content">
@@ -518,7 +518,7 @@ function WelcomePagePortfolio() {
         {/* Skills Section */}
         <section id="skills" className="portfolio-section skills-section">
           <div className="section-container">
-            <h2 className="section-title" style={{fontFamily: 'cyber4'}}>
+            <h2 className="section-title">
               <span className="title-prompt">$ ls</span> skills/
             </h2>
             <div className="skills-grid">
@@ -526,7 +526,7 @@ function WelcomePagePortfolio() {
                 <div key={index} className="skill-card">
                   <div className="skill-header">
                     <span className="skill-icon">{skillGroup.icon}</span>
-                    <h3 className="skill-category" style={{fontFamily: 'cyber4'}}>{skillGroup.category}</h3>
+                    <h3 className="skill-category">{skillGroup.category}</h3>
                   </div>
                   <div className="skill-items">
                     {skillGroup.items.map((item, idx) => (
@@ -554,7 +554,7 @@ function WelcomePagePortfolio() {
         {/* Projects Section - Docker Style */}
         <section id="projects" className="portfolio-section projects-section">
           <div className="section-container">
-            <h2 className="section-title" style={{fontFamily: 'cyber4'}}>
+            <h2 className="section-title">
               <span className="title-prompt">$ docker ps</span>
             </h2>
             <div className="docker-header">
@@ -584,7 +584,7 @@ function WelcomePagePortfolio() {
                     </div>
                   </div>
                   <div className="docker-card-content">
-                    <h3 className="docker-card-name" style={{fontFamily: 'cyber4'}}>{project.name}</h3>
+                    <h3 className="docker-card-name">{project.name}</h3>
                     <p className="docker-card-description">{project.description}</p>
                     <div className="docker-card-ports">
                       <span className="port-label">PORTS:</span>
@@ -619,7 +619,7 @@ function WelcomePagePortfolio() {
         {/* Contact Section */}
         <section id="contact" className="portfolio-section contact-section">
           <div className="section-container">
-            <h2 className="section-title" style={{fontFamily: 'cyber4'}}>
+            <h2 className="section-title">
               <span className="title-prompt">$ ./deploy</span> contact.sh
             </h2>
             <div className="contact-content">
@@ -660,7 +660,7 @@ function WelcomePagePortfolio() {
             <footer className="portfolio-footer">
               <div className="footer-content">
                 <p className="footer-copyright">© 2025 Vladimir Polojienko • Crafted with ☕ and ❤️</p>
-                <p className="footer-tagline" style={{fontFamily: 'cyber4'}}>MyStartTech - Your tech project starts here</p>
+                <p className="footer-tagline">MyStartTech - Your tech project starts here</p>
                 <p className="footer-version">v1.0.0</p>
               </div>
             </footer>
