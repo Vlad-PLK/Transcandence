@@ -61,7 +61,7 @@ function Terminal() {
   clear     - Clear terminal
   neofetch  - System information`,
     whoami: `Vladimir Polojienko
-DevOps Cloud Engineer | Full-Stack Developer
+DevOps Cloud & Full-Stack Developer
 Location: French Riviera, France
 Status: Available for freelance work`,
     ls: `total 6 projects
@@ -401,11 +401,11 @@ function WelcomePagePortfolio() {
                 Vladimir Polojienko
               </h1>
               <h2 className="hero-subtitle">
-                <TypingEffect text="DevOps Engineer & Full-Stack Developer" speed={80} />
+                <TypingEffect text="DevOps & Full-Stack Freelance Developer" speed={80} />
               </h2>
               <p className="hero-description">
                 Building robust cloud infrastructure, automating workflows, and crafting modern web experiences.
-                Currently diving deep into DevOps, Cloud Architecture, and containerization.
+                Currently into DevOps, Kubernetes and containerization.
               </p>
 
               {/* Metrics Grid */}
@@ -468,8 +468,8 @@ function WelcomePagePortfolio() {
                   <p className="about-paragraph">
                     After completing the common core in mid-2024, I joined <strong>Etherscore</strong>, a blockchain startup,
                     for my first internship. I worked as a Blockchain Data Developer and my job was to analyse onchain data to then create so-called "subgraphs", which are a way to organize and query blockchain data efficiently.
-                    I loved my time at Etherscore. It was an incredible learning experience that deepened my understanding of blockchain technology. Now, I've finished most of 42 cursus and my internship with great success and I decided
-                    to launch my own freelance career. I want to live a life of dreams, personnal projects and independancy. I realised that my love for system administration, linux and new Cloud perspectives should be the new great goal to reach for my carreer.
+                    I loved my time at Etherscore. It was a great learning experience and I sharpened my understanding of blockchain technology. Now, I've finished most of 42 cursus and so my internship with success and I decided
+                    to launch my own freelance career. I want to live a life of dreams, personnal projects and independancy. I realised that the DevOps field, system administration, linux and more should be the next great goal to reach for my carreer.
                     That's why I'm transitioning into <strong>DevOps and Cloud Engineering</strong>, combining
                     my strong C/C++ and web development background with modern DevOps practices.
                   </p>
