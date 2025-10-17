@@ -6,7 +6,9 @@ RUN apt install openssl -y
 
 RUN mkdir -p /etc/nginx/ssl
 
-RUN openssl req -x509 -nodes -out /etc/nginx/ssl/transcendence.crt -keyout /etc/nginx/ssl/transcendence.key -subj "/C=FR/ST=PACA/L=NICE/O=42/OU=42/CN=vpolojie.42.fr/UID=vpolojie"
+# SSL certificates will be provided at runtime via Docker volumes
+# mounted from the host (Let's Encrypt). We no longer generate a
+# self-signed certificate at build time to avoid confusion.
 
 RUN mkdir -p /var/run/nginx
 

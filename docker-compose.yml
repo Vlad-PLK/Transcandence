@@ -7,6 +7,10 @@ services:
   nginx:
     container_name: nginx
     build: ./nginx
+    volumes: # Mount SSL certificates from host to container
+      - /etc/letsencrypt/live/vladplk.mysmarttech.fr:/etc/letsencrypt/live/vladplk.mysmarttech.fr:ro
+      - /etc/letsencrypt/archive/vladplk.mysmarttech.fr:/etc/letsencrypt/archive/vladplk.mysmarttech.fr:ro
+      - /etc/letsencrypt/renewal:/etc/letsencrypt/renewal:ro
     ports:
       - 1080:80  # Forward HTTP traffic on port 80
       - 443:443

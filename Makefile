@@ -1,6 +1,6 @@
 NAME = TRANSCENDANCE
 
-VOLUME_PATH = ./volumes
+VOLUME_PATH = ~/home/vlad-plk/volumes
 
 all: ${NAME}
 
@@ -11,7 +11,7 @@ ${NAME}:
 	chmod -f 777 ${VOLUME_PATH}
 	@printf "\n"
 	@printf "Building up containers !\n"
-	docker-compose --env-file ./.env up --build 
+	docker-compose --env-file ./.env up -d --build
 
 start:
 	docker-compose start
