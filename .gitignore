@@ -3,8 +3,6 @@
 
 .env
 
-CLAUDE.md
-
 front-react/portfolio/public/*
 
 
