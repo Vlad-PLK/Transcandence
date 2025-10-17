@@ -673,42 +673,42 @@ function WelcomePagePortfolio() {
         /* Custom Font Declarations - Yapari */
         @font-face {
           font-family: 'Yapari';
-          src: url('/yapari/YapariTrial-Regular.ttf') format('truetype');
+          src: url('/public/yapari/YapariTrial-Regular.ttf') format('truetype');
           font-weight: 400;
           font-style: normal;
         }
 
         @font-face {
           font-family: 'Yapari';
-          src: url('/yapari/YapariTrial-Medium.ttf') format('truetype');
+          src: url('/public/yapari/YapariTrial-Medium.ttf') format('truetype');
           font-weight: 500;
           font-style: normal;
         }
 
         @font-face {
           font-family: 'Yapari';
-          src: url('/yapari/YapariTrial-SemiBold.ttf') format('truetype');
+          src: url('/public/yapari/YapariTrial-SemiBold.ttf') format('truetype');
           font-weight: 600;
           font-style: normal;
         }
 
         @font-face {
           font-family: 'Yapari';
-          src: url('/yapari/YapariTrial-Bold.ttf') format('truetype');
+          src: url('/public/yapari/YapariTrial-Bold.ttf') format('truetype');
           font-weight: 700;
           font-style: normal;
         }
 
         @font-face {
           font-family: 'Yapari';
-          src: url('/yapari/YapariTrial-ExtraBold.ttf') format('truetype');
+          src: url('/public/yapari/YapariTrial-ExtraBold.ttf') format('truetype');
           font-weight: 800;
           font-style: normal;
         }
 
         @font-face {
           font-family: 'Yapari';
-          src: url('/yapari/YapariTrial-Ultra.ttf') format('truetype');
+          src: url('/public/yapari/YapariTrial-Ultra.ttf') format('truetype');
           font-weight: 900;
           font-style: normal;
         }
@@ -716,35 +716,35 @@ function WelcomePagePortfolio() {
         /* Custom Font Declarations - Noto Sans Mono */
         @font-face {
           font-family: 'Noto Sans Mono';
-          src: url('/Noto_Sans_Mono/static/NotoSansMono-Light.ttf') format('truetype');
+          src: url('/public/Noto_Sans_Mono/static/NotoSansMono-Light.ttf') format('truetype');
           font-weight: 300;
           font-style: normal;
         }
 
         @font-face {
           font-family: 'Noto Sans Mono';
-          src: url('/Noto_Sans_Mono/static/NotoSansMono-Regular.ttf') format('truetype');
+          src: url('/public/Noto_Sans_Mono/static/NotoSansMono-Regular.ttf') format('truetype');
           font-weight: 400;
           font-style: normal;
         }
 
         @font-face {
           font-family: 'Noto Sans Mono';
-          src: url('/Noto_Sans_Mono/static/NotoSansMono-Medium.ttf') format('truetype');
+          src: url('/public/Noto_Sans_Mono/static/NotoSansMono-Medium.ttf') format('truetype');
           font-weight: 500;
           font-style: normal;
         }
 
         @font-face {
           font-family: 'Noto Sans Mono';
-          src: url('/Noto_Sans_Mono/static/NotoSansMono-SemiBold.ttf') format('truetype');
+          src: url('/public/Noto_Sans_Mono/static/NotoSansMono-SemiBold.ttf') format('truetype');
           font-weight: 600;
           font-style: normal;
         }
 
         @font-face {
           font-family: 'Noto Sans Mono';
-          src: url('/Noto_Sans_Mono/static/NotoSansMono-Bold.ttf') format('truetype');
+          src: url('/public/Noto_Sans_Mono/static/NotoSansMono-Bold.ttf') format('truetype');
           font-weight: 700;
           font-style: normal;
         }
