@@ -23,12 +23,15 @@ Transcendence is a full-stack web application for a multiplayer Pong game with 3
 - **Deployment**: Docker Compose with Nginx reverse proxy
 
 ### Service Architecture
-The application runs in Docker containers:
-- `nginx`: Reverse proxy (ports 1080:80, 1443:443)
-- `frontend`: React development server (Vite)
-- `backend`: Django + Daphne ASGI server (port 8000)
-- `postgres`: PostgreSQL database
-- `redis`: Redis for Channels and caching (port 7777:6379)
+The project runs two separate frontends with shared backend infrastructure:
+- `nginx`: Reverse proxy routing to both applications (ports 1080:80, 443:443)
+  - `vladplk.mysmarttech.fr` → Portfolio (port 3001)
+  - `transcendence.mysmarttech.fr` → Transcendence game (port 3000)
+- `transcendence`: React development server for Transcendence game (Vite, port 3000)
+- `portfolio`: React development server for portfolio site (Vite, port 3001)
+- `backend`: Django + Daphne ASGI server (port 8000) - shared by both frontends
+- `postgres`: PostgreSQL database - shared
+- `redis`: Redis for Channels and caching (port 7777:6379) - shared
 
 ### Backend Structure
 Django project with app-based organization:
@@ -139,7 +142,8 @@ OAUTH_CALLBACK=your_callback_url
 DBNAME=database_name
 DBUSER=database_user
 DBPASSWORD=database_password
-VOLUME_PATH=/path/to/frontend/volume
+TRANSCENDENCE_PATH=/home/vlad-plk/volumes/transcendence
+PORTFOLIO_PATH=/home/vlad-plk/volumes/portfolio
 ```
 
 ## Important Implementation Notes
@@ -183,6 +187,11 @@ No explicit test configuration found. Add tests using:
 
 ## Common Pitfalls
 - Ensure `.env` file exists before running `make` or `docker-compose up`
-- Frontend volume path must be adjusted in Makefile and docker-compose.yml for different environments
+- Both frontend volume paths (`TRANSCENDENCE_PATH` and `PORTFOLIO_PATH`) must be set in `.env`
+- SSL certificates for both domains must exist before starting nginx
 - Redis must be running for WebSocket functionality (online status)
 - CORS settings allow all origins in development (`CORS_ALLOW_ALL_ORIGINS = True`)
+- Portfolio runs on port 3001, Transcendence on port 3000
+
+## Deployment Guide
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions for the dual-site architecture.
