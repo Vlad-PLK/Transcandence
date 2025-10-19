@@ -32,7 +32,8 @@ fclean: clean
     else \
         echo "Volume transcandence_postgres_data does not exist"; \
     fi
-	rm -rf ${VOLUME_PATH}
+	# Note: Volume folders are not deleted to preserve your work
+	# To manually delete: rm -rf ${TRANSCENDENCE_PATH} ${PORTFOLIO_PATH}
 
 re:	fclean all
 
