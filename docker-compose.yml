@@ -1,24 +1,26 @@
-networks:
-  transcendance:
-    driver: bridge
-
 services:
 
   nginx:
-    container_name: nginx
+    container_name: transcendence-nginx
     build: ./nginx
-    volumes: # Mount SSL certificates from host to container
-      - /etc/letsencrypt/live/vladplk.mysmarttech.fr:/etc/letsencrypt/live/vladplk.mysmarttech.fr:ro
-      - /etc/letsencrypt/archive/vladplk.mysmarttech.fr:/etc/letsencrypt/archive/vladplk.mysmarttech.fr:ro
-      - /etc/letsencrypt/renewal:/etc/letsencrypt/renewal:ro
-    ports:
-      - 1080:80  # Forward HTTP traffic on port 80
-      - 443:443
+    restart: unless-stopped
+    # No SSL certificates needed - handled by main proxy
+    # NO ports exposed - accessed via main proxy only
+    expose:
+      - "80"
     depends_on:
       - backend
       - frontend
     networks:
       - transcendance
+      - nginx-proxy-network  # Connect to main proxy
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   frontend:
     container_name: frontend
@@ -80,3 +82,9 @@ volumes:
     driver: local
   backend:
     driver: local
+
+networks:
+  transcendance:
+    driver: bridge
+  nginx-proxy-network:
+    external: true
