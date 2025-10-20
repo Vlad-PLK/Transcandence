@@ -1,4 +1,5 @@
 import * as React from "react";
+import { lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import {
   createBrowserRouter,
@@ -7,36 +8,56 @@ import {
   Link,
   Outlet
 } from "react-router-dom";
+
+// Eager load critical components
 import Root from "./Root";
-import WelcomePage from "./WelcomePage";
-import UserSettings from "./UserSettings";
-import Error404 from "./Error404";
-import UserGame from "./game_jsx/UserGame";
-import UserGameWindow from "./game_jsx/UserGameWindow";
 import ProtectedRoute from "./ProtectedRoute";
-import UserHomePage from "./UserHomePage";
-import UserFriends from "./UserFriends";
-import UserGameSetup from "./UserGameSetup";
-import UserGameEnd from "./game_jsx/UserGameEnd_TV";
-import TournamentStats from "./game_jsx/tournamentStats";
-import UserFriendPage from "./UserFriendPage";
-import OAuth from "./OAuth"
+
+// Lazy load route components for code splitting
+const WelcomePage = lazy(() => import("./WelcomePage"));
+const UserSettings = lazy(() => import("./UserSettings"));
+const Error404 = lazy(() => import("./Error404"));
+const UserGame = lazy(() => import("./game_jsx/UserGame"));
+const UserGameWindow = lazy(() => import("./game_jsx/UserGameWindow"));
+const UserHomePage = lazy(() => import("./UserHomePage"));
+const UserFriends = lazy(() => import("./UserFriends"));
+const UserGameSetup = lazy(() => import("./UserGameSetup"));
+const UserGameEnd = lazy(() => import("./game_jsx/UserGameEnd_TV"));
+const TournamentStats = lazy(() => import("./game_jsx/tournamentStats"));
+const UserFriendPage = lazy(() => import("./UserFriendPage"));
+const OAuth = lazy(() => import("./OAuth"));
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div style={{ 
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    height: '100vh',
+    fontSize: '1.5rem',
+    color: '#666'
+  }}>
+    Loading...
+  </div>
+);
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <Root><Outlet/></Root>,
-        errorElement: <Error404/>,
+        errorElement: <Suspense fallback={<LoadingFallback/>}><Error404/></Suspense>,
         children: [
             {
                 path: "",
-                element: <WelcomePage/>
+                element: <Suspense fallback={<LoadingFallback/>}><WelcomePage/></Suspense>
             },
             {
                 path: "userPage/",
                 element: (
                     <ProtectedRoute>
-                        <UserHomePage/>
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <UserHomePage/>
+                        </Suspense>
                     </ProtectedRoute>
                 )
             },
@@ -44,7 +65,9 @@ const router = createBrowserRouter([
                 path: "userSettings/",
                 element: (
                     <ProtectedRoute>
-                        <UserSettings/>
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <UserSettings/>
+                        </Suspense>
                     </ProtectedRoute>
                 )
             },
@@ -52,7 +75,9 @@ const router = createBrowserRouter([
                 path: "userGame/",
                 element: (
                     <ProtectedRoute>
-                        <UserGame/>
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <UserGame/>
+                        </Suspense>
                     </ProtectedRoute>
                 )
             },
@@ -60,7 +85,9 @@ const router = createBrowserRouter([
                 path: "userGameEnd/",
                 element: (
                     <ProtectedRoute>
-                        <UserGameEnd/>
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <UserGameEnd/>
+                        </Suspense>
                     </ProtectedRoute>
                 )
             },
@@ -68,7 +95,9 @@ const router = createBrowserRouter([
                 path: "tournamentStats/",
                 element: (
                     <ProtectedRoute>
-                        <TournamentStats/>
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <TournamentStats/>
+                        </Suspense>
                     </ProtectedRoute>
                 )
             },
@@ -76,7 +105,9 @@ const router = createBrowserRouter([
                 path: "userGameWindow/",
                 element: (
                     <ProtectedRoute>
-                        <UserGameWindow/>
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <UserGameWindow/>
+                        </Suspense>
                     </ProtectedRoute>
                 )
             },
@@ -84,7 +115,9 @@ const router = createBrowserRouter([
                 path: "userGameSetup/",
                 element: (
                     <ProtectedRoute>
-                        <UserGameSetup/>
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <UserGameSetup/>
+                        </Suspense>
                     </ProtectedRoute>
                 )
             },
@@ -92,7 +125,9 @@ const router = createBrowserRouter([
                 path: "userFriends/",
                 element: (
                     <ProtectedRoute>
-                        <UserFriends/>
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <UserFriends/>
+                        </Suspense>
                     </ProtectedRoute>
                 )
             },
@@ -100,14 +135,18 @@ const router = createBrowserRouter([
                 path: "userFriendPage/",
                 element: (
                     <ProtectedRoute>
-                        <UserFriendPage/>
+                        <Suspense fallback={<LoadingFallback/>}>
+                            <UserFriendPage/>
+                        </Suspense>
                     </ProtectedRoute>
                 )
             },
             {
                 path: "oauth_callback/",
                 element: (
+                    <Suspense fallback={<LoadingFallback/>}>
                         <OAuth/>
+                    </Suspense>
                 )
             }
         ]
