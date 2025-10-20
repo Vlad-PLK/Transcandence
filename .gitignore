@@ -4,7 +4,7 @@
 .env
 
 front-react/portfolio/public/*
-
+front-react/node_modules/
 
 
 volumes/*
