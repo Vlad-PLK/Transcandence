@@ -886,7 +886,17 @@ function UserGame({gameData})
                         isGuest={false}
                     />
                 </div>) : (<></>)}
-            <div className="d-flex justify-content-center" ref={mountRef}/>;
+            <div 
+                className="d-flex justify-content-center" 
+                ref={mountRef}
+                style={{
+                    backgroundColor: '#000000',
+                    minHeight: '100vh',
+                    width: '100%',
+                    position: 'relative',
+                    overflow: 'hidden'
+                }}
+            />
         </>
       )
 };

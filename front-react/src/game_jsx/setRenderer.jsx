@@ -7,7 +7,13 @@ export default function setRenderer(renderer)
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
-    document.body.appendChild(renderer.domElement);
+    
+    // Ensure canvas has proper styling
+    renderer.domElement.style.display = 'block';
+    renderer.domElement.style.position = 'relative';
+    
+    // Don't append to body - let the parent component handle mounting
+    // document.body.appendChild(renderer.domElement);
 }
 
 export function setRendererTarget(renderer)
