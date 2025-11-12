@@ -215,6 +215,127 @@
     "needed_2fa": "You need the 2fa code",
         "again": "Try again",
 
+    "userHome": {
+        "hero": {
+            "welcome": "Welcome back,",
+            "subtitle": "Ready to dominate the galaxy? Your dashboard awaits!",
+            "readyTitle": "🎮 Ready for Action?",
+            "description1": "Your personalized gaming hub is here. Access all game modes, track your performance, manage friends, and customize your experience all from one place.",
+            "description2": "Choose from local matches, online multiplayer battles, or competitive tournaments. The choice is yours, champion!",
+            "startPlaying": "🚀 Start Playing Now"
+        },
+        "actions": {
+            "title": "⚡ Quick Actions",
+            "playGame": {
+                "title": "Play Game",
+                "description": "Jump straight into action! Choose your game mode and start competing."
+            },
+            "viewStats": {
+                "title": "View Statistics",
+                "description": "Track your progress, wins, losses, and match history in detail."
+            },
+            "manageFriends": {
+                "title": "Manage Friends",
+                "description": "Connect with other players, send friend requests, and see who's online."
+            },
+            "settings": {
+                "title": "Profile Settings",
+                "description": "Customize your profile, change avatar, update password, and manage security."
+            },
+            "online": {
+                "title": "Connection Status",
+                "connected": "You're connected and ready to play online multiplayer!",
+                "disconnected": "Connect to access online multiplayer features."
+            }
+        },
+        "gameModes": {
+            "title": "🎯 Game Modes Overview",
+            "local": {
+                "title": "🎮 Local Multiplayer",
+                "description": "Challenge a friend on the same device! Perfect for quick matches and friendly competition.",
+                "feature1": "Same-device multiplayer",
+                "feature2": "No internet required",
+                "feature3": "Instant setup and play"
+            },
+            "multiplayer": {
+                "title": "🌐 Online Multiplayer",
+                "description": "Connect with players worldwide through real-time WebSocket connections.",
+                "feature1": "Real-time online matches",
+                "feature2": "Matchmaking system",
+                "feature3": "Global leaderboards"
+            },
+            "tournament": {
+                "title": "🏆 Tournaments",
+                "description": "Create or join competitive tournaments with automatic bracket generation.",
+                "feature1": "Create custom tournaments",
+                "feature2": "Join existing competitions",
+                "feature3": "Automatic bracket management",
+                "feature4": "Tournament statistics tracking"
+            },
+            "exploreNow": "Explore Game Modes"
+        }
+    },
+
+    "gameSetup": {
+        "hero": {
+            "title": "Game Mode Selection",
+            "subtitle": "Choose your battlefield and prepare for action!",
+            "description": "Select from various game modes, customize your settings, and dive into the action. Whether you prefer local battles, online competition, or tournament glory, we've got you covered.",
+            "configureSettings": "⚙️ Configure Settings",
+            "viewProfile": "📊 View Profile",
+            "backHome": "🏠 Back to Home"
+        },
+        "modes": {
+            "title": "🎮 Available Game Modes",
+            "local": {
+                "title": "Local Game",
+                "description": "Play with a friend on the same device! Perfect for quick matches and couch co-op fun.",
+                "featuresTitle": "🎯 Mode Features:",
+                "feature1": "Two-player local gameplay",
+                "feature2": "Guest player support",
+                "feature3": "Instant matchmaking",
+                "feature4": "No internet required"
+            },
+            "multiplayer": {
+                "title": "Online Multiplayer",
+                "description": "Connect with players worldwide through our real-time multiplayer system.",
+                "featuresTitle": "🌐 Mode Features:",
+                "feature1": "Real-time WebSocket connections",
+                "feature2": "Global player matching",
+                "feature3": "Live match statistics",
+                "feature4": "Competitive rankings",
+                "online": "Online - Ready to Play",
+                "offline": "Offline - Connection Required"
+            }
+        },
+        "tournaments": {
+            "title": "🏆 Tournament System",
+            "description": "Compete in organized tournaments with automatic bracket generation and comprehensive statistics tracking. Create your own tournament or join existing competitions!",
+            "join": {
+                "title": "Join Tournament",
+                "description": "Browse and join active tournaments created by the community.",
+                "whatYouCanDo": "What you can do:",
+                "feature1": "View all available tournaments",
+                "feature2": "Check participant lists",
+                "feature3": "Join ongoing competitions",
+                "feature4": "Track tournament progress"
+            },
+            "create": {
+                "title": "Create Tournament",
+                "description": "Organize your own competitive tournament and invite players to compete!",
+                "whatYouCanDo": "What you can do:",
+                "feature1": "Set tournament name and rules",
+                "feature2": "Invite specific players",
+                "feature3": "Automatic bracket generation",
+                "feature4": "Manage tournament progress"
+            },
+            "infoBox": {
+                "title": "Tournament Rules",
+                "description": "Tournaments use single-elimination brackets with automatic advancement. Winners proceed to the next round, and comprehensive statistics are tracked for all matches."
+            }
+        }
+    },
+
     "welcomePage": {
         "hero": {
             "title": "Welcome to Transcendence",
